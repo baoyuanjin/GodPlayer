@@ -158,11 +158,11 @@ public class ZXingActivity extends BaseActivity implements QRCodeView.Delegate, 
         VideoDBBean01 videoDBBean = new VideoDBBean01();
         videoDBBean.setAccount("root");
         videoDBBean.setPassword("root");
-        videoDBBean.setTitle("自定义URL");
+        videoDBBean.setTitle("自定义URL标题");
         videoDBBean.setIp(result.trim());
-        videoDBBean.setMakeMessage("自定义URL");
-        videoDBBean.setPort("自定义URL");
-        videoDBBean.setType("自定义URL");
+        videoDBBean.setMakeMessage("自定义URL备注信息");
+        videoDBBean.setPort("自定义URL端口号");
+        videoDBBean.setType("自定义URL类型");
         videoDBBean.setTag(currentUsername);
         videoDBBean.setMicport("7789");
         VideoDB01Utils.insertOrReplaceData(videoDBBean);

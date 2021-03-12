@@ -145,7 +145,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         LogUtils.e("ZZZZZZZZZ==type==" + type);
         LogUtils.e("ZZZZZZZZZ==type==" + type);
         LogUtils.e("ZZZZZZZZZ==type==" + type);
-        if ("自定义URL".equals(type)) {
+        if ("自定义URL类型".equals(type)) {
             mIPView.setHint("请输入ip或url播放地址");
         } else {
             mIPView.setText("" + ip);
@@ -542,14 +542,20 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 }
                 break;
             case "2":   //自定义url
+
+//                videoDBBean.setTitle("自定义URL标题");
+//                videoDBBean.setIp(result.trim());
+//                videoDBBean.setMakeMessage("自定义URL备注信息");
+//                videoDBBean.setPort("自定义URL端口号");
+//                videoDBBean.setType("自定义URL类型");
                 account = "root";
                 password = "root";
-                title = "自定义url";
+                title = "自定义URL标题";
                 ip = "请输入ip或url播放地址";
-                makeMessage = "自定义url播放";
+                makeMessage = "自定义URL备注信息";
                 port = "7788";
                 micPort = "7789";
-                type = "自定义URL";
+                type = "自定义URL类型";
                 if (!DialogHan_IsShow) {   //不存在
                     mHandler.sendEmptyMessage(1);
                 } else {
