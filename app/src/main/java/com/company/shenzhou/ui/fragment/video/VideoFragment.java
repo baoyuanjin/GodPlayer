@@ -542,12 +542,6 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 }
                 break;
             case "2":   //自定义url
-
-//                videoDBBean.setTitle("自定义URL标题");
-//                videoDBBean.setIp(result.trim());
-//                videoDBBean.setMakeMessage("自定义URL备注信息");
-//                videoDBBean.setPort("自定义URL端口号");
-//                videoDBBean.setType("自定义URL类型");
                 account = "root";
                 password = "root";
                 title = "自定义URL标题";
