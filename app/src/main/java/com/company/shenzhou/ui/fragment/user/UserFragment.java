@@ -338,13 +338,13 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
     }
 
     public void setDismissPop() {
-        if (deleteYourselfPop != null) {
+        if (null != deleteYourselfPop) {
             deleteYourselfPop.dismiss();
         }
-        if (changePasswordPop != null) {
+        if (null != changePasswordPop) {
             changePasswordPop.dismiss();
         }
-        if (addUserPop != null) {
+        if (null != addUserPop) {
             addUserPop.dismiss();
         }
     }

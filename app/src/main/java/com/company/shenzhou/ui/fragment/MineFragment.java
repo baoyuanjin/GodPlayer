@@ -284,23 +284,6 @@ public class MineFragment extends BaseFragment {
         }
     }
 
-    public void setDismissPop() {
-        if (changePop != null) {
-            changePop.dismiss();
-        }
-        if (exitPop != null) {
-            exitPop.dismiss();
-        }
-        if (versionPop != null) {
-            versionPop.dismiss();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        setDismissPop();
-    }
 
     private void showChangeCurrentUserPasswordPop() {
         popType = "change";
@@ -394,6 +377,27 @@ public class MineFragment extends BaseFragment {
         });
         exitPop.showPopupWindow(mLinearAll, Gravity.CENTER);
     }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        setDismissPop();
+    }
+
+    public void setDismissPop() {
+        if (null != changePop) {
+            changePop.dismiss();
+        }
+        if (null != exitPop) {
+            exitPop.dismiss();
+        }
+        if (null != versionPop) {
+            versionPop.dismiss();
+        }
+    }
+
+
 }
 
 

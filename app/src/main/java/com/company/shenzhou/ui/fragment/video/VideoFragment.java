@@ -90,8 +90,6 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
     private boolean isOk = false;  //信息录入开关   默认没有填写完成
     private String currentUsername;
     private PopupWindowTwoButton deletePop;
-    //    private PopupWindowInputMachine addPop;
-//    private PopupWindowInputMachine reAddPop;
     private String popType = "";
     private AdviceReInputDialog.Builder builder;
     private AddAdviceInputDialog.Builder addInPutBuilder;      //添加设备信息对话框
@@ -409,26 +407,22 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 }
                 break;
             case "change":
-//                if (reAddPop != null && reAddPop.isShowing()) {
-//                    reAddPop.dismiss();
-//                    reAddPop.setWidth(width);
-//                    reAddPop.getLinear_pop_change().setLayoutParams(mParams);
-//                    reAddPop.showPopupWindow(mLinearAll, Gravity.CENTER);
-//                }
+
                 break;
 
         }
     }
 
     public void setDismissPop() {
-//        if (reAddPop != null) {
-//            reAddPop.dismiss();
-//        }
-//        if (addPop != null) {
-//            addPop.dismiss();
-//        }
-        if (deletePop != null) {
+
+        if (null != deletePop) {
             deletePop.dismiss();
+        }
+        if (null != addInPutBuilder) {
+            addInPutBuilder.dismiss();
+        }
+        if (null != mReInputPopBuilder) {
+            mReInputPopBuilder.dismiss();
         }
     }
 

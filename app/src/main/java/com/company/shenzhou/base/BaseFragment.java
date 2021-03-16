@@ -319,7 +319,6 @@ public abstract class BaseFragment extends Fragment {
             if (null == popLoginButton) {
                 popLoginButton = new PopupWindowTwoButton(getActivity());
             }
-
             popLoginButton.getTv_content().setText("未登录，请先登录");
             popLoginButton.getTv_ok().setText("确认");
             popLoginButton.getTv_cancel().setText("取消");
