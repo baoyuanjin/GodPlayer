@@ -403,6 +403,7 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
         addUserPop.showPopupWindow(mLinearAll, Gravity.CENTER);
     }
 
+    //修改密码
     private void showChangePasswordPop(UserDBRememberBean bean, String type) {
         popType = "change";
         changePasswordPop = new PopupWindowInputChangePassword(getActivity());

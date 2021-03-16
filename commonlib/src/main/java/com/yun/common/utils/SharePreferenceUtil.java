@@ -23,6 +23,7 @@ public class SharePreferenceUtil {
     public static final String FILE_NAME = "share_data";
     public static final String UID = "uid";
 
+
     //这个是fragment.tab的保存信息
     public static final String DYNAMIC_SWITCH_TAB = "dynamic.switching.tab";
 
@@ -34,6 +35,9 @@ public class SharePreferenceUtil {
     public static final String Current_ID = "1";
     public static final String Current_RememberPassword = "false";    //默认不记住密码
 
+    public static final String Type_HD3 = "HD3";             //0代表,HD3
+    public static final String Type_Yitiji = "一体机";       //1代表,一体机
+    public static final String Type_Url = "自定义URL类型";   //2代表,自定义URL类型
 
     public static final String Current_Admin_ChangePassword = "change";  //0普通  1权限  2超级用户
 

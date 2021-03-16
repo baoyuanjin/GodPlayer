@@ -97,7 +97,6 @@ dependencies {
 //    api 'com.github.bumptech.glide:glide:3.7.0'
 
 
-
     //greendao 数据库
     implementation 'org.greenrobot:greendao:3.2.2' // add library
 
@@ -126,7 +125,8 @@ dependencies {
     //下拉选择
     implementation 'com.github.arcadefire:nice-spinner:1.4.4'
 
-
+    //项目方法数越界的问题
     implementation 'com.android.support:multidex:1.0.3'
+
 
 }

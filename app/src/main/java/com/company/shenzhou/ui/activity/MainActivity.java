@@ -74,22 +74,27 @@ public class MainActivity extends BaseActivity implements KeyboardWatcher.SoftKe
 //        PlayerFactory.setPlayManager(SystemPlayerManager.class);     //这个是GSYVideoPlayer 设置所有流媒体格式播放内核
         requestPermission();
 
-        KeyboardWatcher.with(this)
-                .setListener(this);
-
+        KeyboardWatcher.with(this).setListener(this);
         //可用空间不足2GB弹出对话框
-        if (2 > Float.parseFloat(FileUtil.getROMAvailableSize(this).replace("GB", "").trim())) {
-            showWarningDialog();
+        String romAvailableSize = FileUtil.getROMAvailableSize(this);
+        String mFreeCache = "";
+        if (romAvailableSize.endsWith("GB")) {
+            mFreeCache = romAvailableSize.replace("GB", "").trim();
+            if (2 > Integer.parseInt(mFreeCache.substring(0, 1))) {
+                showWarningDialog("设备可用空间不足2GB,录制视频可能导致保存视频失败!");
+            }
+        } else if (romAvailableSize.endsWith("MB")) {
+            mFreeCache = romAvailableSize.replace("MB", "").trim();
+            showWarningDialog("设备可用空间不足"+mFreeCache+"MB,录制视频极有可能导致保存视频失败!");
         }
-
     }
 
-    private void showWarningDialog() {
+    private void showWarningDialog(String message) {
         mExitDialog = new MessageDialog.Builder(this);
         // 标题可以不用填写
         mExitDialog.setTitle("警告!")
                 // 内容必须要填写
-                .setMessage("设备可用空间不足2GB,录制视频可能导致保存视频失败!")
+                .setMessage(message)
                 // 确定按钮文本
                 .setConfirm(getString(R.string.common_confirm))
                 // 设置 null 表示不显示取消按钮

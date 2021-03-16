@@ -1,6 +1,7 @@
 package com.company.shenzhou.ui.fragment.video;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Handler;
@@ -9,6 +10,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,9 +28,10 @@ import com.company.shenzhou.bean.dbbean.VideoDBBean01;
 import com.company.shenzhou.ui.activity.vlc.VlcPlayerActivity;
 import com.company.shenzhou.ui.activity.zxing.ZXingActivity;
 import com.company.shenzhou.ui.fragment.video.adapter.VideoAdapter;
+import com.company.shenzhou.utils.ClearEditText;
+import com.company.shenzhou.utils.CommonUtil;
 import com.company.shenzhou.utils.db.VideoDB01Utils;
 import com.company.shenzhou.view.ListPopup;
-import com.company.shenzhou.view.PopupWindowInputMachine;
 import com.company.shenzhou.view.dialog.AddAdviceInputDialog;
 import com.company.shenzhou.view.dialog.AdviceReInputDialog;
 import com.company.shenzhou.view.dialog.SelectDialog;
@@ -69,7 +74,8 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
     LinearLayout mLinearAll;
     @BindView(R.id.smartRefresh)
     SmartRefreshLayout mSmartRefresh;
-    private TextView mAccountView, mPasswordView, mTitleView, mIPView, mMessageView, mPortView, micPortView, mTypeView, mTypeSelecter;
+    private TextView mAccountView, mPasswordView, mTitleView, mMessageView, mPortView, micPortView, mTypeSelecter;
+    private ClearEditText mTypeView, mIPView;
     private ArrayList<VideoDBBean01> mDataList = new ArrayList<>();
     private VideoAdapter mAdapter;
     private String account;
@@ -90,7 +96,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
     private AdviceReInputDialog.Builder builder;
     private AddAdviceInputDialog.Builder addInPutBuilder;      //添加设备信息对话框
     private AdviceReInputDialog.Builder mReInputPopBuilder;    //修改设备信息对话框
-    private boolean DialogHan_IsShow = false;
+    private boolean DialogHan_IsShow = false;                  //收入输入对话框是否存在的标志,存在只刷新数据,不存在弹出对话框
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -116,8 +122,8 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         mAccountView.setText("" + account);
         mPasswordView.setText("" + password);
         mTitleView.setText("" + title);
-        if ("2".equals(type)) {
-            mIPView.setHint("请输入ip或url播放地址");
+        if ("2".equals(type)) { //2为自定义url类型
+            CommonUtil.showSoftInputFromWindow(getActivity(), mIPView);
         } else {
             mIPView.setText("" + ip);
         }
@@ -145,8 +151,8 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         LogUtils.e("ZZZZZZZZZ==type==" + type);
         LogUtils.e("ZZZZZZZZZ==type==" + type);
         LogUtils.e("ZZZZZZZZZ==type==" + type);
-        if ("自定义URL类型".equals(type)) {
-            mIPView.setHint("请输入ip或url播放地址");
+        if (SharePreferenceUtil.Type_Url.equals(type)) {
+            CommonUtil.showSoftInputFromWindow(getActivity(), mIPView);
         } else {
             mIPView.setText("" + ip);
         }
@@ -175,11 +181,12 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                     DialogHan_IsShow = false;
                 }
             }
+
             @Override
             public void onReInputTypeClick(TextView mTv) {
                 mTypeSelecter = mTv;
                 LogUtils.e("mType===========" + mTypeSelecter);
-                showInputSelectDialog(mTv);
+                showInputSelectTypeDialog(mTv);
             }
 
             @Override
@@ -261,7 +268,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 Intent intent = new Intent(getActivity(), VlcPlayerActivity.class);
                 Log.e("path=====Start:=====", "bean.getType()====" + bean.getType());
                 switch (bean.getType()) {
-                    case "HD3": //HD3
+                    case SharePreferenceUtil.Type_HD3: //HD3
                         currentUrl01 = "rtsp://" + username + ":" + password + "@" + ip + "/MediaInput/h264/stream_1";
                         currentUrl02 = "rtsp://" + username + ":" + password + "@" + ip + "/MediaInput/h264/stream_2";
                         intent.putExtra("url01", currentUrl01);
@@ -274,7 +281,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
 
                         startActivity(intent);
                         break;
-                    case "一体机": //一体机
+                    case SharePreferenceUtil.Type_Yitiji: //一体机
                         currentUrl01 = "rtsp://" + username + ":" + password + "@" + ip + ":" + port + "/session0.mpg";  //高清
                         currentUrl02 = "rtsp://" + username + ":" + password + "@" + ip + ":" + port + "/session1.mpg";  //标清
                         intent.putExtra("url01", currentUrl01);
@@ -287,7 +294,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
 
                         startActivity(intent);
                         break;
-                    case "自定义URL": //自定义url
+                    case SharePreferenceUtil.Type_Url: //自定义url
                         currentUrl01 = bean.getIp() + "";
                         currentUrl02 = bean.getIp() + "";
                         String replace1 = currentUrl01.replace(" ", "");
@@ -307,10 +314,10 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         break;
                 }
                 break;
-            case "delete"://删除当前设备信息
+            case "delete"://删除对话框,删除当前设备信息
                 showDeletePop(bean);
                 break;
-            case "reInput"://更改当前设备信息
+            case "reInput":// 修改对话框,更改当前设备信息
                 showReInputPop(bean);
                 break;
         }
@@ -425,6 +432,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         }
     }
 
+    //修改对话框
     private void showReInputPop(VideoDBBean01 bean) {
         popType = "change";
         isOk = false;
@@ -469,7 +477,8 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
 
     }
 
-    private void showInputSelectDialog(TextView mType) {
+    //输入对话框
+    private void showInputSelectTypeDialog(TextView mType) {
         // 单选对话框
         new SelectDialog.Builder(getActivity())
                 .setTitle("请选择类型")
@@ -513,9 +522,9 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
             case "0":   //HD3
                 account = "admin";
                 password = "12345";
-                title = "HD3_title";
+                title = "HD3的标题";
                 ip = "192.168.1.10";
-                makeMessage = "HD3_message";
+                makeMessage = "HD3的备注信息";
                 port = "80";
                 micPort = "7789";
                 type = "HD3";
@@ -594,7 +603,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
      * 手动输入的时候，默认弹出类别选择dialog
      */
     private void showHandInputTypeDialog() {
-        showInputSelectDialog(mTypeSelecter);
+        showInputSelectTypeDialog(mTypeSelecter);
     }
 
     private void showInputPop() {

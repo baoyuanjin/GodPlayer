@@ -36,7 +36,7 @@ public final class AddAdviceInputDialog {
         private ClearEditText cet_cme_note_message;
         private ClearEditText cet_cme_port;
         private ClearEditText cet_cme_mic_port;
-        private TextView cet_cme_start_type;
+        private ClearEditText cet_cme_start_type;
         private TextView makeSure;
         private TextView makeCancle;
         private LinearLayout linear_pop_change;
@@ -51,7 +51,7 @@ public final class AddAdviceInputDialog {
             cet_cme_note_message = (ClearEditText) findViewById(R.id.cet_cme_note_message);
             cet_cme_port = (ClearEditText) findViewById(R.id.cet_cme_port);
             cet_cme_mic_port = (ClearEditText) findViewById(R.id.cet_cme_mic_port);
-            cet_cme_start_type = (TextView) findViewById(R.id.cet_cme_start_type);
+            cet_cme_start_type = (ClearEditText) findViewById(R.id.cet_cme_start_type);
             cet_cme_start_type.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -83,7 +83,7 @@ public final class AddAdviceInputDialog {
         public TextView getTitleView() {
             return cet_cme_title;
         }
-        public TextView getIPView() {
+        public ClearEditText getIPView() {
             return cet_cme_ip;
         }
         public TextView getMessageView() {
@@ -96,7 +96,7 @@ public final class AddAdviceInputDialog {
             return cet_cme_mic_port;
         }
 
-        public TextView getTypeView() {
+        public ClearEditText getTypeView() {
             return cet_cme_start_type;
         }
 

@@ -37,7 +37,7 @@ public final class AdviceReInputDialog {
         private ClearEditText cet_cme_note_message;
         private ClearEditText cet_cme_port;
         private ClearEditText cet_cme_mic_port;
-        private TextView cet_cme_start_type;
+        private ClearEditText cet_cme_start_type;
         private TextView makeSure;
         private TextView makeCancle;
         private Context context;
@@ -58,7 +58,7 @@ public final class AdviceReInputDialog {
             cet_cme_note_message = (ClearEditText) findViewById(R.id.cet_cme_note_message);
             cet_cme_port = (ClearEditText) findViewById(R.id.cet_cme_port);
             cet_cme_mic_port = (ClearEditText) findViewById(R.id.cet_cme_mic_port);
-            cet_cme_start_type = (TextView) findViewById(R.id.cet_cme_start_type);
+            cet_cme_start_type = (ClearEditText) findViewById(R.id.cet_cme_start_type);
             cet_cme_start_type.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
