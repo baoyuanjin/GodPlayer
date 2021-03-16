@@ -172,7 +172,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 if (isOk) {
                     VideoDB01Utils.insertOrReplaceData(mBean);
 //                    List currentList = VideoDB01Utils.queryAll(VideoDBBean.class);
-                     currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
+                    currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
                     showEmptyOrContentView((ArrayList<VideoDBBean01>) currentRecycleViewList);
                     mAdapter.setListAndNotifyDataSetChanged(currentRecycleViewList);
                     addInPutBuilder.dismissDialog();
@@ -229,7 +229,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
 
     private void startThreadReadDBData() {
         new Thread(() -> {
-             currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
+            currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
             mDataList.addAll(currentRecycleViewList);
             mHandler.sendEmptyMessage(3);
         }).start();
@@ -253,8 +253,8 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 /**
                  * HD3      rtsp://username:password@ip/MediaInput/h264/stream_1 ------   --HD3，高清
                  * HD3      rtsp://username:password@ip/MediaInput/h264/stream_2 ------   --HD3，标清
-                 * 一体机   rtsp://username:password@ip port/session0.mpg ------           --一体机，标清
-                 * 一体机   rtsp://username:password@ip：port/session1.mpg ------          --一体机，高清
+                 * 一体机   rtsp://username:password@ip port/session0.mpg ------           --一体机， 高清
+                 * 一体机   rtsp://username:password@ip：port/session1.mpg ------          --一体机， 标清
                  * url      http://www.cme8848.com/live/cme.m3u8                          eg:链接地址=用户输入的url链接
                  * url      http://www.cme8848.com/live/flv                               eg:链接地址=用户输入的url链接
                  */
@@ -305,7 +305,6 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==自定义url==micport===" + bean.getMicport());
-
                         startActivity(intent);
                         break;
                     default:
@@ -449,7 +448,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                     showToast(bean.getId() + "");
                     mBean.setId(bean.getId());
                     VideoDB01Utils.updateData(mBean);
-                     currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
+                    currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
                     showEmptyOrContentView((ArrayList<VideoDBBean01>) currentRecycleViewList);
                     mAdapter.setListAndNotifyDataSetChanged(currentRecycleViewList);
                     showToast("修改成功");
@@ -618,7 +617,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
             @Override
             public void onClick(View v) {
                 VideoDB01Utils.deleteData(bean);
-                 currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
+                currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
 
                 //删除单个item
 
@@ -685,7 +684,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshEvent(RefreshEvent event) {
         Log.e("扫描结果为：", "result===" + event.getType());
-         currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
+        currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
         mDataList.clear();
         mDataList.addAll(currentRecycleViewList);
         showEmptyOrContentView(mDataList);

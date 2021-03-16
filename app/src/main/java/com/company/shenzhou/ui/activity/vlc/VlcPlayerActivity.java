@@ -283,7 +283,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
         mUrlList = new ArrayList<>();
         mUrlList.add(switchVideoModel);
         mUrlList.add(switchVideoModel2);
-        mSourcePosition = 0;  //标清
+        mSourcePosition = 0;  //高清
         mTitle.setText("" + mTitleData);
 
     }
@@ -817,11 +817,13 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
         SwitchVideoTypeDialog switchVideoTypeDialog = new SwitchVideoTypeDialog(this);
         switchVideoTypeDialog.initList(mUrlList, new SwitchVideoTypeDialog.OnListItemClickListener() {
             @Override
-            public void onItemClick(int position) {
+            public void onItemClick(int position) {  //position==0,name==高清
                 final String name = mUrlList.get(position).getName();
-                if (mSourcePosition != position) {
+                LogUtils.e("'switchVideoModel===position=="+position);
+                LogUtils.e("'switchVideoModel===name=="+name);
+                if (mSourcePosition != position) {  //默认是高清
                     mTypeText = name;
-                    mSourcePosition = position;
+                mSourcePosition = position;
                     mHandler.sendEmptyMessage(Send_UrlType);
                     mHandler.sendEmptyMessage(Pusher_Stop);
                     //要断开麦克风连接
