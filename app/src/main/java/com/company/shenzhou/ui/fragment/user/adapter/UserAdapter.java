@@ -90,7 +90,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 public void onClick(View v) {
                     //查找数据库update用户表--删除当前用户
                     if (mClickCallBack != null) {
-                        mClickCallBack.onItemCallBack(bean, mList, "delete");
+                        mClickCallBack.onItemCallBack(bean, mList, "delete",position);
                     }
                 }
             });
@@ -99,7 +99,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     if (mClickCallBack != null) {
-                        mClickCallBack.onItemCallBack(bean, mList, "password");
+                        mClickCallBack.onItemCallBack(bean, mList, "password", position);
                     }
                 }
             });
@@ -154,7 +154,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 if (mClickCallBack != null) {
-                    mClickCallBack.onItemCallBack(bean, mList, "all");
+                    mClickCallBack.onItemCallBack(bean, mList, "all", position);
 
                 }
             }
@@ -169,7 +169,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
 
     public interface ClickCallBack {
-        void onItemCallBack(UserDBRememberBean bean, ArrayList<UserDBRememberBean> mList, String type);
+        void onItemCallBack(UserDBRememberBean bean, ArrayList<UserDBRememberBean> mList, String type, int position);
 
         void onItemChecked(UserDBRememberBean bean, SwitchButton slide_switch, boolean type);
 

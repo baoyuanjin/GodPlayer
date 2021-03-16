@@ -81,7 +81,9 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
     RecyclerView mRecyclerView;
     @BindView(R.id.smartRefresh)
     SmartRefreshLayout mSmartRefresh;
-    private ArrayList<UserDBRememberBean> mListData = new ArrayList<>();
+    private ArrayList<UserDBRememberBean> mDataList = new ArrayList<>();
+    private List currentRecycleViewList = null;   //curd  之后取出的list
+
     private LinearLayoutManager mLinearLayoutManager;
     private UserAdapter mAdapter;
     private int currentUserType;
@@ -90,13 +92,14 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
     private PopupWindowInputChangePassword changePasswordPop;
     private PopupWindowInputUser addUserPop;
     private String popType = "";
+
     private android.os.Handler mHandler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0:
-                    showEmptyOrContentView(mListData);
+                    showEmptyOrContentView(mDataList);
                     break;
 
             }
@@ -129,27 +132,28 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
     private void initData() {
         String username = (String) SharePreferenceUtil.get(getActivity(), SharePreferenceUtil.Current_Username, "");
         mUsername.setText(username + "");
-        mListData = new ArrayList<UserDBRememberBean>();
+        mDataList = new ArrayList<UserDBRememberBean>();
         //查询数据库所有的用户表
         currentUserType = (int) SharePreferenceUtil.get(getActivity(), SharePreferenceUtil.Current_UserType, 0);
         current_username = (String) SharePreferenceUtil.get(getActivity(), SharePreferenceUtil.Current_Username, "");
         showLoading();
-        startThreadReadDBData();
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 //        mRecyclerView.addItemDecoration(new RecycleViewDivider(getActivity(), 1, R.drawable.recicleview_divider_line));
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mAdapter = new UserAdapter(mListData, getActivity());
+        mAdapter = new UserAdapter(mDataList, getActivity());
         mAdapter.setClickCallBack(this);
         mRecyclerView.setAdapter(mAdapter);
+        startThreadReadDBData();
     }
 
     private void startThreadReadDBData() {
         new Thread(() -> {
             try {
-                List mList = UserDBUtils.queryAll(UserDBRememberBean.class);
+                 currentRecycleViewList = UserDBUtils.queryAll(UserDBRememberBean.class);
                 mHandler.sendEmptyMessage(0);
-                mListData.addAll(mList);
+                mDataList.clear();
+                mDataList.addAll(currentRecycleViewList);
             } catch (Exception e) {
                 LogUtils.e("UserFragment.java:159,数据库字段更新,请重新卸载App,在安装新的App");
             }
@@ -158,7 +162,7 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
     }
 
     @Override
-    public void onItemCallBack(UserDBRememberBean bean, ArrayList<UserDBRememberBean> mList, String type) {
+    public void onItemCallBack(UserDBRememberBean bean, ArrayList<UserDBRememberBean> mList, String type, int position) {
         //type  delete   default   update
         //mAdapter.notifyDataSetChanged();
         showEmptyOrContentView(mList);
@@ -193,13 +197,13 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
                     break;
                 case 1:  //权限用户
                     if (currentUserType > userType) {  //大于权限才可以删除
-                        showPopDelete(bean, 1);
+                        showPopDelete(bean, 1, position);
 //                        UserDBUtils.deleteData(bean);
 //                        mAdapter.setListAndNotifyDataSetChanged();
                     } else if (currentUserType == userType) {
                         String currentUsername = (String) SharePreferenceUtil.get(getActivity(), SharePreferenceUtil.Current_Username, "");
                         if (currentUsername.equals(bean.getUsername())) {
-                            showPopDeleteYourself(bean);
+                            showPopDeleteYourself(bean,position );
                         } else {
                             showToast("您不能删除别人哦!");
                         }
@@ -212,7 +216,7 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
                     if ("admin".equals(bean.getUsername())) {  //超级用户不能删除自己
                         showToast("超级用户不能删除自己哦!");
                     } else {
-                        showPopDelete(bean, 2);
+                        showPopDelete(bean, 1, position);
                     }
                     break;
 
@@ -224,9 +228,10 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
      * 删除用户
      *
      * @param bean
-     * @param type 用户类型
+     * @param type     用户类型
+     * @param position 当前角标
      */
-    private void showPopDelete(UserDBRememberBean bean, int type) {
+    private void showPopDelete(UserDBRememberBean bean, int type, int position) {
         PopupWindowTwoButton deletePop = new PopupWindowTwoButton((Activity) getActivity());
         deletePop.getTv_content().setText("是否确认删除该用户?");
         deletePop.getTv_ok().setText("确定");
@@ -235,7 +240,13 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
             @Override
             public void onClick(View v) {
                 UserDBRememberBeanUtils.deleteData(bean);
-                mAdapter.setListAndNotifyDataSetChanged();
+
+                mDataList.remove(position);
+                mAdapter.notifyItemRemoved(position);
+                mAdapter.notifyItemRangeChanged(0, mDataList.size());
+
+
+//                mAdapter.setListAndNotifyDataSetChanged();
                 deletePop.dismiss();
             }
         });
@@ -380,14 +391,14 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
                     bean.setUserType(0);
                     UserDBRememberBeanUtils.insertOrReplaceData(bean);
 //                    showToast("添加成功" + "username==" + username + "password==" + password);
-                    List currentList = UserDBUtils.queryAll(UserDBRememberBean.class);
-                    for (int i = 0; i < currentList.size(); i++) {
-                        UserDBRememberBean o = (UserDBRememberBean) currentList.get(i);
+                     currentRecycleViewList = UserDBUtils.queryAll(UserDBRememberBean.class);
+                    for (int i = 0; i < currentRecycleViewList.size(); i++) {
+                        UserDBRememberBean o = (UserDBRememberBean) currentRecycleViewList.get(i);
                         LogUtils.e("存储的数据" + o.getUsername());
                         LogUtils.e("存储的数据" + o.getPassword());
                         LogUtils.e("存储的数据" + o.getRemember());
                     }
-                    showEmptyOrContentView((ArrayList<UserDBRememberBean>) currentList);
+                    showEmptyOrContentView((ArrayList<UserDBRememberBean>) currentRecycleViewList);
                     mAdapter.setListAndNotifyDataSetChanged();
                 }
                 addUserPop.dismiss();
@@ -436,7 +447,8 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
         changePasswordPop.showPopupWindow(mLinearAll, Gravity.CENTER);
     }
 
-    private void showPopDeleteYourself(UserDBRememberBean bean) {
+    //删除自己
+    private void showPopDeleteYourself(UserDBRememberBean bean, int position) {
         popType = "delete";
         deleteYourselfPop = new PopupWindowTwoButton((Activity) getActivity());
         deleteYourselfPop.getTv_content().setText("是否确认删除你自己?");

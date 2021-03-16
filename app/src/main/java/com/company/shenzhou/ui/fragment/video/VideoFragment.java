@@ -77,6 +77,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
     private TextView mAccountView, mPasswordView, mTitleView, mMessageView, mPortView, micPortView, mTypeSelecter;
     private ClearEditText mTypeView, mIPView;
     private ArrayList<VideoDBBean01> mDataList = new ArrayList<>();
+    private List currentRecycleViewList = null;
     private VideoAdapter mAdapter;
     private String account;
     private String password;
@@ -171,9 +172,9 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 if (isOk) {
                     VideoDB01Utils.insertOrReplaceData(mBean);
 //                    List currentList = VideoDB01Utils.queryAll(VideoDBBean.class);
-                    List currentList = VideoDB01Utils.queryRawTag(currentUsername);
-                    showEmptyOrContentView((ArrayList<VideoDBBean01>) currentList);
-                    mAdapter.setListAndNotifyDataSetChanged(currentList);
+                     currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
+                    showEmptyOrContentView((ArrayList<VideoDBBean01>) currentRecycleViewList);
+                    mAdapter.setListAndNotifyDataSetChanged(currentRecycleViewList);
                     addInPutBuilder.dismissDialog();
                     showToast("添加成功");
                     DialogHan_IsShow = false;
@@ -228,8 +229,8 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
 
     private void startThreadReadDBData() {
         new Thread(() -> {
-            List mList = VideoDB01Utils.queryRawTag(currentUsername);
-            mDataList.addAll(mList);
+             currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
+            mDataList.addAll(currentRecycleViewList);
             mHandler.sendEmptyMessage(3);
         }).start();
     }
@@ -313,7 +314,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 }
                 break;
             case "delete"://删除对话框,删除当前设备信息
-                showDeletePop(bean);
+                showDeletePop(bean, position);
                 break;
             case "reInput":// 修改对话框,更改当前设备信息
                 showReInputPop(bean);
@@ -448,9 +449,9 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                     showToast(bean.getId() + "");
                     mBean.setId(bean.getId());
                     VideoDB01Utils.updateData(mBean);
-                    List currentList = VideoDB01Utils.queryRawTag(currentUsername);
-                    showEmptyOrContentView((ArrayList<VideoDBBean01>) currentList);
-                    mAdapter.setListAndNotifyDataSetChanged(currentList);
+                     currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
+                    showEmptyOrContentView((ArrayList<VideoDBBean01>) currentRecycleViewList);
+                    mAdapter.setListAndNotifyDataSetChanged(currentRecycleViewList);
                     showToast("修改成功");
                 }
             }
@@ -607,7 +608,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         mHandler.sendEmptyMessage(0);
     }
 
-    private void showDeletePop(VideoDBBean01 bean) {
+    private void showDeletePop(VideoDBBean01 bean, int position) {
         popType = "delete";
         deletePop = new PopupWindowTwoButton((Activity) getActivity());
         deletePop.getTv_content().setText("是否确认删除该设备信息?");
@@ -617,8 +618,14 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
             @Override
             public void onClick(View v) {
                 VideoDB01Utils.deleteData(bean);
-                List currentList = VideoDB01Utils.queryRawTag(currentUsername);
-                mAdapter.setListAndNotifyDataSetChanged(currentList);
+                 currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
+
+                //删除单个item
+
+                mDataList.remove(position);
+                mAdapter.notifyItemRemoved(position);
+                mAdapter.notifyItemRangeChanged(0, mDataList.size());
+                showEmptyOrContentView((ArrayList<VideoDBBean01>) currentRecycleViewList);
                 deletePop.dismiss();
             }
         });
@@ -678,9 +685,9 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshEvent(RefreshEvent event) {
         Log.e("扫描结果为：", "result===" + event.getType());
-        List mList = VideoDB01Utils.queryRawTag(currentUsername);
+         currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
         mDataList.clear();
-        mDataList.addAll(mList);
+        mDataList.addAll(currentRecycleViewList);
         showEmptyOrContentView(mDataList);
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
