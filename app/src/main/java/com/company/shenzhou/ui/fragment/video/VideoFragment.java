@@ -216,7 +216,6 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
 
     private void initView() {
         currentUsername = (String) SharePreferenceUtil.get(getActivity(), SharePreferenceUtil.Current_Username, "");
-        startThreadReadDBData();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 //        mRecyclerView.addItemDecoration(new RecycleViewDivider(
@@ -225,6 +224,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         mAdapter = new VideoAdapter(mDataList, getActivity());
         mAdapter.setClickCallBack(this);
         mRecyclerView.setAdapter(mAdapter);
+        startThreadReadDBData();
     }
 
     private void startThreadReadDBData() {
@@ -618,9 +618,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
             public void onClick(View v) {
                 VideoDB01Utils.deleteData(bean);
                 currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
-
                 //删除单个item
-
                 mDataList.remove(position);
                 mAdapter.notifyItemRemoved(position);
                 mAdapter.notifyItemRangeChanged(0, mDataList.size());

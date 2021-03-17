@@ -72,7 +72,7 @@ public class MicrophoneManager {
               try {
                 getMicrophoneData.inputPCMData(dataTaken.getPcmBuffer(), dataTaken.getSize());
               }catch (Exception e){
-                Log.e("TAG", "at com.pedro.encoder.input.audio.MicrophoneManager$1.run(MicrophoneManager.java:76)");
+                Log.e("TAG", "MicrophoneManager ===== at com.pedro.encoder.input.audio.MicrophoneManager$1.run(MicrophoneManager.java:76)");
               }
             } else {
               running = false;

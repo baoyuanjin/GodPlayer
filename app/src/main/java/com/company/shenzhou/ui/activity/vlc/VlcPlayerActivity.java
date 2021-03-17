@@ -160,10 +160,10 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                     ToastUtil.showToastCenter(VlcPlayerActivity.this, (String) msg.obj);
                     break;
                 case Pusher_Start:
+
                     mPusher.setText("停止");
                     mPusher.setTextColor(getResources().getColor(R.color.color_007AFF));
                     Drawable topstart = getResources().getDrawable(R.drawable.icon_mic_pre);
-
                     mPusher.setCompoundDrawablesWithIntrinsicBounds(null, topstart, null, null);
 //                    String replace = mResponse.replace("", "");
 //                    int i = replace.indexOf("<body>");
@@ -819,15 +819,17 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onItemClick(int position) {  //position==0,name==高清
                 final String name = mUrlList.get(position).getName();
-                LogUtils.e("'switchVideoModel===position=="+position);
-                LogUtils.e("'switchVideoModel===name=="+name);
+                LogUtils.e("'switchVideoModel===position==" + position);
+                LogUtils.e("'switchVideoModel===name==" + name);
                 if (mSourcePosition != position) {  //默认是高清
                     mTypeText = name;
-                mSourcePosition = position;
+                    mSourcePosition = position;
                     mHandler.sendEmptyMessage(Send_UrlType);
                     mHandler.sendEmptyMessage(Pusher_Stop);
                     //要断开麦克风连接
-                    pusherStop("Common");
+                    if ("startStream".equals(mPusher.getTag())){
+                        pusherStop("Common");
+                    }
                     if (isPlayering && mFlag_Record) {
                         mFlag_Record = false;
                         mHandler.sendEmptyMessage(Record_Stop);
