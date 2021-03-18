@@ -138,7 +138,6 @@ public class MineFragment extends BaseFragment {
         LogUtils.e("总空间===" + romTotalSize);
         LogUtils.e("可用空间===" + romAvailableSize);
         bar_mine_use_pace.setRightText("" + FileUtil.getROMAvailableSize(getActivity()));
-
     }
 
     private void responseListener() {
