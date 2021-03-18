@@ -96,7 +96,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
     private AdviceReInputDialog.Builder builder;
     private AddAdviceInputDialog.Builder addInPutBuilder;      //添加设备信息对话框
     private AdviceReInputDialog.Builder mReInputPopBuilder;    //修改设备信息对话框
-    private boolean DialogHan_IsShow = false;                  //收入输入对话框是否存在的标志,存在只刷新数据,不存在弹出对话框
+    private boolean DialogHan_IsShow = false;                  //收入输入对话框是否存在的标志,存在只刷新数据,不存在弹出对话框,默认不存在
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -328,24 +328,18 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                     deletePop.showPopupWindow(mLinearAll, Gravity.CENTER);
                 }
                 break;
-            case "change":
-
-                break;
 
         }
     }
 
     public void setDismissPop() {
-
         if (null != deletePop) {
             deletePop.dismiss();
         }
         if (null != addInPutBuilder) {
             addInPutBuilder.dismiss();
         }
-//        if (null != mReInputPopBuilder) {
-//            mReInputPopBuilder.dismiss();
-//        }
+
     }
 
     //修改对话框
@@ -399,6 +393,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
 
     //类别输入对话框
     private void showInputSelectTypeDialog() {
+        DialogHan_IsShow = false;   //手动设置默认值
         // 单选对话框
         new SelectDialog.Builder(getActivity())
                 .setTitle("请选择类型")
@@ -449,9 +444,9 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 micPort = "7789";
                 type = "HD3";
                 if (!DialogHan_IsShow) {   //不存在
-                    mHandler.sendEmptyMessage(1);
+                    mHandler.sendEmptyMessage(1);  //设置数据
                 } else {
-                    mHandler.sendEmptyMessage(2);
+                    mHandler.sendEmptyMessage(2); //刷新数据
                 }
 
                 break;
@@ -474,11 +469,13 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 account = "root";
                 password = "root";
                 title = "自定义URL的标题";
-                ip = "请输入ip或url播放地址";
+                ip = "";
                 makeMessage = "自定义URL的备注信息";
                 port = "7788";
                 micPort = "7789";
                 type = "自定义URL";
+                LogUtils.e("ZZZZZZZZZ==title==" + DialogHan_IsShow);
+
                 if (!DialogHan_IsShow) {   //不存在
                     mHandler.sendEmptyMessage(1);
                 } else {
@@ -489,7 +486,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
 
     }
 
-
+    //从新选择类别
     private void showReSelectDialog(TextView mType) {
         // 单选对话框
         new SelectDialog.Builder(getActivity())
@@ -606,7 +603,9 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
             mAccountView.setText("" + account);
             mPasswordView.setText("" + password);
             mTitleView.setText("" + title);
-            if ("2".equals(type)) { //2为自定义URL
+            LogUtils.e("ZZZZZZZZZ==typetypetypetypetype==" + type);   //type==自定义URL
+
+            if ("自定义URL".equals(type)) { //自定义URL
                 CommonUtil.showSoftInputFromWindow(getActivity(), mIPView);
             } else {
                 mIPView.setText("" + ip);
