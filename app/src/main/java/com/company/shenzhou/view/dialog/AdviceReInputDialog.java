@@ -20,7 +20,7 @@ import java.util.HashMap;
  * author : Android 轮子哥
  * github : https://github.com/getActivity/AndroidProject
  * time   : 2019/02/27
- * desc   : 输入对话框
+ * desc   : 设备输入   修改对话框
  */
 public final class AdviceReInputDialog {
 
@@ -73,14 +73,36 @@ public final class AdviceReInputDialog {
                 cet_cme_note_message.setText("" + bean.getMakeMessage());
                 cet_cme_port.setText("" + bean.getPort());
                 cet_cme_start_type.setText("" + bean.getType());
-                cet_cme_start_type.setText("" + bean.getType());
                 cet_cme_mic_port.setText("" + bean.getMicport());
             }
 
             addOnShowListener(this);
         }
 
-
+        public TextView getAccountView() {
+            return cet_cme_account;
+        }
+        public TextView getPasswordView() {
+            return cet_cme_password;
+        }
+        public TextView getTitleView() {
+            return cet_cme_title;
+        }
+        public ClearEditText getIPView() {
+            return cet_cme_ip;
+        }
+        public TextView getMessageView() {
+            return cet_cme_note_message;
+        }
+        public TextView getPortView() {
+            return cet_cme_port;
+        }
+        public TextView getMicPortView() {
+            return cet_cme_mic_port;
+        }
+        public ClearEditText getTypeView() {
+            return cet_cme_start_type;
+        }
         public Builder setListener(OnListener listener) {
             mListener = listener;
             return this;
@@ -92,9 +114,6 @@ public final class AdviceReInputDialog {
         @Override
         public void onShow(BaseDialog dialog) {
 //            postDelayed(() -> getSystemService(InputMethodManager.class).showSoftInput(mInputView, 0), 500);
-        }
-        public TextView getTypeView() {
-            return cet_cme_start_type;
         }
         @Override
         public void onClick(View v) {
@@ -154,4 +173,9 @@ public final class AdviceReInputDialog {
         default void onCancel(BaseDialog dialog) {
         }
     }
+
+
+
+
+
 }

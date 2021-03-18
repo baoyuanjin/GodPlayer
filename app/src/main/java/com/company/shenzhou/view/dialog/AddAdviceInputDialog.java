@@ -95,7 +95,6 @@ public final class AddAdviceInputDialog {
         public TextView getMicPortView() {
             return cet_cme_mic_port;
         }
-
         public ClearEditText getTypeView() {
             return cet_cme_start_type;
         }

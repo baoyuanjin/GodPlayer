@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -104,7 +105,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 case 0: //手动输入的时候弹出类别选择，并且选择之后输入默认值
                     showHandInputTypeDialog();
                     break;
-                case 1:
+                case 1: //设置Dialog数据
                     setDialogData();
                     break;
                 case 2://只刷新设备Dialog数据
@@ -117,84 +118,84 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         }
     };
 
-    private void refreshDialogData() {
-        mAccountView.setText("" + account);
-        mPasswordView.setText("" + password);
-        mTitleView.setText("" + title);
-        if ("2".equals(type)) { //2为自定义url类型
-            CommonUtil.showSoftInputFromWindow(getActivity(), mIPView);
-        } else {
-            mIPView.setText("" + ip);
-        }
-        mMessageView.setText("" + makeMessage);
-        mPortView.setText("" + port);
-        mTypeView.setText("" + type);
-    }
-
-    private void setDialogData() {
-        DialogHan_IsShow = true;    //防止点击视频类别  弹出多个Dialog的Bug
-        addInPutBuilder = new AddAdviceInputDialog.Builder(getActivity());
-        mAccountView = addInPutBuilder.getAccountView();
-        mPasswordView = addInPutBuilder.getPasswordView();
-        mTitleView = addInPutBuilder.getTitleView();
-        mIPView = addInPutBuilder.getIPView();
-        mMessageView = addInPutBuilder.getMessageView();
-        mPortView = addInPutBuilder.getPortView();
-        mTypeView = addInPutBuilder.getTypeView();
-        micPortView = addInPutBuilder.getMicPortView();
-        mAccountView.setText("" + account);
-        mPasswordView.setText("" + password);
-        mTitleView.setText("" + title);
-        LogUtils.e("ZZZZZZZZZ==type==" + type);
-        LogUtils.e("ZZZZZZZZZ==type==" + type);
-        LogUtils.e("ZZZZZZZZZ==type==" + type);
-        LogUtils.e("ZZZZZZZZZ==type==" + type);
-        LogUtils.e("ZZZZZZZZZ==type==" + type);
-        if (SharePreferenceUtil.Type_Url.equals(type)) {
-            CommonUtil.showSoftInputFromWindow(getActivity(), mIPView);
-        } else {
-            mIPView.setText("" + ip);
-        }
-        mMessageView.setText("" + makeMessage);
-        mPortView.setText("" + port);
-        micPortView.setText("" + micPort);
-        mTypeView.setText("" + type);
-        addInPutBuilder.setTitle("添加设备");
-        // 内容必须要填写
-        // 确定按钮文本
-        addInPutBuilder.setConfirm(getString(R.string.common_confirm));
-        // 设置 null 表示不显示取消按钮
-        addInPutBuilder.setCancel(getString(R.string.common_cancel));
-        addInPutBuilder.setListener(new AddAdviceInputDialog.OnListener() {
-            @Override
-            public void onConfirm(BaseDialog dialog, HashMap<String, String> mMap) {
-                checkInputBuilderData(mMap);
-                if (isOk) {
-                    VideoDB01Utils.insertOrReplaceData(mBean);
-//                    List currentList = VideoDB01Utils.queryAll(VideoDBBean.class);
-                    currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
-                    showEmptyOrContentView((ArrayList<VideoDBBean01>) currentRecycleViewList);
-                    mAdapter.setListAndNotifyDataSetChanged(currentRecycleViewList);
-                    addInPutBuilder.dismissDialog();
-                    showToast("添加成功");
-                    DialogHan_IsShow = false;
-                }
-            }
-
-            @Override
-            public void onReInputTypeClick(TextView mTv) {
-                mTypeSelecter = mTv;
-                LogUtils.e("mType===========" + mTypeSelecter);
-                showInputSelectTypeDialog(mTv);
-            }
-
-            @Override
-            public void onCancel(BaseDialog dialog) {
-                DialogHan_IsShow = false;
-
-            }
-        }).show();
-    }
+//    private void refreshDialogData() {
+//        mAccountView.setText("" + account);
+//        mPasswordView.setText("" + password);
+//        mTitleView.setText("" + title);
+//        if ("2".equals(type)) { //2为自定义URL
+//            CommonUtil.showSoftInputFromWindow(getActivity(), mIPView);
+//        } else {
+//            mIPView.setText("" + ip);
+//        }
+//        mMessageView.setText("" + makeMessage);
+//        mPortView.setText("" + port);
+//        mTypeView.setText("" + type);
+//    }
+//
+//    private void setDialogData() {
+//        DialogHan_IsShow = true;    //防止点击视频类别  弹出多个Dialog的Bug
+//        addInPutBuilder = new AddAdviceInputDialog.Builder(getActivity());
+//        mAccountView = addInPutBuilder.getAccountView();
+//        mPasswordView = addInPutBuilder.getPasswordView();
+//        mTitleView = addInPutBuilder.getTitleView();
+//        mIPView = addInPutBuilder.getIPView();
+//        mMessageView = addInPutBuilder.getMessageView();
+//        mPortView = addInPutBuilder.getPortView();
+//        mTypeView = addInPutBuilder.getTypeView();
+//        micPortView = addInPutBuilder.getMicPortView();
+//        mAccountView.setText("" + account);
+//        mPasswordView.setText("" + password);
+//        mTitleView.setText("" + title);
+//        LogUtils.e("ZZZZZZZZZ==account==" + account);
+//        LogUtils.e("ZZZZZZZZZ==password==" + password);
+//        LogUtils.e("ZZZZZZZZZ==title==" + title);
+//        LogUtils.e("ZZZZZZZZZ==type==" + type);
+//        LogUtils.e("ZZZZZZZZZ==type==" + type);
+//        if (SharePreferenceUtil.Type_Url.equals(type)) {
+//            CommonUtil.showSoftInputFromWindow(getActivity(), mIPView);
+//        } else {
+//            mIPView.setText("" + ip);
+//        }
+//        mMessageView.setText("" + makeMessage);
+//        mPortView.setText("" + port);
+//        micPortView.setText("" + micPort);
+//        mTypeView.setText("" + type);
+//        addInPutBuilder.setTitle("添加设备");
+//        // 内容必须要填写
+//        // 确定按钮文本
+//        addInPutBuilder.setConfirm(getString(R.string.common_confirm));
+//        // 设置 null 表示不显示取消按钮
+//        addInPutBuilder.setCancel(getString(R.string.common_cancel));
+//        addInPutBuilder.setListener(new AddAdviceInputDialog.OnListener() {
+//            @Override
+//            public void onConfirm(BaseDialog dialog, HashMap<String, String> mMap) {
+//                checkInputBuilderData(mMap);
+//                if (isOk) {
+//                    VideoDB01Utils.insertOrReplaceData(mBean);
+////                    List currentList = VideoDB01Utils.queryAll(VideoDBBean.class);
+//                    currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
+//                    showEmptyOrContentView((ArrayList<VideoDBBean01>) currentRecycleViewList);
+//                    mAdapter.setListAndNotifyDataSetChanged(currentRecycleViewList);
+//                    addInPutBuilder.dismissDialog();
+//                    showToast("添加成功");
+//                    DialogHan_IsShow = false;
+//                }
+//            }
+//
+//            @Override
+//            public void onReInputTypeClick(TextView mTv) {
+//                mTypeSelecter = mTv;
+//                LogUtils.e("mType===========" + mTypeSelecter);
+//                showInputSelectTypeDialog(mTv);
+//            }
+//
+//            @Override
+//            public void onCancel(BaseDialog dialog) {
+//                DialogHan_IsShow = false;
+//
+//            }
+//        }).show();
+//    }
 
     @Override
     public int getContentViewId() {
@@ -421,9 +422,9 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         if (null != addInPutBuilder) {
             addInPutBuilder.dismiss();
         }
-        if (null != mReInputPopBuilder) {
-            mReInputPopBuilder.dismiss();
-        }
+//        if (null != mReInputPopBuilder) {
+//            mReInputPopBuilder.dismiss();
+//        }
     }
 
     //修改对话框
@@ -455,6 +456,10 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 }
             }
 
+            /**
+             * 从新选择类别
+             * @param mType
+             */
             @Override
             public void onReInputTypeClick(TextView mType) {
                 mTypeSelecter = mType;
@@ -471,8 +476,8 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
 
     }
 
-    //输入对话框
-    private void showInputSelectTypeDialog(TextView mType) {
+    //类别输入对话框
+    private void showInputSelectTypeDialog() {
         // 单选对话框
         new SelectDialog.Builder(getActivity())
                 .setTitle("请选择类型")
@@ -547,12 +552,12 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
             case "2":   //自定义url
                 account = "root";
                 password = "root";
-                title = "自定义URL标题";
+                title = "自定义URL的标题";
                 ip = "请输入ip或url播放地址";
-                makeMessage = "自定义URL备注信息";
+                makeMessage = "自定义URL的备注信息";
                 port = "7788";
                 micPort = "7789";
-                type = "自定义URL类型";
+                type = "自定义URL";
                 if (!DialogHan_IsShow) {   //不存在
                     mHandler.sendEmptyMessage(1);
                 } else {
@@ -578,9 +583,18 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                     public void onSelected(BaseDialog dialog, HashMap<Integer, String> data) {
 //                        showToast("确定了：" + data.toString());
                         String substring = data.toString().substring(1, 2);
-                        mType.setText(substring);
-//                        if (null!=null){
-//                            mReInputPopBuilder
+                        DialogHan_IsShow = true;  //说明设备修改dialog存在,只做数据的刷新
+                        switchHandInputBean(substring);
+//                        switch (substring){
+//                            case "0"://HD3
+//                                mType.setText("HD3");
+//                                break;
+//                            case "1": //一体机
+//                                mType.setText("一体机");
+//                                break;
+//                            case "2":  //自定义URL
+//                                mType.setText("自定义URL");
+//                                break;
 //                        }
                     }
 
@@ -593,11 +607,100 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 .show();
     }
 
+    private void setDialogData() {
+        DialogHan_IsShow = true;    //防止点击视频类别  弹出多个Dialog的Bug
+        addInPutBuilder = new AddAdviceInputDialog.Builder(getActivity());
+        mAccountView = addInPutBuilder.getAccountView();
+        mPasswordView = addInPutBuilder.getPasswordView();
+        mTitleView = addInPutBuilder.getTitleView();
+        mIPView = addInPutBuilder.getIPView();
+        mMessageView = addInPutBuilder.getMessageView();
+        mPortView = addInPutBuilder.getPortView();
+        mTypeView = addInPutBuilder.getTypeView();
+        micPortView = addInPutBuilder.getMicPortView();
+        mAccountView.setText("" + account);
+        mPasswordView.setText("" + password);
+        mTitleView.setText("" + title);
+        LogUtils.e("ZZZZZZZZZ==account==" + account);
+        LogUtils.e("ZZZZZZZZZ==password==" + password);
+        LogUtils.e("ZZZZZZZZZ==title==" + title);
+        LogUtils.e("ZZZZZZZZZ==type==" + type);
+        LogUtils.e("ZZZZZZZZZ==type==" + type);
+        if (SharePreferenceUtil.Type_Url.equals(type)) {
+            CommonUtil.showSoftInputFromWindow(getActivity(), mIPView);
+        } else {
+            mIPView.setText("" + ip);
+        }
+        mMessageView.setText("" + makeMessage);
+        mPortView.setText("" + port);
+        micPortView.setText("" + micPort);
+        mTypeView.setText("" + type);
+        addInPutBuilder.setTitle("添加设备");
+        // 内容必须要填写
+        // 确定按钮文本
+        addInPutBuilder.setConfirm(getString(R.string.common_confirm));
+        // 设置 null 表示不显示取消按钮
+        addInPutBuilder.setCancel(getString(R.string.common_cancel));
+        addInPutBuilder.setListener(new AddAdviceInputDialog.OnListener() {
+            @Override
+            public void onConfirm(BaseDialog dialog, HashMap<String, String> mMap) {
+                checkInputBuilderData(mMap);
+                if (isOk) {
+                    VideoDB01Utils.insertOrReplaceData(mBean);
+//                    List currentList = VideoDB01Utils.queryAll(VideoDBBean.class);
+                    currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
+                    showEmptyOrContentView((ArrayList<VideoDBBean01>) currentRecycleViewList);
+                    mAdapter.setListAndNotifyDataSetChanged(currentRecycleViewList);
+                    addInPutBuilder.dismissDialog();
+                    showToast("添加成功");
+                    DialogHan_IsShow = false;
+                }
+            }
+
+            @Override
+            public void onReInputTypeClick(TextView mTv) {
+                mTypeSelecter = mTv;
+                LogUtils.e("mType===========" + mTypeSelecter);
+                //类别输入对话框
+                showInputSelectTypeDialog();
+            }
+
+            @Override
+            public void onCancel(BaseDialog dialog) {
+                DialogHan_IsShow = false;
+
+            }
+        }).show();
+    }
+    private void refreshDialogData() {
+        if (null!=mReInputPopBuilder){
+            mAccountView = mReInputPopBuilder.getAccountView();
+            mPasswordView = mReInputPopBuilder.getPasswordView();
+            mTitleView = mReInputPopBuilder.getTitleView();
+            mIPView = mReInputPopBuilder.getIPView();
+            mMessageView = mReInputPopBuilder.getMessageView();
+            mPortView = mReInputPopBuilder.getPortView();
+            mTypeView = mReInputPopBuilder.getTypeView();
+            micPortView = mReInputPopBuilder.getMicPortView();
+            mAccountView.setText("" + account);
+            mPasswordView.setText("" + password);
+            mTitleView.setText("" + title);
+            if ("2".equals(type)) { //2为自定义URL
+                CommonUtil.showSoftInputFromWindow(getActivity(), mIPView);
+            } else {
+                mIPView.setText("" + ip);
+            }
+            mMessageView.setText("" + makeMessage);
+            mPortView.setText("" + port);
+            mTypeView.setText("" + type);
+        }
+
+    }
     /**
-     * 手动输入的时候，默认弹出类别选择dialog
+     * 手动输入的时候，默认弹出类别选择dialog，或者再次选择类别
      */
     private void showHandInputTypeDialog() {
-        showInputSelectTypeDialog(mTypeSelecter);
+        showInputSelectTypeDialog();
     }
 
     private void showInputPop() {
