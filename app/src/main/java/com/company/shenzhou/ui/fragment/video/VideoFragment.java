@@ -118,85 +118,6 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         }
     };
 
-//    private void refreshDialogData() {
-//        mAccountView.setText("" + account);
-//        mPasswordView.setText("" + password);
-//        mTitleView.setText("" + title);
-//        if ("2".equals(type)) { //2为自定义URL
-//            CommonUtil.showSoftInputFromWindow(getActivity(), mIPView);
-//        } else {
-//            mIPView.setText("" + ip);
-//        }
-//        mMessageView.setText("" + makeMessage);
-//        mPortView.setText("" + port);
-//        mTypeView.setText("" + type);
-//    }
-//
-//    private void setDialogData() {
-//        DialogHan_IsShow = true;    //防止点击视频类别  弹出多个Dialog的Bug
-//        addInPutBuilder = new AddAdviceInputDialog.Builder(getActivity());
-//        mAccountView = addInPutBuilder.getAccountView();
-//        mPasswordView = addInPutBuilder.getPasswordView();
-//        mTitleView = addInPutBuilder.getTitleView();
-//        mIPView = addInPutBuilder.getIPView();
-//        mMessageView = addInPutBuilder.getMessageView();
-//        mPortView = addInPutBuilder.getPortView();
-//        mTypeView = addInPutBuilder.getTypeView();
-//        micPortView = addInPutBuilder.getMicPortView();
-//        mAccountView.setText("" + account);
-//        mPasswordView.setText("" + password);
-//        mTitleView.setText("" + title);
-//        LogUtils.e("ZZZZZZZZZ==account==" + account);
-//        LogUtils.e("ZZZZZZZZZ==password==" + password);
-//        LogUtils.e("ZZZZZZZZZ==title==" + title);
-//        LogUtils.e("ZZZZZZZZZ==type==" + type);
-//        LogUtils.e("ZZZZZZZZZ==type==" + type);
-//        if (SharePreferenceUtil.Type_Url.equals(type)) {
-//            CommonUtil.showSoftInputFromWindow(getActivity(), mIPView);
-//        } else {
-//            mIPView.setText("" + ip);
-//        }
-//        mMessageView.setText("" + makeMessage);
-//        mPortView.setText("" + port);
-//        micPortView.setText("" + micPort);
-//        mTypeView.setText("" + type);
-//        addInPutBuilder.setTitle("添加设备");
-//        // 内容必须要填写
-//        // 确定按钮文本
-//        addInPutBuilder.setConfirm(getString(R.string.common_confirm));
-//        // 设置 null 表示不显示取消按钮
-//        addInPutBuilder.setCancel(getString(R.string.common_cancel));
-//        addInPutBuilder.setListener(new AddAdviceInputDialog.OnListener() {
-//            @Override
-//            public void onConfirm(BaseDialog dialog, HashMap<String, String> mMap) {
-//                checkInputBuilderData(mMap);
-//                if (isOk) {
-//                    VideoDB01Utils.insertOrReplaceData(mBean);
-////                    List currentList = VideoDB01Utils.queryAll(VideoDBBean.class);
-//                    currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
-//                    showEmptyOrContentView((ArrayList<VideoDBBean01>) currentRecycleViewList);
-//                    mAdapter.setListAndNotifyDataSetChanged(currentRecycleViewList);
-//                    addInPutBuilder.dismissDialog();
-//                    showToast("添加成功");
-//                    DialogHan_IsShow = false;
-//                }
-//            }
-//
-//            @Override
-//            public void onReInputTypeClick(TextView mTv) {
-//                mTypeSelecter = mTv;
-//                LogUtils.e("mType===========" + mTypeSelecter);
-//                showInputSelectTypeDialog(mTv);
-//            }
-//
-//            @Override
-//            public void onCancel(BaseDialog dialog) {
-//                DialogHan_IsShow = false;
-//
-//            }
-//        }).show();
-//    }
-
     @Override
     public int getContentViewId() {
         return R.layout.fragment_video;
@@ -274,7 +195,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("url01", currentUrl01);
                         intent.putExtra("url02", currentUrl02);
                         intent.putExtra("urlType", "00");
-                        intent.putExtra("mTitle", "HD3");
+                        intent.putExtra("mTitle", "HD3"+"   ("+"ip地址为:"+ip+")");
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==HD3==micport===" + bean.getMicport());
@@ -287,7 +208,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("url01", currentUrl01);
                         intent.putExtra("url02", currentUrl02);
                         intent.putExtra("urlType", "01");
-                        intent.putExtra("mTitle", "一体机");
+                        intent.putExtra("mTitle", "一体机"+"   ("+"ip地址为:"+ip+")");
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==一体机==micport===" + bean.getMicport());
@@ -302,7 +223,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("url01", replace1);
                         intent.putExtra("url02", replace2);
                         intent.putExtra("urlType", "02");
-                        intent.putExtra("mTitle", "自定义url播放");
+                        intent.putExtra("mTitle", "自定义url"+"   ("+"ip地址为:"+ip+")");
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==自定义url==micport===" + bean.getMicport());
