@@ -20,7 +20,9 @@ import com.company.shenzhou.R;
 import com.company.shenzhou.base.BaseActivity;
 import com.company.shenzhou.bean.dbbean.UserDBBean;
 import com.company.shenzhou.bean.Constants;
+import com.company.shenzhou.bean.dbbean.UserDBRememberBean;
 import com.company.shenzhou.ui.activity.MainActivity;
+import com.company.shenzhou.utils.db.UserDBRememberBeanUtils;
 import com.company.shenzhou.utils.db.UserDBUtils;
 import com.yun.common.utils.LogUtils;
 import com.yun.common.utils.SharePreferenceUtil;
@@ -125,20 +127,22 @@ public class GuideActivity extends BaseActivity {
 
         //存入数据库
         long ID = 1;
-        UserDBBean userDBBean = new UserDBBean();
+        UserDBRememberBean userDBBean = new UserDBRememberBean();
+//        UserDBBean userDBBean = new UserDBBean();
         userDBBean.setUsername("admin");
         userDBBean.setPassword("admin");
         userDBBean.setTag("admin");
         userDBBean.setUserType(2);
         userDBBean.setId(ID);
-        UserDBUtils.insertOrReplaceData(userDBBean);
+        UserDBRememberBeanUtils.insertOrReplaceData(userDBBean);
+//        UserDBUtils.insertOrReplaceData(userDBBean);
         boolean isExist = UserDBUtils.queryListIsExist("admin");
         LogUtils.e("DB=====isExist===" + isExist);
         String str = "admin";
-        List<UserDBBean> userDBBeanList = UserDBUtils.queryListByMessage(str);
-        for (int i = 0; i < userDBBeanList.size(); i++) {
-            String username = userDBBeanList.get(i).getUsername();
-            String password = userDBBeanList.get(i).getPassword();
+        List<UserDBRememberBean> userDBRememberBeans = UserDBRememberBeanUtils.queryListByMessage(str);
+        for (int i = 0; i < userDBRememberBeans.size(); i++) {
+            String username = userDBRememberBeans.get(i).getUsername();
+            String password = userDBRememberBeans.get(i).getPassword();
             LogUtils.e("DB=====username===" + username + "==password==" + password);
         }
         LogUtils.e("DB=====isExist===" + isExist);

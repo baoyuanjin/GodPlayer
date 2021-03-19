@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.company.shenzhou.R;
 import com.company.shenzhou.base.BaseActivity;
 import com.company.shenzhou.base.help.KeyboardWatcher;
+import com.company.shenzhou.bean.dbbean.UserDBBean;
 import com.company.shenzhou.bean.dbbean.UserDBRememberBean;
 import com.company.shenzhou.bean.Constants;
 import com.company.shenzhou.bean.dbbean.UserDBRememberBean;
@@ -41,6 +42,7 @@ import com.company.shenzhou.utils.CommonUtil;
 import com.company.shenzhou.utils.ScreenSizeUtil;
 import com.company.shenzhou.utils.db.UserDBRememberBeanUtils;
 import com.company.shenzhou.utils.db.UserDBRememberBeanUtils;
+import com.company.shenzhou.utils.db.UserDBUtils;
 import com.company.shenzhou.view.ListHistoryPopup;
 import com.hjq.base.BasePopupWindow;
 import com.hjq.base.action.AnimAction;
@@ -146,8 +148,9 @@ public class LoginAnimatorActivity extends BaseActivity implements KeyboardWatch
         isRemember = (boolean) SharePreferenceUtil.get(LoginAnimatorActivity.this, SharePreferenceUtil.Current_RememberPassword, false);
         isAdmin = (boolean) SharePreferenceUtil.get(LoginAnimatorActivity.this, Constants.IS_Admin, false);
         if (!isAdmin) {  //没有创建admin用户,才创建超级用户，并且创建之后设置账号密码
-            setCurrentUserMsg();
-            mHandler.sendEmptyMessageDelayed(0,300);
+//            setCurrentUserMsg();
+            LogUtils.e("TAG==isAdmin===" + isAdmin);
+            mHandler.sendEmptyMessageDelayed(0, 300);
         }
 
         StatusBarUtils.setColor(this, getResources().getColor(R.color.white), 0);
@@ -262,8 +265,6 @@ public class LoginAnimatorActivity extends BaseActivity implements KeyboardWatch
             String rememberName = (String) SharePreferenceUtil.get(LoginAnimatorActivity.this, SharePreferenceUtil.Current_Username, "");
             String rememberPassword = (String) SharePreferenceUtil.get(LoginAnimatorActivity.this, SharePreferenceUtil.Current_Password, "");
             int rememberType = (int) SharePreferenceUtil.get(LoginAnimatorActivity.this, SharePreferenceUtil.Current_UserType, 0);
-
-
             mPhoneView.setText(rememberName);
             mPasswordView.setText(rememberPassword);
             checkbox.setChecked(true);
@@ -420,13 +421,15 @@ public class LoginAnimatorActivity extends BaseActivity implements KeyboardWatch
      */
     private void checkDBDataToChangeCurrentUserMsg() {
         boolean isExist = UserDBRememberBeanUtils.queryListIsExist(username);
-        LogUtils.e("isExist===" + isExist);
+        LogUtils.e("TAG==isExist===" + isExist);
         if (isExist) {  //存在
-            List<UserDBRememberBean> mList = UserDBRememberBeanUtils.queryListByMessage(username);
-            String dbusername = mList.get(0).getUsername().toString().trim();
-            String dbpassword = mList.get(0).getPassword().toString().trim();
-            int dbusertype = mList.get(0).getUserType();
-            Long id = mList.get(0).getId();
+//            List<UserDBRememberBean> mList = UserDBRememberBeanUtils.queryListByMessage(username);
+//            UserDBRememberBean
+            UserDBRememberBean userRememberBean = UserDBRememberBeanUtils.queryListByMessageToGetPassword(username);
+            String dbusername = userRememberBean.getUsername().toString().trim();
+            String dbpassword = userRememberBean.getPassword().toString().trim();
+            int dbusertype = userRememberBean.getUserType();
+            Long id = userRememberBean.getId();
             LogUtils.e("TAG==登录--dbusername===" + dbusername + "====dbpassword==" + dbpassword + "====dbusertype==" + dbusertype + "====id==" + id);
 
             if (password.equals(dbpassword)) {  //判断数据库密码和输入密码是否一致,之后更新SP的当前用户信息

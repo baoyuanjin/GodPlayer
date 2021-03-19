@@ -25,22 +25,121 @@ public class FileUtil {
         long blockSize = stat.getBlockSize();
         long totalBlocks = stat.getBlockCount();
         String availMemStr = formateFileSize(context, blockSize * totalBlocks);
-        return availMemStr ;
+        return availMemStr;
 
     }
+
     //调用系统函数，字符串转换 long -String KB/MB
-    public static String formateFileSize(Context context,long size){
+    public static String formateFileSize(Context context, long size) {
         return Formatter.formatFileSize(context, size);
     }
+
     public static String getROMAvailableSize(final Context context) {
         File path = Environment.getExternalStorageDirectory();
         StatFs stat = new StatFs(path.getPath());
         long blockSize = stat.getBlockSize();
         long availableBlocks = stat.getAvailableBlocks();
         String availMemStr = formateFileSize(context, blockSize * availableBlocks);
-        return availMemStr ;
+        return availMemStr;
 
     }
+
+    static final int ERROR = -1;
+
+    /**
+     * 外部存储是否可用
+     *
+     * @return
+     */
+    static public boolean externalMemoryAvailable() {
+        return android.os.Environment.getExternalStorageState().equals(
+                android.os.Environment.MEDIA_MOUNTED);
+    }
+
+    /**
+     * 获取手机内部可用空间大小
+     *
+     * @return
+     */
+    static public String getAvailableInternalMemorySize(final Context context) {
+        File path = Environment.getDataDirectory();
+        StatFs stat = new StatFs(path.getPath());
+        long blockSize = stat.getBlockSize();
+        long availableBlocks = stat.getAvailableBlocks();
+        return formateFileSize(context, availableBlocks * blockSize);
+    }
+
+    /**
+     * 获取手机内部空间大小
+     *
+     * @return
+     */
+    static public String getTotalInternalMemorySize(final Context context) {
+        File path = Environment.getDataDirectory();
+        StatFs stat = new StatFs(path.getPath());
+        long blockSize = stat.getBlockSize();
+        long totalBlocks = stat.getBlockCount();
+        return formateFileSize(context, totalBlocks * blockSize);
+    }
+
+    /**
+     * 获取手机外部可用空间大小
+     *
+     * @return
+     */
+    static public String getAvailableExternalMemorySize(final Context context) {
+        if (externalMemoryAvailable()) {
+            File path = Environment.getExternalStorageDirectory();
+            StatFs stat = new StatFs(path.getPath());
+            long blockSize = stat.getBlockSize();
+            long availableBlocks = stat.getAvailableBlocks();
+            return formateFileSize(context,availableBlocks * blockSize);
+        } else {
+            return "ERROR";
+        }
+    }
+
+    /**
+     * 获取手机外部空间大小
+     *
+     * @return
+     */
+    static public String getTotalExternalMemorySize(final Context context) {
+        if (externalMemoryAvailable()) {
+            File path = Environment.getExternalStorageDirectory();
+            StatFs stat = new StatFs(path.getPath());
+            long blockSize = stat.getBlockSize();
+            long totalBlocks = stat.getBlockCount();
+            return formateFileSize(context, totalBlocks * blockSize);
+        } else {
+            return "ERROR";
+        }
+    }
+
+    static public String formatSize(long size) {
+        String suffix = null;
+
+        if (size >= 1024) {
+            suffix = "KiB";
+            size /= 1024;
+            if (size >= 1024) {
+                suffix = "MiB";
+                size /= 1024;
+            }
+        }
+
+        StringBuilder resultBuffer = new StringBuilder(Long.toString(size));
+        int commaOffset = resultBuffer.length() - 3;
+        while (commaOffset > 0) {
+            resultBuffer.insert(commaOffset, ',');
+            commaOffset -= 3;
+        }
+
+        if (suffix != null)
+            resultBuffer.append(suffix);
+        return resultBuffer.toString();
+    }
+
     //针对非系统影音资源文件夹
     public static void insertIntoMediaStore(Context context, boolean isVideo, File saveFile, long createTime) {
         ContentResolver mContentResolver = context.getContentResolver();
@@ -76,7 +175,7 @@ public class FileUtil {
         return "video/mp4";
     }
 
-    public static void RefreshAlbum(String fileAbsolutePath, boolean isVideo,Context mContext) {
+    public static void RefreshAlbum(String fileAbsolutePath, boolean isVideo, Context mContext) {
         mMediaScanner = new MediaScannerConnection(mContext, new MediaScannerConnection.MediaScannerConnectionClient() {
             @Override
             public void onMediaScannerConnected() {
@@ -92,6 +191,7 @@ public class FileUtil {
 //ELog.e(TAG, " refreshAlbum() 无法更新图库，未连接，广播通知更新图库，异常情况下 ");
                 }
             }
+
             @Override
 
             public void onScanCompleted(String path, Uri uri) {

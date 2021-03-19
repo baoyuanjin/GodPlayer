@@ -78,14 +78,30 @@ public class MainActivity extends BaseActivity implements KeyboardWatcher.SoftKe
         //可用空间不足2GB弹出对话框
         String romAvailableSize = FileUtil.getROMAvailableSize(this);
         String mFreeCache = "";
+        String romTotalSize = FileUtil.getROMTotalSize(this);
+//        获取手机内部可用空间大小
+        String availableInternalMemorySize = FileUtil.getAvailableInternalMemorySize(this);
+        String getTotalInternalMemorySize = FileUtil.getTotalInternalMemorySize(this);
+        String getAvailableExternalMemorySize = FileUtil.getAvailableExternalMemorySize(this);
+        String getTotalExternalMemorySize = FileUtil.getTotalExternalMemorySize(this);
+//        LogUtils.e("获取手机内部可用空间大小===" + availableInternalMemorySize);
+//        LogUtils.e("获取手机内部空间大小===" + getTotalInternalMemorySize);
+//        LogUtils.e("获取手机外部可用空间大小===" + getAvailableExternalMemorySize);
+//        LogUtils.e("获取手机外部空间大小===" + getTotalExternalMemorySize);
+        LogUtils.e("总空间===" + romTotalSize);            //245 GB   =61.39 GB
+        LogUtils.e("可用空间===" + romAvailableSize);      //136 GB   =59.51 GB
+
+//  6.5     53
         if (romAvailableSize.endsWith("GB")) {
             mFreeCache = romAvailableSize.replace("GB", "").trim();
-            if (2 > Integer.parseInt(mFreeCache.substring(0, 1))) {
+            double floor = Math.floor(Double.parseDouble(mFreeCache));
+            LogUtils.e("可用空间==floor=" + floor);      //136 GB   =59.51 GB
+            if (2 > floor) {
                 showWarningDialog("设备可用空间不足2GB,录制视频可能导致保存视频失败!");
             }
         } else if (romAvailableSize.endsWith("MB")) {
             mFreeCache = romAvailableSize.replace("MB", "").trim();
-            showWarningDialog("设备可用空间不足"+mFreeCache+"MB,录制视频极有可能导致保存视频失败!");
+            showWarningDialog("设备可用空间不足" + mFreeCache + "MB,录制视频极有可能导致保存视频失败!");
         }
     }
 

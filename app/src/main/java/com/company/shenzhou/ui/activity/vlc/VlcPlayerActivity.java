@@ -86,7 +86,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
     private TextView mChangeFull;
     private LinearLayout layout_top, linear_contral;
     private BaseDialog mPusherLoading;
-    private RelativeLayout mRelativeStatue;
+//    private RelativeLayout mRelativeStatue;
     private ImageView lock_screen;
     private TextView error_text;
     private ENPlayView startView;
@@ -259,7 +259,8 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
             }
         }
     };
-    private ImageView mBackStatue;
+//    private ImageView mBackStatue;
+    private TextView mTvStatue;  //暂无直播的显示
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -298,7 +299,6 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
         snapShot.setOnClickListener(this);
         photos.setOnClickListener(this);
         startView.setOnClickListener(this);
-        mBackStatue.setOnClickListener(this);
         mPusher.setOnClickListener(this);
 
         // 需要使用动态注册才能接收到广播,息屏的时候保存之前的录像
@@ -362,8 +362,8 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                         LogUtils.e("path=====Start:=====" + "我是当前播放的url===eventStop===视频流断开连接====断开连麦==");
 
                     }
-                    mRelativeStatue.setVisibility(View.VISIBLE);
-
+//                    mRelativeStatue.setVisibility(View.VISIBLE);
+                    error_text.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -428,6 +428,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void eventPlayInit(boolean openClose) {
                 startView.setVisibility(View.INVISIBLE);
+                error_text.setVisibility(View.INVISIBLE);
                 LogUtils.e("path=====Start:=====" + "我是当前播放的url======eventPlayInit======" + openClose);
                 LogUtils.e("path=====Start:=====" + "我是当前播放的url======eventPlayInit===url===" + path);
 
@@ -445,10 +446,11 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
         StatusBarUtil.darkMode(this, false);  //设置了状态栏文字的颜色
         recordFile.mkdirs();
         player = findViewById(R.id.player);
+//        mTvStatue = findViewById(R.id.tv_all_statue);
         mPusher = findViewById(R.id.pusher);
-        mRelativeStatue = findViewById(R.id.relative_statue);
-        mRelativeStatue.setVisibility(View.INVISIBLE);
-        mBackStatue = mRelativeStatue.findViewById(R.id.back_statue);
+//        mRelativeStatue = findViewById(R.id.relative_statue);
+//        mRelativeStatue.setVisibility(View.INVISIBLE);
+//        mBackStatue = mRelativeStatue.findViewById(R.id.back_statue);
 
         mTitle = findViewById(R.id.tv_top_title);
         tv_current_time = findViewById(R.id.tv_current_time);
@@ -461,6 +463,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
         layout_top = findViewById(R.id.layout_top);
         linear_contral = findViewById(R.id.linear_contral);
         error_text = findViewById(R.id.error_text);
+        error_text.setVisibility(View.INVISIBLE);
         snapShot = findViewById(R.id.snapShot);
         startView = findViewById(R.id.start);
         loading = findViewById(R.id.loading);
@@ -487,9 +490,6 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
             case R.id.start://开始播放
                 startLive(path);
                 break;
-            case R.id.back_statue://未开启直播界面的时候,返回按钮
-                finish();
-                break;
             case R.id.back://返回
                 if (mFlag_Record) {
                     vlcRecordOver();
@@ -508,7 +508,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                 if (!rtmpCamera3.isStreaming()) {
                     if (rtmpCamera3.prepareAudio()) {
                         if (CommonUtil.isFastClick()) {
-                            if ("一体机".equals(mTitleData)) {
+                            if ("一体机".equals(mTitleData.substring(0,3))) {
                                 if (isPlayering) {
                                     pusherStart();
                                 } else {

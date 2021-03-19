@@ -96,7 +96,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
     private AdviceReInputDialog.Builder builder;
     private AddAdviceInputDialog.Builder addInPutBuilder;      //添加设备信息对话框
     private AdviceReInputDialog.Builder mReInputPopBuilder;    //修改设备信息对话框
-    private boolean DialogHan_IsShow = false;                  //收入输入对话框是否存在的标志,存在只刷新数据,不存在弹出对话框,默认不存在
+    private boolean DialogHan_IsShow = false;                  //输入对话框是否存在的标志,存在（设备信息对话框）只刷新数据,不存在弹出对话框,默认不存在
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -195,7 +195,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("url01", currentUrl01);
                         intent.putExtra("url02", currentUrl02);
                         intent.putExtra("urlType", "00");
-                        intent.putExtra("mTitle", "HD3"+"   ("+"ip地址为:"+ip+")");
+                        intent.putExtra("mTitle", "HD3" + "   (" + "ip地址为:" + ip + ")");
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==HD3==micport===" + bean.getMicport());
@@ -208,7 +208,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("url01", currentUrl01);
                         intent.putExtra("url02", currentUrl02);
                         intent.putExtra("urlType", "01");
-                        intent.putExtra("mTitle", "一体机"+"   ("+"ip地址为:"+ip+")");
+                        intent.putExtra("mTitle", "一体机" + "   (" + "ip地址为:" + ip + ")");
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==一体机==micport===" + bean.getMicport());
@@ -223,7 +223,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("url01", replace1);
                         intent.putExtra("url02", replace2);
                         intent.putExtra("urlType", "02");
-                        intent.putExtra("mTitle", "自定义url"+"   ("+"ip地址为:"+ip+")");
+                        intent.putExtra("mTitle", "自定义URL" + "   (" + "地址为:" + ip + ")");
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==自定义url==micport===" + bean.getMicport());
@@ -393,7 +393,24 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
 
     //类别输入对话框
     private void showInputSelectTypeDialog() {
-        DialogHan_IsShow = false;   //手动设置默认值
+        DialogHan_IsShow = false;
+
+//        if (null ==addInPutBuilder){
+//            LogUtils.e("ZZZZZZZZZ==title==" + "addInPutBuilder" + "====null");
+//            DialogHan_IsShow = false;
+//
+//        }else {
+//            LogUtils.e("ZZZZZZZZZ==title==" + "addInPutBuilder" + "===!=null");
+//            if (addInPutBuilder.isShowing()) {
+//                LogUtils.e("ZZZZZZZZZ==title==" + "addInPutBuilder" + "==yes==isShowing");
+//
+//                DialogHan_IsShow = true;   //手动设置默认值(设备输入框不存在)
+//            } else {
+//                LogUtils.e("ZZZZZZZZZ==title==" + "addInPutBuilder" + "==no==isShowing");
+//                DialogHan_IsShow = false;
+//            }
+//        }
+
         // 单选对话框
         new SelectDialog.Builder(getActivity())
                 .setTitle("请选择类型")
@@ -503,17 +520,6 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         String substring = data.toString().substring(1, 2);
                         DialogHan_IsShow = true;  //说明设备修改dialog存在,只做数据的刷新
                         switchHandInputBean(substring);
-//                        switch (substring){
-//                            case "0"://HD3
-//                                mType.setText("HD3");
-//                                break;
-//                            case "1": //一体机
-//                                mType.setText("一体机");
-//                                break;
-//                            case "2":  //自定义URL
-//                                mType.setText("自定义URL");
-//                                break;
-//                        }
                     }
 
                     @Override
@@ -527,7 +533,9 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
 
     private void setDialogData() {
         DialogHan_IsShow = true;    //防止点击视频类别  弹出多个Dialog的Bug
-        addInPutBuilder = new AddAdviceInputDialog.Builder(getActivity());
+        if (null==addInPutBuilder){
+            addInPutBuilder = new AddAdviceInputDialog.Builder(getActivity());
+        }
         mAccountView = addInPutBuilder.getAccountView();
         mPasswordView = addInPutBuilder.getPasswordView();
         mTitleView = addInPutBuilder.getTitleView();
@@ -545,6 +553,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         LogUtils.e("ZZZZZZZZZ==type==" + type);
         LogUtils.e("ZZZZZZZZZ==type==" + type);
         if (SharePreferenceUtil.Type_Url.equals(type)) {
+            mIPView.setText("");
             CommonUtil.showSoftInputFromWindow(getActivity(), mIPView);
         } else {
             mIPView.setText("" + ip);
@@ -580,6 +589,8 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 mTypeSelecter = mTv;
                 LogUtils.e("mType===========" + mTypeSelecter);
                 //类别输入对话框
+//                DialogHan_IsShow = true;
+
                 showInputSelectTypeDialog();
             }
 
@@ -590,8 +601,9 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
             }
         }).show();
     }
+
     private void refreshDialogData() {
-        if (null!=mReInputPopBuilder){
+        if (null != mReInputPopBuilder) {
             mAccountView = mReInputPopBuilder.getAccountView();
             mPasswordView = mReInputPopBuilder.getPasswordView();
             mTitleView = mReInputPopBuilder.getTitleView();
@@ -615,7 +627,33 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
             mTypeView.setText("" + type);
         }
 
+        if (null != addInPutBuilder) {
+            mAccountView = addInPutBuilder.getAccountView();
+            mPasswordView = addInPutBuilder.getPasswordView();
+            mTitleView = addInPutBuilder.getTitleView();
+            mIPView = addInPutBuilder.getIPView();
+            mMessageView = addInPutBuilder.getMessageView();
+            mPortView = addInPutBuilder.getPortView();
+            mTypeView = addInPutBuilder.getTypeView();
+            micPortView = addInPutBuilder.getMicPortView();
+            mAccountView.setText("" + account);
+            mPasswordView.setText("" + password);
+            mTitleView.setText("" + title);
+            LogUtils.e("ZZZZZZZZZ==typetypetypetypetype==" + type);   //type==自定义URL
+
+            if ("自定义URL".equals(type)) { //自定义URL
+                mIPView.setText("");
+                CommonUtil.showSoftInputFromWindow(getActivity(), mIPView);
+            } else {
+                mIPView.setText("" + ip);
+            }
+            mMessageView.setText("" + makeMessage);
+            mPortView.setText("" + port);
+            mTypeView.setText("" + type);
+        }
+
     }
+
     /**
      * 手动输入的时候，默认弹出类别选择dialog，或者再次选择类别
      */

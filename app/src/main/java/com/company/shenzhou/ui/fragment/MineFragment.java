@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 
 import com.company.shenzhou.R;
 import com.company.shenzhou.base.ActivityCollector;
+import com.company.shenzhou.bean.dbbean.UserDBRememberBean;
 import com.company.shenzhou.ui.activity.MainActivity;
 import com.company.shenzhou.ui.activity.PowerExplainActivity;
 import com.company.shenzhou.ui.activity.vlc.TestVlcPlayerActivity;
@@ -33,6 +34,7 @@ import com.company.shenzhou.utils.ClearEditText;
 import com.company.shenzhou.utils.FileUtil;
 import com.company.shenzhou.utils.FileUtils;
 import com.company.shenzhou.utils.ScreenSizeUtil;
+import com.company.shenzhou.utils.db.UserDBRememberBeanUtils;
 import com.company.shenzhou.utils.db.UserDBUtils;
 import com.company.shenzhou.view.PasswordEditText;
 import com.company.shenzhou.view.PasswordV2EditText;
@@ -227,7 +229,7 @@ public class MineFragment extends BaseFragment {
         versionPop.getTv_version().setText("版本：" + versionName);
         versionPop.getTv_copyright().setText("版权所有(C)：" + showCopyrightYear);
         versionPop.getTv_company().setText("江西神州医疗设备有限公司");
-        versionPop.getTv_update_date().setText("更新日期：2020年12月");
+        versionPop.getTv_update_date().setText("更新日期：2021年3月");
         versionPop.getTv_ok().setText("确定");
         versionPop.getTv_ok().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -296,7 +298,8 @@ public class MineFragment extends BaseFragment {
 //        current系统用户===123  账户存错了
         LogUtils.e("TAG==current系统用户===" + mCurrentUsername);
         int mCurrenType = (int) SharePreferenceUtil.get(getActivity(), SharePreferenceUtil.Current_UserType, 0);
-        UserDBBean mBean = UserDBUtils.queryListByMessageToGetPassword(mCurrentUsername);
+//        UserDBRememberBean  UserDBRememberBeanUtils.queryListByMessageToGetPassword(username);
+        UserDBRememberBean mBean = UserDBRememberBeanUtils.queryListByMessageToGetPassword(mCurrentUsername);;
         LogUtils.e("TAG==Username===" + mBean.getUsername() + "====password==" + mBean.getPassword() +
                 "====Type==" + mBean.getUserType() + "====mBean.getId()==" + mBean.getId());
         changePop.getMakeSure().setOnClickListener(new View.OnClickListener() {
@@ -306,29 +309,22 @@ public class MineFragment extends BaseFragment {
                 String oldpassword = cet_user_old_password.getText().toString();
                 String newpassword = cet_user_password.getText().toString().trim();
                 String dbPassword = mBean.getPassword();
-//                if (oldpassword.equals("")) {
-//                    showToast("原密码不能为空");
-//                    return;
-//                } else if (newpassword.equals("")) {
-//                    showToast("新密码不能为空");
-//                    return;
-//                } else
                 if (oldpassword.equals(dbPassword)) {  //输入的旧密码和DB中密码相同
-                    LogUtils.e("TAG==mCurrentUsername===" + mCurrentUsername);
+//                    LogUtils.e("TAG==mCurrentUsername===" + mCurrentUsername);
+                    LogUtils.e("TAG==添加前mCurrentUsername===" + mCurrentUsername + "====添加前oldpassword==" + oldpassword +
+                            "====mCurrenType==" + mCurrenType + "====mBean.getId()==" + mBean.getId());
                     SharePreferenceUtil.put(getActivity(), SharePreferenceUtil.Current_Username, mCurrentUsername);
                     SharePreferenceUtil.put(getActivity(), SharePreferenceUtil.Current_Password, newpassword);
                     SharePreferenceUtil.put(getActivity(), SharePreferenceUtil.Current_ID, mBean.getId() + "");
-                    UserDBBean userDBBean = new UserDBBean();
-                    userDBBean.setUsername(mCurrentUsername);
-                    userDBBean.setPassword(newpassword);
-                    userDBBean.setUserType(mCurrenType);
-                    userDBBean.setId(mBean.getId());
-                    LogUtils.e("TAG==添加前oldpassword===" + oldpassword);
-                    LogUtils.e("TAG==添加前mCurrentUsername===" + mCurrentUsername + "====newpassword==" + newpassword + "====mCurrenType==" + mCurrenType + "====mBean.getId()==" + mBean.getId());
+                    UserDBRememberBean userRememberBean = new UserDBRememberBean();
+                    userRememberBean.setUsername(mCurrentUsername);
+                    userRememberBean.setPassword(newpassword);
+                    userRememberBean.setUserType(mCurrenType);
+                    userRememberBean.setId(mBean.getId());
                     //添加失败
-                    UserDBUtils.updateData(userDBBean);
+                    UserDBRememberBeanUtils.updateData(userRememberBean);
 //                    UserDBUtils.insertOrReplaceData(userDBBean);
-                    UserDBBean mBean = UserDBUtils.queryListByMessageToGetPassword(mCurrentUsername);
+                    UserDBRememberBean mBean = UserDBRememberBeanUtils.queryListByMessageToGetPassword(mCurrentUsername);
                     LogUtils.e("TAG=修改DB后这个用户的=Username===" + mBean.getUsername() + "====password==" + mBean.getPassword()
                             + "====Type==" + mBean.getUserType() + "====mBean.getId()==" + mBean.getId());
                     showToast("修改成功");
