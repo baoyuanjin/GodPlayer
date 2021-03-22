@@ -24,7 +24,6 @@ import com.company.shenzhou.bean.dbbean.UserDBRememberBean;
 import com.company.shenzhou.ui.activity.login.LoginAnimatorActivity;
 import com.company.shenzhou.ui.fragment.user.adapter.UserAdapter;
 import com.company.shenzhou.utils.db.UserDBRememberBeanUtils;
-import com.company.shenzhou.utils.db.UserDBUtils;
 import com.company.shenzhou.view.PopupWindowInputChangePassword;
 import com.company.shenzhou.view.PopupWindowInputUser;
 import com.company.shenzhou.view.SwitchButton;
@@ -150,7 +149,7 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
     private void startThreadReadDBData() {
         new Thread(() -> {
             try {
-                 currentRecycleViewList = UserDBUtils.queryAll(UserDBRememberBean.class);
+                 currentRecycleViewList = UserDBRememberBeanUtils.queryAll(UserDBRememberBean.class);
                 mHandler.sendEmptyMessage(0);
                 mDataList.clear();
                 mDataList.addAll(currentRecycleViewList);
@@ -377,7 +376,7 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
                 //对DB做修改或者增加的操作
                 String username = addUserPop.getCet_user_username().getText().toString().trim();
                 String password = addUserPop.getCet_user_password().getText().toString().trim();
-                boolean isExist = UserDBUtils.queryListIsExist(username);
+                boolean isExist = UserDBRememberBeanUtils.queryListIsExist(username);
                 if ("".equals(username)) {
                     showToast("用户名不能为空");
                 } else if (isExist) {
@@ -391,7 +390,7 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
                     bean.setUserType(0);
                     UserDBRememberBeanUtils.insertOrReplaceData(bean);
 //                    showToast("添加成功" + "username==" + username + "password==" + password);
-                     currentRecycleViewList = UserDBUtils.queryAll(UserDBRememberBean.class);
+                     currentRecycleViewList = UserDBRememberBeanUtils.queryAll(UserDBRememberBean.class);
                     for (int i = 0; i < currentRecycleViewList.size(); i++) {
                         UserDBRememberBean o = (UserDBRememberBean) currentRecycleViewList.get(i);
                         LogUtils.e("存储的数据" + o.getUsername());

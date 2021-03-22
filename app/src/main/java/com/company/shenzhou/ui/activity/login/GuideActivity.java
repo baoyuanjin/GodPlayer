@@ -18,12 +18,10 @@ import android.widget.RelativeLayout;
 
 import com.company.shenzhou.R;
 import com.company.shenzhou.base.BaseActivity;
-import com.company.shenzhou.bean.dbbean.UserDBBean;
 import com.company.shenzhou.bean.Constants;
 import com.company.shenzhou.bean.dbbean.UserDBRememberBean;
 import com.company.shenzhou.ui.activity.MainActivity;
 import com.company.shenzhou.utils.db.UserDBRememberBeanUtils;
-import com.company.shenzhou.utils.db.UserDBUtils;
 import com.yun.common.utils.LogUtils;
 import com.yun.common.utils.SharePreferenceUtil;
 import com.yun.common.utils.StatusBarUtils;
@@ -136,7 +134,7 @@ public class GuideActivity extends BaseActivity {
         userDBBean.setId(ID);
         UserDBRememberBeanUtils.insertOrReplaceData(userDBBean);
 //        UserDBUtils.insertOrReplaceData(userDBBean);
-        boolean isExist = UserDBUtils.queryListIsExist("admin");
+        boolean isExist = UserDBRememberBeanUtils.queryListIsExist("admin");
         LogUtils.e("DB=====isExist===" + isExist);
         String str = "admin";
         List<UserDBRememberBean> userDBRememberBeans = UserDBRememberBeanUtils.queryListByMessage(str);

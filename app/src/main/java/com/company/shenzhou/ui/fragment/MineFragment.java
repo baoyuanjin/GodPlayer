@@ -28,14 +28,13 @@ import com.company.shenzhou.ui.activity.PowerExplainActivity;
 import com.company.shenzhou.ui.activity.vlc.TestVlcPlayerActivity;
 import com.company.shenzhou.ui.activity.login.LoginAnimatorActivity;
 import com.company.shenzhou.base.BaseFragment;
-import com.company.shenzhou.bean.dbbean.UserDBBean;
 import com.company.shenzhou.bean.Constants;
 import com.company.shenzhou.utils.ClearEditText;
 import com.company.shenzhou.utils.FileUtil;
 import com.company.shenzhou.utils.FileUtils;
 import com.company.shenzhou.utils.ScreenSizeUtil;
 import com.company.shenzhou.utils.db.UserDBRememberBeanUtils;
-import com.company.shenzhou.utils.db.UserDBUtils;
+
 import com.company.shenzhou.view.PasswordEditText;
 import com.company.shenzhou.view.PasswordV2EditText;
 import com.company.shenzhou.view.PopupWindowInputChangeTowPassword;

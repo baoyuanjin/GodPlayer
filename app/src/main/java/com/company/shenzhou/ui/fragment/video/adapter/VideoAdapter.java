@@ -12,9 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.company.shenzhou.R;
-import com.company.shenzhou.bean.dbbean.VideoDBBean;
 import com.company.shenzhou.bean.dbbean.VideoDBBean01;
-import com.company.shenzhou.utils.db.VideoDBUtils;
 import com.company.shenzhou.view.SwipeMenuLayout;
 
 import java.util.ArrayList;
@@ -66,9 +64,9 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
         VideoDBBean01 bean = mList.get(position);
         //viewHolder.tv_video_title.setText("标题是===" + bean.getTitle() + "");
         //viewHolder.tv_video_information.setText("我是备注信息" + bean.getMakeMessage() + "");
-        viewHolder.tv_video_title.setText("" + bean.getTitle() );
+        viewHolder.tv_video_title.setText("" + bean.getTitle());
         viewHolder.tv_video_make.setText("备注:" + bean.getMakeMessage());
-        viewHolder.tv_video_type.setText(""+bean.getType());
+        viewHolder.tv_video_type.setText("" + bean.getType());
 
         viewHolder.linear_item.setOnClickListener(new View.OnClickListener() {
             @Override

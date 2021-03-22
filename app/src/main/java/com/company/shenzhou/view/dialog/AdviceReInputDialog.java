@@ -2,16 +2,12 @@ package com.company.shenzhou.view.dialog;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.company.shenzhou.R;
-import com.company.shenzhou.bean.dbbean.VideoDBBean;
 import com.company.shenzhou.bean.dbbean.VideoDBBean01;
 import com.company.shenzhou.utils.ClearEditText;
 import com.hjq.base.BaseDialog;
-import com.yun.common.utils.ToastUtil;
 
 import java.util.HashMap;
 
@@ -82,27 +78,35 @@ public final class AdviceReInputDialog {
         public TextView getAccountView() {
             return cet_cme_account;
         }
+
         public TextView getPasswordView() {
             return cet_cme_password;
         }
+
         public TextView getTitleView() {
             return cet_cme_title;
         }
+
         public ClearEditText getIPView() {
             return cet_cme_ip;
         }
+
         public TextView getMessageView() {
             return cet_cme_note_message;
         }
+
         public TextView getPortView() {
             return cet_cme_port;
         }
+
         public TextView getMicPortView() {
             return cet_cme_mic_port;
         }
+
         public ClearEditText getTypeView() {
             return cet_cme_start_type;
         }
+
         public Builder setListener(OnListener listener) {
             mListener = listener;
             return this;
@@ -115,6 +119,7 @@ public final class AdviceReInputDialog {
         public void onShow(BaseDialog dialog) {
 //            postDelayed(() -> getSystemService(InputMethodManager.class).showSoftInput(mInputView, 0), 500);
         }
+
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
@@ -162,6 +167,7 @@ public final class AdviceReInputDialog {
          * 点击确定时回调
          */
         void onConfirm(BaseDialog dialog, HashMap<String, String> mMap);
+
         /**
          * 点击确定时回调
          */
@@ -173,9 +179,6 @@ public final class AdviceReInputDialog {
         default void onCancel(BaseDialog dialog) {
         }
     }
-
-
-
 
 
 }

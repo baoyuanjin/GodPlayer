@@ -11,18 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.company.shenzhou.R;
 import com.company.shenzhou.base.BaseActivity;
 import com.company.shenzhou.bean.RefreshEvent;
 import com.company.shenzhou.bean.ZXingBean;
-import com.company.shenzhou.bean.dbbean.VideoDBBean;
 import com.company.shenzhou.bean.dbbean.VideoDBBean01;
-import com.company.shenzhou.ui.activity.MainActivity;
-import com.company.shenzhou.ui.activity.vlc.VlcPlayerActivity;
 import com.company.shenzhou.utils.db.VideoDB01Utils;
-import com.company.shenzhou.utils.db.VideoDBUtils;
-import com.company.shenzhou.view.ListPopup;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
@@ -30,13 +24,10 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.yun.common.utils.StatusBarUtil;
 import com.yun.common.utils.StatusBarUtils;
-import com.yun.common.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
 import butterknife.BindView;
 import cn.bingoogolapple.photopicker.activity.BGAPhotoPickerActivity;
@@ -182,14 +173,14 @@ public class ZXingActivity extends BaseActivity implements QRCodeView.Delegate, 
             videoDBBean.setIp(mBean.getIp());
             videoDBBean.setMakeMessage(mBean.getMakemsg());
             videoDBBean.setPort(mBean.getPort());
-            String type1 =mBean.getType() ;
+            String type1 = mBean.getType();
             if ("0".equals(type1)) {
                 videoDBBean.setType("HD3");
             } else if ("1".equals(type1)) {
                 videoDBBean.setType("一体机");
             }
             videoDBBean.setTag(currentUsername);
-            if ("".equals(mBean.getMicport())||null==mBean.getMicport()) {
+            if ("".equals(mBean.getMicport()) || null == mBean.getMicport()) {
                 videoDBBean.setMicport("7789");
             } else {
                 videoDBBean.setMicport(mBean.getMicport());

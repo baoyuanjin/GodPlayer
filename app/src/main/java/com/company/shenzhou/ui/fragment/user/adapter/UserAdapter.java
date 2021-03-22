@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.company.shenzhou.R;
 import com.company.shenzhou.bean.dbbean.UserDBRememberBean;
 import com.company.shenzhou.utils.db.UserDBRememberBeanUtils;
-import com.company.shenzhou.utils.db.UserDBUtils;
 import com.company.shenzhou.view.SwipeMenuLayout;
 import com.company.shenzhou.view.SwitchButton;
 import com.yun.common.utils.LogUtils;
@@ -39,7 +38,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     }
 
     public void setListAndNotifyDataSetChanged() {
-        List currentList = UserDBUtils.queryAll(UserDBRememberBean.class);
+        List currentList = UserDBRememberBeanUtils.queryAll(UserDBRememberBean.class);
         Log.e("currentList", "currentList====" + currentList.size());
         mList.clear();
         mList.addAll(currentList);
