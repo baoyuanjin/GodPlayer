@@ -65,56 +65,53 @@ public class VlcVideoView extends TextureView implements MediaPlayerControl, Vid
             videoMediaLogic.onDestroy();
         }
         ArrayList<String> options = new ArrayList<String>();
-//            options.add(":file-caching=1500");
-//              IOS参数
-        //[mediaDict setValue:@"network-caching" forKey:@"150"];
-//    [mediaDict setValue:@"rtsp-caching" forKey:@"150"];
-//    [mediaDict setValue:@"tcp-caching" forKey:@"150"];
-//    [mediaDict setValue:@"realrtsp-caching" forKey:@"150"];
-//        m.addOption(":network-caching=3000");
-        options.add("--network-caching=300m");//文件缓存
-        options.add("--rtsp-caching=300m");//文件缓存
-        options.add("--tcp-caching=300m");//文件缓存
-        options.add("--realrtsp-caching=300m");//文件缓存
-//        options.add("--live-caching=1500");//直播缓存
-//        options.add("--sout-mux-caching=1500");//输出缓存
+        //正式参数配置
+        options.add("--network-caching=250");//网络缓存
+        options.add("--rtsp-caching=250");//
+        options.add("--tcp-caching=250");//
+        options.add("--realrtsp-caching=250");//文件缓存
+        options.add(":file-caching=250");//文件缓存
+        options.add(":live-cacheing=250");//直播缓存
         options.add("--file-caching");//文件缓存
+        options.add("--sout-mux-caching=250");//输出缓存
+        options.add("--no-drop-late-frames");//关闭丢弃晚的帧 (默认打开)
+        options.add("--no-skip-frames");//关闭跳过帧 (默认打开)
+        options.add(":rtsp-frame-buffer-size=1000"); //RTSP帧缓冲大小，默认大小为100000
+        options.add("--rtsp-tcp");
+//        options.add("--sub-source=marq{marquee=\"%Y-%m-%d,%H:%M:%S \",position=10,color=0xFFFFFF,size=40}");  //添加系统时间
+//        =======================注释不执行参数============================
+//        options.add(":file-caching=1500");
 //        options.add("--codec=mediacodec,iomx,all");//文件缓存
 //        options.add("--drop-late-frames");//关闭丢弃晚的帧 (默认打开)
 //        options.add("--skip-frames");//关闭跳过帧 (默认打开)
-        options.add("--no-drop-late-frames");//关闭丢弃晚的帧 (默认打开)
-        options.add("--no-skip-frames");//关闭跳过帧 (默认打开)
-        options.add("--rtsp-tcp");
-//        options.add("--codec=ffmpeg");
-//        options.add("--avcodec-threads=1");
-//        options.add("--avcodec-hw=any");//硬件解码
-//        options.add("--cr-average=10000");//在播放udp传输的ts视频流时经常遇到这个问题 ------卡顿的情况  ，有问题测试之后
-//        options.add("--prefetch-buffer-size=1024"); //预装取缓冲大小512K
-//        options.add("--prefetch-read-size=65535"); //预装取读取大小64K
+//        options.add("--live-caching=1500");//直播缓存
+//        options.add("--sout-mux-caching=1500");//输出缓存
 
 //        --drop-late-frames, --no-drop-late-frames  // 丢弃晚的帧 (默认打开)
 //        --skip-frames, --no-skip-frames   //    跳过帧 (默认打开)
+//        ===================================================
 
-//        options.add("--vout=direct2d");//
-//–vout=direct2d
-//        options.add("--network-caching=200");//网络缓存
-//        options.add("--live-caching=200");//直播缓存
-//        options.add("--sout-mux-caching=200");//输出缓存
-////        我添加的
-//        options.add("--sout-mux-caching=200");//输出缓存
-//        options.add("--rtsp-caching=200");
-//        options.add("--tcp-caching=200");
-//        options.add("--realrtsp-caching=200");
+//        options.add("--rtsp-tcp");   //强制rtsp-tcp，加快加载视频速度
+//        options.add("--aout=opensles");
+//        options.add(":network-caching=30");
+//        options.add("--audio-time-stretch");//color=0xFF0000
+//        options.add("--sub-source=marq{marquee=\"%Y-%m-%d,%H:%M:%S \",position=10,color=0xFFFFFF,size=40}");  //添加系统时间
+//        options.add(":network-caching=30");//网络缓存
+//        options.add(":file-caching=30");//文件缓存
+//        options.add(":live-cacheing=30");//直播缓存
+//        options.add(":latency=10");//直播缓存
+//        options.add(":sout-mux-caching=30");//输出缓存
+//        options.add("--no-drop-late-frames");//关闭丢弃晚的帧 (默认打开)
+//        options.add("--no-skip-frames");//关闭跳过帧 (默认打开)
+//        options.add(":codec=mediacodec,iomx,all");
+//        options.add(":fullscreen");
 
-//            options.add(":codec=mediacodec,iomx,all");
-//            options.add(":demux=h264");
-//            options.add("--network-caching=10000");
         LibVLC libVLC = new LibVLC(context, options);
         videoMediaLogic = new VlcPlayer(libVLC);
         videoMediaLogic.setVideoSizeChange(this);
-//
+//        ===================================================
 
-
+//        =========================案例--测试注释参数==========================
 //        ArrayList<String> libOptions = VLCOptions.getLibOptions(getContext());
 ////        mMediaRecorder.setVideoEncodingBitRate(2 * 1024 * 1024);
 //        libOptions.add(":file-caching=100");//文件缓存
