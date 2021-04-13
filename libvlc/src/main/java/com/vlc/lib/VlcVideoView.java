@@ -2,9 +2,11 @@ package com.vlc.lib;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Surface;
@@ -16,6 +18,7 @@ import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 import org.videolan.libvlc.interfaces.IMedia;
+import org.videolan.libvlc.util.VLCUtil;
 
 import com.vlc.lib.listener.MediaListenerEvent;
 import com.vlc.lib.listener.MediaPlayerControl;
@@ -61,6 +64,7 @@ public class VlcVideoView extends TextureView implements MediaPlayerControl, Vid
 //        videoMediaLogic = new VlcPlayer(VLCInstance.get(context));
 //        videoMediaLogic.setVideoSizeChange(this);
 
+
         if (videoMediaLogic != null) {
             videoMediaLogic.onDestroy();
         }
@@ -78,6 +82,13 @@ public class VlcVideoView extends TextureView implements MediaPlayerControl, Vid
         options.add("--no-skip-frames");//关闭跳过帧 (默认打开)
         options.add(":rtsp-frame-buffer-size=1000"); //RTSP帧缓冲大小，默认大小为100000
         options.add("--rtsp-tcp");
+        options.add("--http-reconnect");    //: 重连
+        options.add("--deinterlace");    //: 交错
+        options.add("" + getDeblocking(-1));//这里太大了消耗性能   太小了会花屏
+        options.add("--deinterlace-mode={discard,blend,mean,bob,linear,x}");// 视频译码器 解除交错模式
+        options.add("--network-synchronisation");// 网络同步化 (默认关闭)
+
+
 //        options.add("--sub-source=marq{marquee=\"%Y-%m-%d,%H:%M:%S \",position=10,color=0xFFFFFF,size=40}");  //添加系统时间
 //        =======================注释不执行参数============================
 //        options.add(":file-caching=1500");
@@ -134,7 +145,17 @@ public class VlcVideoView extends TextureView implements MediaPlayerControl, Vid
 //        videoMediaLogic = new VlcPlayer(libVLC);
 //        videoMediaLogic.setVideoSizeChange(this);
 
+//        视频译码器
+//        解除交错视频过滤器
+//                --deinterlace-mode {discard,blend,mean,bob,linear,x}
+//        解除交错模式
+//                --sout-deinterlace-mode {discard,blend,mean,bob,linear,x}
+//        串流解除交错模式
 
+//        伪视频译码器
+//        --fake-deinterlace, --no-fake-deinterlace
+//        解除交错视频 (默认关闭)
+//                --fake-deinterlace-module {deinterlace,ffmpeg-deinterlace}
     }
 
 
@@ -156,7 +177,33 @@ public class VlcVideoView extends TextureView implements MediaPlayerControl, Vid
     public void setMediaListenerEvent(MediaListenerEvent mediaListenerEvent) {
         videoMediaLogic.setMediaListenerEvent(mediaListenerEvent);
     }
-
+    private static int getDeblocking(int deblocking) {
+        int ret = deblocking;
+        if (deblocking < 0) {
+            /**
+             * Set some reasonable sDeblocking defaults:
+             *
+             * Skip all (4) for armv6 and MIPS by default
+             * Skip non-ref (1) for all armv7 more than 1.2 Ghz and more than 2 cores
+             * Skip non-key (3) for all devices that don't meet anything above
+             */
+            VLCUtil.MachineSpecs m = VLCUtil.getMachineSpecs();
+            if (m == null)
+                return ret;
+            if ((m.hasArmV6 && !(m.hasArmV7)) || m.hasMips)
+                ret = 4;
+            else if (m.frequency >= 1200 && m.processors > 2)
+                ret = 1;
+            else if (m.bogoMIPS >= 1200 && m.processors > 2) {
+                ret = 1;
+                Log.d("TAG", "Used bogoMIPS due to lack of frequency info");
+            } else
+                ret = 3;
+        } else if (deblocking > 4) { // sanity check
+            ret = 3;
+        }
+        return ret;
+    }
     @Override
     public boolean canControl() {//直播流不要用这个判断
         return videoMediaLogic.canControl();
