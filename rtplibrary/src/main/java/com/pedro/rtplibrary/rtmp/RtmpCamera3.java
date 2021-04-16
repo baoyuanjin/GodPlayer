@@ -65,6 +65,7 @@ public class RtmpCamera3 extends Camera3Base {
     srsFlvMuxer.setProfileIop(profileIop);
   }
 
+
   @Override
   public void setAuthorization(String user, String password) {
     srsFlvMuxer.setAuthorization(user, password);

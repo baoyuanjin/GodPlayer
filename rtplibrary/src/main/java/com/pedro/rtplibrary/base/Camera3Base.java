@@ -97,6 +97,9 @@ public abstract class Camera3Base
     audioEncoder = new AudioEncoder(this);
   }
 
+  public MicrophoneManager getMicrophoneManager(){
+    return microphoneManager;
+  }
   public Camera3Base(TextureView textureView) {
     this.textureView = textureView;
     this.context = textureView.getContext();
@@ -459,6 +462,7 @@ public abstract class Camera3Base
   public void stopStream() {
 //    cameraManager.closeCamera(!isBackground);
 //    onPreview = !isBackground;
+//    MicrophoneManager  出现 断不开错误
     microphoneManager.stop();
     stopStreamRtp();
 //    videoEncoder.stop();

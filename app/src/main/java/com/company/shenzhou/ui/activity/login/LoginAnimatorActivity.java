@@ -41,6 +41,7 @@ import com.company.shenzhou.utils.CommonUtil;
 import com.company.shenzhou.utils.ScreenSizeUtil;
 import com.company.shenzhou.utils.db.UserDBRememberBeanUtils;
 import com.company.shenzhou.utils.db.UserDBRememberBeanUtils;
+import com.company.shenzhou.view.CircleImageView;
 import com.company.shenzhou.view.ListHistoryPopup;
 import com.hjq.base.BasePopupWindow;
 import com.hjq.base.action.AnimAction;
@@ -69,12 +70,15 @@ public class LoginAnimatorActivity extends BaseActivity implements KeyboardWatch
     ImageButton username_right;
     @BindView(R.id.ll_login_body)
     LinearLayout mBodyLayout;
+    @BindView(R.id.linear_top)
+    LinearLayout linear_top;
     @BindView(R.id.relative_username_00)
     RelativeLayout relative_username_00;
     @BindView(R.id.relative_root)
     RelativeLayout relative_root;
     @BindView(R.id.et_login_phone)
     EditText mPhoneView;
+
     @BindView(R.id.et_login_password)
     EditText mPasswordView;
     @BindView(R.id.btn_login_commit)
@@ -125,6 +129,7 @@ public class LoginAnimatorActivity extends BaseActivity implements KeyboardWatch
     private RecyclerView textrecyclerview;
     private int mPhoneViewWidth;
     private ListHistoryPopup.Builder historyBuilder;
+    private CircleImageView iv_login_logo;
 
     @Override
     public int getContentViewId() {
@@ -143,6 +148,7 @@ public class LoginAnimatorActivity extends BaseActivity implements KeyboardWatch
         setTitleName("");
         setPageStateView();
         setMyLayoutParams();
+        iv_login_logo = findViewById(R.id.iv_login_logo);
         isRemember = (boolean) SharePreferenceUtil.get(LoginAnimatorActivity.this, SharePreferenceUtil.Current_RememberPassword, false);
         isAdmin = (boolean) SharePreferenceUtil.get(LoginAnimatorActivity.this, Constants.IS_Admin, false);
         if (!isAdmin) {  //没有创建admin用户,才创建超级用户，并且创建之后设置账号密码
@@ -306,7 +312,31 @@ public class LoginAnimatorActivity extends BaseActivity implements KeyboardWatch
         LogUtils.e("==========screenWidth=========" + screenWidth);
         showHistoryDialog();
 
+        switchLoginBtnLayout();
     }
+
+    private void switchLoginBtnLayout() {
+
+        int screenWidth = ScreenSizeUtil.getScreenWidth(this);
+        int Height = ScreenSizeUtil.getScreenHeight(this);
+//        showToast("宽==" + screenWidth+";高=="+Height);
+        LogUtils.e("===screenWidth=======宽=========" + screenWidth+";====高=="+Height);
+//        iv_login_logoo
+        LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams mImageParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (screenWidth == 1080) {
+            mParams.topMargin = 0;
+            LogUtils.e("==========screenWidth=========" + screenWidth);
+            mImageParams.topMargin = 80;
+            mBodyLayout.setLayoutParams(mParams);
+            linear_top.setLayoutParams(mImageParams);
+        }
+//        android:layout_marginTop="54dp"
+
+
+    }
+
+
 
 
     private String currentSelectedHistoryName = "";

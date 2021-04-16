@@ -359,10 +359,16 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
             public void onConfirm(BaseDialog dialog, HashMap<String, String> mMap) {
 //                对DB做修改或者增加的操作
                 checkInputBuilderData(mMap);
+                LogUtils.e("修改======"+mMap.toString());
+//                {makeMessage=一体机, password=root, port=7788, ip=192.168.1.200, title=一体机的标题, type=一体机, account=root}
+
                 //VideoDBBean beanData = getBeanData();
                 if (isOk) {
                     showToast(bean.getId() + "");
                     mBean.setId(bean.getId());
+                    String micport = mBean.getMicport();
+                    LogUtils.e("修改===micport==="+micport);
+
                     VideoDB01Utils.updateData(mBean);
                     currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
                     showEmptyOrContentView((ArrayList<VideoDBBean01>) currentRecycleViewList);
@@ -703,6 +709,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         ip = mMap.get("ip");
         makeMessage = mMap.get("makeMessage");
         port = mMap.get("port");
+        micPort = mMap.get("micport");
         type = mMap.get("type");
         if ("2".equals(type)) {
             if ("".equals(title)) {
@@ -761,8 +768,9 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         mBean.setMakeMessage(makeMessage);
         mBean.setPort(port);
         mBean.setType(type);
+        mBean.setMicport(micPort);
         mBean.setTag(currentUsername);
-        mBean.setMicport("7789");
+//        mBean.setMicport("7789");
         return mBean;
     }
 

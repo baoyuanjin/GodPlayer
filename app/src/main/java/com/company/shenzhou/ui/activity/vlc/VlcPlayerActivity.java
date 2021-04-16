@@ -41,6 +41,7 @@ import com.company.shenzhou.view.dialog.WaitDialog;
 import com.company.shenzhou.view.gsyplayer.SwitchVideoTypeDialog;
 import com.company.shenzhou.view.vlc.MyVlcVideoView;
 import com.hjq.base.BaseDialog;
+import com.pedro.encoder.input.audio.MicrophoneManager;
 import com.pedro.rtplibrary.rtmp.RtmpCamera3;
 import com.vlc.lib.RecordEvent;
 import com.vlc.lib.VlcVideoView;
@@ -146,6 +147,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
     private static final int Show_Unlock = 112;
     private static final int Show_Control_InVisible = 113;
     private static final int Show_Control_Visible = 114;
+    private static final int Pusher_Error_Stop = 115;
     private String currentTime = "0";
     private Handler mHandler = new Handler() {
         @SuppressLint("NewApi")
@@ -180,6 +182,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                         }
                     }
                     break;
+
                 case Pusher_Stop:
                     mPusher.setTag("stopStream");
                     rtmpCamera3.stopStream();
@@ -262,6 +265,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
 //    private ImageView mBackStatue;
     private TextView mTvStatue;  //暂无直播的显示
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -273,6 +277,8 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
         initView();
         initData();
         responseListener();
+
+
 
     }
 
@@ -289,6 +295,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void responseListener() {
         mChangeFull.setOnClickListener(this);
         back.setOnClickListener(this);
@@ -300,6 +307,22 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
         photos.setOnClickListener(this);
         startView.setOnClickListener(this);
         mPusher.setOnClickListener(this);
+
+        //麦克风关闭异常，回调监听再次调用断开mic
+
+        rtmpCamera3.getMicrophoneManager().setStopAgainMicListener(new MicrophoneManager.stopAgainMicListener() {
+            @Override
+            public void stopAgainMic() {
+                Log.e("TAG", "rtmpCamera3.====mic关闭异常了====再次请求关闭====rtmpCamera3.isStreaming()===" + rtmpCamera3.isStreaming());
+//                rtmpCamera3.stopStream();
+//                mHandler.sendEmptyMessage(Pusher_Stop);
+
+                if (rtmpCamera3.isStreaming()) {
+                    rtmpCamera3.stopStream();
+                }
+            }
+        });
+
 
         // 需要使用动态注册才能接收到广播,息屏的时候保存之前的录像
         registerPowerReceiver();

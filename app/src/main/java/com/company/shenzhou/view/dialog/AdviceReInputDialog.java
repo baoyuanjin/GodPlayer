@@ -8,6 +8,7 @@ import com.company.shenzhou.R;
 import com.company.shenzhou.bean.dbbean.VideoDBBean01;
 import com.company.shenzhou.utils.ClearEditText;
 import com.hjq.base.BaseDialog;
+import com.yun.common.utils.LogUtils;
 
 import java.util.HashMap;
 
@@ -70,6 +71,8 @@ public final class AdviceReInputDialog {
                 cet_cme_port.setText("" + bean.getPort());
                 cet_cme_start_type.setText("" + bean.getType());
                 cet_cme_mic_port.setText("" + bean.getMicport());
+                LogUtils.e("修改===dialog里面的bean==="+bean.toString());
+
             }
 
             addOnShowListener(this);
@@ -134,6 +137,7 @@ public final class AdviceReInputDialog {
                         String port = cet_cme_port.getText().toString().trim();
                         //获取当前类型  是2 的时候表示url链接 账号密码  端口可以为空
                         String type = cet_cme_start_type.getText().toString().trim();
+                        String micport = cet_cme_mic_port.getText().toString().trim();
 
                         HashMap<String, String> mMap = new HashMap<>();
                         mMap.put("account", account);
@@ -143,6 +147,7 @@ public final class AdviceReInputDialog {
                         mMap.put("makeMessage", makeMessage);
                         mMap.put("port", port);
                         mMap.put("type", type);
+                        mMap.put("micport", micport);
                         mListener.onConfirm(getDialog(), mMap);
                     }
                     break;

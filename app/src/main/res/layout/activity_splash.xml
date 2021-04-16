@@ -26,14 +26,14 @@
         android:textColor="@color/color_1296db"
         android:textSize="33sp"
         android:textStyle="bold" />
-
+<!--    粤ICP备12038225-->
     <TextView
-        android:visibility="invisible"
+        android:visibility="visible"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_marginRight="@dimen/padding_20"
         android:layout_marginLeft="@dimen/padding_20"
-        android:text="Copyright©深圳神州医疗设备有限公司 粤ICP备12038225"
+        android:text="Copyright©深圳神州医疗设备有限公司"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/padding_25"

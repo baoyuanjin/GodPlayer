@@ -101,4 +101,20 @@ public class VideoDBBean01 {
     public void setMicport(String micport) {
         this.micport = micport;
     }
+
+    @Override
+    public String toString() {
+        return "VideoDBBean01{" +
+                "id=" + id +
+                ", account='" + account + '\'' +
+                ", password='" + password + '\'' +
+                ", title='" + title + '\'' +
+                ", ip='" + ip + '\'' +
+                ", makeMessage='" + makeMessage + '\'' +
+                ", port='" + port + '\'' +
+                ", type='" + type + '\'' +
+                ", tag='" + tag + '\'' +
+                ", micport='" + micport + '\'' +
+                '}';
+    }
 }

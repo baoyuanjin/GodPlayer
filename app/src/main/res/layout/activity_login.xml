@@ -20,11 +20,13 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/linear_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layoutAnimation="@anim/layout_animation_from_bottom"
             android:orientation="vertical"
+            android:layout_marginTop="@dimen/padding_100"
             tools:context=".ui.activity.login.LoginAnimatorActivity"
             tools:layoutAnimation="@null">
 
@@ -33,7 +35,6 @@
                 android:layout_width="51dp"
                 android:layout_height="@dimen/padding_46"
                 android:layout_marginLeft="@dimen/padding_24"
-                android:layout_marginTop="@dimen/padding_105"
                 android:src="@mipmap/icon_logo_bg" />
 
             <TextView
@@ -42,7 +43,7 @@
                 android:layout_marginLeft="@dimen/padding_23"
                 android:layout_marginTop="@dimen/padding_20"
                 android:layout_marginRight="15dp"
-                android:text="欢迎来到莱夫凯尔"
+                android:text="欢迎来到CMEPlayer"
                 android:textColor="@color/black333333"
                 android:textSize="@dimen/padding_26" />
 
@@ -56,6 +57,8 @@
                 android:textColor="@color/color_B4B5B5"
                 android:textSize="@dimen/padding_16" />
 
+
+            <!--输入动作框体-->
             <LinearLayout
                 android:id="@+id/ll_login_body"
                 android:layout_width="match_parent"
@@ -72,6 +75,7 @@
                     android:layout_marginLeft="40dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="40dp">
+
                     <EditText
                         android:id="@+id/et_login_phone"
                         style="@style/EditTextStyle"
@@ -100,24 +104,24 @@
                     <ImageButton
                         android:id="@+id/username_right"
                         style="@style/ww"
-                        android:tag="close"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:background="@null"
-                        android:padding="@dimen/padding_10" />
-<!--                    <org.angmarch.views.NiceSpinner-->
-<!--                        android:id="@+id/niceSpinnerSection"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_alignParentRight="true"-->
-<!--                        android:layout_centerInParent="true"-->
-<!--                        android:layout_marginLeft="30dp"-->
-<!--                        android:layout_marginTop="10dp"-->
-<!--                        android:layout_marginRight="30dp"-->
-<!--                        app:arrowTint="@color/colorAccent"-->
-<!--                        app:entries="@array/section"-->
-<!--                        app:firstBaselineToTopHeight="@dimen/padding_150"-->
-<!--                        app:textTint="@color/colorAccent" />-->
+                        android:padding="@dimen/padding_10"
+                        android:tag="close" />
+                    <!--                    <org.angmarch.views.NiceSpinner-->
+                    <!--                        android:id="@+id/niceSpinnerSection"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_alignParentRight="true"-->
+                    <!--                        android:layout_centerInParent="true"-->
+                    <!--                        android:layout_marginLeft="30dp"-->
+                    <!--                        android:layout_marginTop="10dp"-->
+                    <!--                        android:layout_marginRight="30dp"-->
+                    <!--                        app:arrowTint="@color/colorAccent"-->
+                    <!--                        app:entries="@array/section"-->
+                    <!--                        app:firstBaselineToTopHeight="@dimen/padding_150"-->
+                    <!--                        app:textTint="@color/colorAccent" />-->
                 </RelativeLayout>
 
 
@@ -135,10 +139,10 @@
                         android:layout_height="52dp"
                         android:layout_centerVertical="true"
                         android:background="@drawable/shape_cme_login"
+                        android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@."
                         android:maxLength="20"
                         android:maxLines="1"
                         android:text=""
-                        android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@."
                         android:textColor="@color/black"
                         android:textColorHint="@color/color_999999" />
 
@@ -153,7 +157,6 @@
                         android:text="密码"
                         android:textColor="@color/color_BDBDBE"
                         android:textSize="@dimen/padding_11" />
-
 
 
                 </RelativeLayout>
