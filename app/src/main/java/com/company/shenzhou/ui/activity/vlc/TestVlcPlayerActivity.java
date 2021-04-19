@@ -73,7 +73,6 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
 //    public static final String path = "rtmp://58.200.131.2:1935/livetv/jxhd";
     public String path = "rtmp://58.200.131.2:1935/livetv/jxhd";
     private final String tag = "VlcPlayer";
-
     //    public String path = "rtmp://ossrs.net/efe/eilfb";
     //public static final String path = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8";
     //private String path = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
@@ -115,7 +114,6 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
     private VlcVideoView vlc_video_view;
     private boolean isOnPauseExit = false;
     private boolean isStringRecord = false;
-    private Configuration mConfiguration;
     private String urlType;
     private TextView tv_current_time;
     private RtmpCamera3 rtmpCamera3;
