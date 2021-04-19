@@ -129,7 +129,7 @@ public class LoginAnimatorActivity extends BaseActivity implements KeyboardWatch
     private RecyclerView textrecyclerview;
     private int mPhoneViewWidth;
     private ListHistoryPopup.Builder historyBuilder;
-    private CircleImageView iv_login_logo;
+    private ImageView iv_login_logo;
 
     @Override
     public int getContentViewId() {

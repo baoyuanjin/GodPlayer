@@ -30,13 +30,12 @@
             tools:context=".ui.activity.login.LoginAnimatorActivity"
             tools:layoutAnimation="@null">
 
-            <com.company.shenzhou.view.CircleImageView
+            <ImageView
                 android:id="@+id/iv_login_logo"
-                android:layout_width="51dp"
-                android:layout_height="@dimen/padding_46"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding_24"
                 android:src="@mipmap/icon_logo_bg" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
