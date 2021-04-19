@@ -17,7 +17,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true    //避免64K打包bug
     }
-
     buildTypes {
         release {
             minifyEnabled false
