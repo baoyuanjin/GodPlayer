@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_marginRight="@dimen/padding_20"
         android:layout_marginLeft="@dimen/padding_20"
-        android:text="Copyright©深圳神州医疗设备有限公司"
+        android:text="Copyright©江西神州医疗设备有限公司"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/padding_25"
