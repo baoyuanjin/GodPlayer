@@ -1,7 +1,6 @@
 package com.company.shenzhou.ui.fragment.video;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Handler;
@@ -10,11 +9,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -109,7 +104,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                     setDialogData();
                     break;
                 case 2://只刷新设备Dialog数据
-                    refreshDialogData();
+                    justRefreshDialogData();
                     break;
                 case 3://第一次读取全部的DB设备数据
                     showEmptyOrContentView(mDataList);
@@ -199,7 +194,6 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==HD3==micport===" + bean.getMicport());
-
                         startActivity(intent);
                         break;
                     case SharePreferenceUtil.Type_Yitiji: //一体机
@@ -212,7 +206,6 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==一体机==micport===" + bean.getMicport());
-
                         startActivity(intent);
                         break;
                     case SharePreferenceUtil.Type_Url: //自定义url
@@ -359,7 +352,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
             public void onConfirm(BaseDialog dialog, HashMap<String, String> mMap) {
 //                对DB做修改或者增加的操作
                 checkInputBuilderData(mMap);
-                LogUtils.e("修改======"+mMap.toString());
+                LogUtils.e("修改======" + mMap.toString());
 //                {makeMessage=一体机, password=root, port=7788, ip=192.168.1.200, title=一体机的标题, type=一体机, account=root}
 
                 //VideoDBBean beanData = getBeanData();
@@ -367,7 +360,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                     showToast(bean.getId() + "");
                     mBean.setId(bean.getId());
                     String micport = mBean.getMicport();
-                    LogUtils.e("修改===micport==="+micport);
+                    LogUtils.e("修改===micport===" + micport);
 
                     VideoDB01Utils.updateData(mBean);
                     currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
@@ -400,22 +393,6 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
     //类别输入对话框
     private void showInputSelectTypeDialog() {
         DialogHan_IsShow = false;
-
-//        if (null ==addInPutBuilder){
-//            LogUtils.e("ZZZZZZZZZ==title==" + "addInPutBuilder" + "====null");
-//            DialogHan_IsShow = false;
-//
-//        }else {
-//            LogUtils.e("ZZZZZZZZZ==title==" + "addInPutBuilder" + "===!=null");
-//            if (addInPutBuilder.isShowing()) {
-//                LogUtils.e("ZZZZZZZZZ==title==" + "addInPutBuilder" + "==yes==isShowing");
-//
-//                DialogHan_IsShow = true;   //手动设置默认值(设备输入框不存在)
-//            } else {
-//                LogUtils.e("ZZZZZZZZZ==title==" + "addInPutBuilder" + "==no==isShowing");
-//                DialogHan_IsShow = false;
-//            }
-//        }
 
         // 单选对话框
         new SelectDialog.Builder(getActivity())
@@ -539,7 +516,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
 
     private void setDialogData() {
         DialogHan_IsShow = true;    //防止点击视频类别  弹出多个Dialog的Bug
-        if (null==addInPutBuilder){
+        if (null == addInPutBuilder) {
             addInPutBuilder = new AddAdviceInputDialog.Builder(getActivity());
         }
         mAccountView = addInPutBuilder.getAccountView();
@@ -553,11 +530,13 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         mAccountView.setText("" + account);
         mPasswordView.setText("" + password);
         mTitleView.setText("" + title);
+        micPortView.setText("" + micPort);
         LogUtils.e("ZZZZZZZZZ==account==" + account);
         LogUtils.e("ZZZZZZZZZ==password==" + password);
         LogUtils.e("ZZZZZZZZZ==title==" + title);
         LogUtils.e("ZZZZZZZZZ==type==" + type);
         LogUtils.e("ZZZZZZZZZ==type==" + type);
+        LogUtils.e("ZZZZZZZZZ==type==" + micPort);
         if (SharePreferenceUtil.Type_Url.equals(type)) {
             mIPView.setText("");
             CommonUtil.showSoftInputFromWindow(getActivity(), mIPView);
@@ -566,7 +545,8 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         }
         mMessageView.setText("" + makeMessage);
         mPortView.setText("" + port);
-        micPortView.setText("" + micPort);
+        String currentMicPort = null == micPort ? "7789" : micPort;
+        micPortView.setText("" + currentMicPort);
         mTypeView.setText("" + type);
         addInPutBuilder.setTitle("添加设备");
         // 内容必须要填写
@@ -608,7 +588,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         }).show();
     }
 
-    private void refreshDialogData() {
+    private void justRefreshDialogData() {
         if (null != mReInputPopBuilder) {
             mAccountView = mReInputPopBuilder.getAccountView();
             mPasswordView = mReInputPopBuilder.getPasswordView();
@@ -749,7 +729,6 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshEvent(RefreshEvent event) {
-        Log.e("扫描结果为：", "result===" + event.getType());
         currentRecycleViewList = VideoDB01Utils.queryRawTag(currentUsername);
         mDataList.clear();
         mDataList.addAll(currentRecycleViewList);
@@ -768,9 +747,9 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         mBean.setMakeMessage(makeMessage);
         mBean.setPort(port);
         mBean.setType(type);
-        mBean.setMicport(micPort);
+        String currentMicPort = null ==micPort ? "7789":micPort;
+        mBean.setMicport(currentMicPort+"");
         mBean.setTag(currentUsername);
-//        mBean.setMicport("7789");
         return mBean;
     }
 

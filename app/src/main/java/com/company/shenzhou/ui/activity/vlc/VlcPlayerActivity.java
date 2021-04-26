@@ -317,9 +317,9 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
 //                rtmpCamera3.stopStream();
 //                mHandler.sendEmptyMessage(Pusher_Stop);
 
-                if (rtmpCamera3.isStreaming()) {
-                    rtmpCamera3.stopStream();
-                }
+//                if (rtmpCamera3.isStreaming()) {
+//                    rtmpCamera3.stopStream();
+//                }
             }
         });
 
@@ -657,7 +657,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                     // 消息文本可以不用填写
                     .setMessage(getString(R.string.common_stop_loading))
                     .show();
-            LogUtils.e("pusher====pusherStop===" + "http://" + mIp + ":" + mMicPort + "/stop");
+            LogUtils.e("rtmpCamera3====pusher====pusherStop===" + "http://" + mIp + ":" + mMicPort + "/stop");
             OkHttpUtils.get()
 //                .url("http://192.168.64.13:7789/stop")
                     .url("http://" + mIp + ":" + mMicPort + "/stop")
@@ -667,6 +667,8 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             mPusherLoading.dismiss();
+                            LogUtils.e("rtmpCamera3====pusher====pusherStop===" + "onError");
+
                             if (!"Back".equals(Type)) {
                                 startSendToast("语音断开失败: 500");
                             }
@@ -675,11 +677,13 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                         @Override
                         public void onResponse(String response, int id) {
                             mPusherLoading.dismiss();
-                            LogUtils.e("pusher====pusherStop===" + "response===" + response);
+                            LogUtils.e("rtmpCamera3====pusher====pusherStop===" + "onResponse");
+                            LogUtils.e("rtmpCamera3===pusher====pusherStop===" + "response===" + response);
                             mHandler.sendEmptyMessage(Pusher_Stop);
                         }
                     });
         } catch (Exception e) {
+            mPusherLoading.dismiss();
         }
     }
 
@@ -688,7 +692,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
     @SuppressLint("NewApi")
     private void pusherStart() {
         try {
-            LogUtils.e("pusher====pusherStart===" + "http://" + mIp + ":" + mMicPort + "/start");
+            LogUtils.e("rtmpCamera3====pusher====pusherStart===" + "http://" + mIp + ":" + mMicPort + "/start");
             /**
              * 开始推流
              * 语音连接失败: 300  html数据解析失败
@@ -714,7 +718,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
 
                         @Override
                         public void onResponse(String response, int id) {
-                            LogUtils.e("pusherStart====response===" + response);
+                            LogUtils.e("rtmpCamera3====pusherStart====response===" + response);
 //                            <html><head><title></title></head><body>rtmp://192.168.128.134:8350/live/94726</body></html>
                             String replace = response.replace("", "");
                             int i = replace.indexOf("<body>");
@@ -729,6 +733,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                         }
                     });
         } catch (Exception e) {
+            mPusherLoading.dismiss();
             startSendToast("获取推流地址失败!");
         }
     }
@@ -959,7 +964,6 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                 Log.e("TAG", "rtmpCamera3.isStreaming()=====onDisconnectRtmp");
                 if (!isOnPauseExit) {
                     startSendToast("断开麦克风链接");
-
                 }
             }
         });

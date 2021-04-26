@@ -22,7 +22,7 @@ public class VideoDBBean01 {
     String port;
     String type;  //0播放HD3，1播放一体机
     String tag;  //0播放HD3，1播放一体机
-    String micport;  //0播放HD3，1播放一体机
+    String micport;  //语音端口
     @Generated(hash = 1300160908)
     public VideoDBBean01(Long id, String account, String password, String title,
             String ip, String makeMessage, String port, String type, String tag,
