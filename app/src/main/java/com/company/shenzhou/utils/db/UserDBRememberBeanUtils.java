@@ -82,10 +82,11 @@ public class UserDBRememberBeanUtils {
         return list;
     }
 
-    public static List queryRaw(UserDBRememberBean bean, Long id) {
+    public static List queryRaw( Long id) {
 
-        List<UserDBRememberBean> beanLis = (List<UserDBRememberBean>)
-                App.getInstance().getDaoSession().queryRaw(UserDBRememberBean.class, " where id = ?", id + "");
+        List<UserDBRememberBean> beanLis = (List<UserDBRememberBean>)//" where username = ?", name
+//                App.getInstance().getDaoSession().queryRaw(UserDBRememberBean.class, " where id = ?", id );
+                App.getInstance().getDaoSession().queryRaw(UserDBRememberBean.class, " where id = ?", id.toString() );
         return beanLis;
     }
 
@@ -124,6 +125,14 @@ public class UserDBRememberBeanUtils {
         List<UserDBRememberBean> students = daoSession.queryRaw(UserDBRememberBean.class, " where username = ?", name);
         return students;
     }
+    //tag其实就是id，但是greendao查找id会报错，只能通过tag标识
+
+    public static List<UserDBRememberBean> queryListByBeanIDTag(String tag) {
+        DaoSession daoSession = App.getInstance().getDaoSession();
+        QueryBuilder<UserDBRememberBean> qb = daoSession.queryBuilder(UserDBRememberBean.class);
+        List<UserDBRememberBean> students = daoSession.queryRaw(UserDBRememberBean.class, " where tag = ?", tag);
+        return students;
+    }
     public static UserDBRememberBean queryListByName(String name) {
         DaoSession daoSession = App.getInstance().getDaoSession();
         QueryBuilder<UserDBRememberBean> qb = daoSession.queryBuilder(UserDBRememberBean.class);
@@ -151,5 +160,22 @@ public class UserDBRememberBeanUtils {
         }
     }
 
+    /**
+     * @param id
+     * @return 查询ID是否存在
+     */
+    public static boolean queryListIsIDExist(String id) {
+        DaoSession daoSession = App.getInstance().getDaoSession();
+        QueryBuilder<UserDBRememberBean> qb = daoSession.queryBuilder(UserDBRememberBean.class);
+        List<UserDBRememberBean> students = daoSession.queryRaw(UserDBRememberBean.class, " where id = ?", id);
+//        List<Student> students = daoSession.loadAll(Student.class);
+//        return students;
+        Log.e("path=====Start:=====", students.size() + ""); //   /storage/emulated/0/1604026573438.mp4
 
+        if (students.size() != 0) {  //存在
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

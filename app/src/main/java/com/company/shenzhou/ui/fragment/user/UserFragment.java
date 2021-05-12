@@ -426,8 +426,16 @@ public class UserFragment extends BaseFragment implements UserAdapter.ClickCallB
                 //对DB做修改或者增加的操作
                 //VideoDBBean beanData = getBeanData();
                 String newPassword = changePasswordPop.getCet_user_password().getText().toString().trim();
+//                LogUtils.e("修改前的数据==bean=id==="+bean.getId()+"==password=="+bean.getPassword()+"==userType=="+bean.getUserType()
+//                        +"==username=="+bean.getUsername()+"==Remember=="+bean.getRemember()+"==tag=="+bean.getTag());
                 bean.setPassword(newPassword);
+                Long id = bean.getId();
                 UserDBRememberBeanUtils.updateData(bean);
+//                List list = UserDBRememberBeanUtils.queryListByBeanIDTag(bean.getTag());
+//                UserDBRememberBean beanaaa = (UserDBRememberBean) list.get(0);
+//                beanaaa.getId();
+//                LogUtils.e("修改后的数据==beanaaa=id==="+beanaaa.getId()+"==password=="+beanaaa.getPassword()+"==userType=="+beanaaa.getUserType()
+//                        +"==username=="+beanaaa.getUsername()+"==Remember=="+beanaaa.getRemember()+"==tag=="+beanaaa.getTag());
                 mAdapter.setListAndNotifyDataSetChanged();
                 if (type.equals("2")) {
                     SharePreferenceUtil.put(getActivity(), SharePreferenceUtil.Current_Admin_ChangePassword, true);

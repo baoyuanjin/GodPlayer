@@ -1,7 +1,7 @@
-//plugins {
-//    id 'com.android.application'
-//}
-apply plugin: 'com.android.application' // apply plugin
+plugins {
+    id 'com.android.application'
+}
+//apply plugin: 'com.android.application' // apply plugin
 apply plugin: 'org.greenrobot.greendao' // apply plugin
 
 android {
@@ -12,7 +12,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0.9"
+        versionName "1.1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true    //避免64K打包bug
     }
@@ -41,13 +41,12 @@ android {
 dependencies {
     implementation project(':commonlib')
     implementation project(':libvlc')
-    implementation project(':lib_fileviewer')
+    implementation project(':lib_fileviewer')  //在线word
     implementation project(path: ':base')
     implementation project(path: ':widget')
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
-    implementation project(path: ':rtplibrary')
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -124,5 +123,10 @@ dependencies {
     //项目方法数越界的问题
     implementation 'com.android.support:multidex:1.0.3'
 
+    // 日志调试：https://github.com/getActivity/Logcat    app里面会有个小按钮
+    debugImplementation 'com.hjq:logcat:8.2'
 
+
+    //RTMP  RTSP  推流
+    implementation 'com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:2.0.2'
 }

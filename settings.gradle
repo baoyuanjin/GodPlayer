@@ -1,8 +1,4 @@
 include ':lib_fileviewer'
-include ':rtplibrary'
-include ':encoder'
-include ':rtmp'
-include ':rtsp'
 include ':widget'
 include ':base'
 include ':commonlib'

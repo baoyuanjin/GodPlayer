@@ -10,6 +10,7 @@ import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -21,25 +22,25 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.company.shenzhou.R;
 import com.company.shenzhou.bean.SwitchVideoModel;
-import com.company.shenzhou.ui.activity.MainActivity;
 import com.company.shenzhou.ui.broadcast.ConnectionChangeReceiver;
 import com.company.shenzhou.ui.broadcast.PowerScreenReceiver;
-import com.company.shenzhou.ui.pusher.ConstantUtils;
 import com.company.shenzhou.utils.CommonUtil;
 import com.company.shenzhou.utils.FileUtil;
 import com.company.shenzhou.utils.VlcUtils;
 import com.company.shenzhou.view.ENDownloadView;
 import com.company.shenzhou.view.ENPlayView;
+import com.company.shenzhou.view.dialog.WaitDialog;
 import com.company.shenzhou.view.gsyplayer.SwitchVideoTypeDialog;
 import com.company.shenzhou.view.vlc.MyVlcVideoView;
-import com.pedro.rtplibrary.rtmp.RtmpCamera3;
+import com.hjq.base.BaseDialog;
+import com.pedro.rtplibrary.rtmp.RtmpOnlyAudio;
 import com.vlc.lib.RecordEvent;
 import com.vlc.lib.VlcVideoView;
 import com.vlc.lib.listener.MediaListenerEvent;
@@ -47,6 +48,7 @@ import com.yun.common.utils.LogUtils;
 import com.yun.common.utils.SharePreferenceUtil;
 import com.yun.common.utils.StatusBarUtil;
 import com.yun.common.utils.StatusBarUtils;
+import com.yun.common.utils.ToastUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -63,17 +65,17 @@ import okhttp3.Call;
 
 /**
  * LoveLin
- * <p>
+ * <p>  VLC 直播界面
  * Describe
  */
 public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnClickListener, ConnectCheckerRtmp {
     // public static final String path = "http://121.18.168.149/cache.ott.ystenlive.itv.cmvideo.cn:80/000000001000/1000000001000010606/1.m3u8?stbId=005301FF001589101611549359B92C46&channel-id=ystenlive&Contentid=1000000001000010606&mos=jbjhhzstsl&livemode=1&version=1.0&owaccmark=1000000001000010606&owchid=ystenlive&owsid=5474771579530255373&AuthInfo=2TOfGIahP4HrGWrHbpJXVOhAZZf%2B%2BRvFCOimr7PCGr%2Bu3lLj0NrV6tPDBIsVEpn3QZdNn969VxaznG4qedKIxPvWqo6nkyvxK0SnJLSEP%2FF4Wxm5gCchMH9VO%2BhWyofF";
     //public static final String path = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov";
-    //public static final String path = "http://ivi.bupt.edu.cn/hls/cctv1hd.0";
-//    public static final String path = "rtmp://58.200.131.2:1935/livetv/jxhd";
+    //public static final String path = "http://ivi.bupt.edu.cn/hls/cctv1hd.0 ";
+    // public static final String path = "rtmp://58.200.131.2:1935/livetv/jxhd";
     public String path = "rtmp://58.200.131.2:1935/livetv/jxhd";
     private final String tag = "VlcPlayer";
-    //    public String path = "rtmp://ossrs.net/efe/eilfb";
+    //public String path = "rtmp://ossrs.net/efe/eilfb";
     //public static final String path = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8";
     //private String path = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
     private VlcVideoView vlcVideoView;
@@ -81,6 +83,8 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
     private TextView change_live;
     private TextView mChangeFull;
     private LinearLayout layout_top, linear_contral;
+    private BaseDialog mPusherLoading;
+    //    private RelativeLayout mRelativeStatue;
     private ImageView lock_screen;
     private TextView error_text;
     private ENPlayView startView;
@@ -94,13 +98,13 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
     private int mSourcePosition = 0;
     private String mTypeText = "高清";
     //录像
-    private File recordFile = new File(Environment.getExternalStorageDirectory(), "LCare");
+    private File recordFile = new File(Environment.getExternalStorageDirectory(), "CME");   //老徐手机 录像地址-内部存储/Pictures/
     //private File videoFile = new File(Environment.getExternalStorageDirectory(), "LCare" + ".mp4");
     private String directory = recordFile.getAbsolutePath();
-    //录屏文件的保存地址
+    //录屏文件的保存地址getExternalStorageDirectory
     private String mRecordFilePath = CommonUtil.getSaveDirectory() + File.separator + System.currentTimeMillis() + ".mp4";
     //vlc截图文件地址
-    private File takeSnapshotFile = new File(Environment.getExternalStorageDirectory(), "LCare");
+    private File takeSnapshotFile = new File(Environment.getExternalStorageDirectory(), "CME");
     private boolean isPlayering = false;   //视频是否播放的标识符
     private TextView snapShot;
     private MyVlcVideoView player;
@@ -113,10 +117,10 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
     private ConnectionChangeReceiver mConnectionReceiver;
     private VlcVideoView vlc_video_view;
     private boolean isOnPauseExit = false;
-    private boolean isStringRecord = false;
+    private boolean mFlag_Record = false;
+    private boolean mFlag_MicOnLine = false;
     private String urlType;
     private TextView tv_current_time;
-    private RtmpCamera3 rtmpCamera3;
     private TextView mPusher;
     private TextView mTitle;
     private String mTitleData;
@@ -128,8 +132,18 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
     private static final int Pusher_Start = 101;
     private static final int Pusher_Stop = 102;
     private static final int Record_Start = 103;
-    private static final int Record_End = 104;
+    private static final int Record_Stop = 104;
     private static final int Pusher_Error = 105;
+    private static final int Send_Toast = 106;
+    private static final int Send_UrlType = 107;
+    private static final int Type_Loading_Visible = 108;
+    private static final int Type_Loading_InVisible = 109;
+    private static final int Show_UrL_Type = 110;
+    private static final int Show_Lock = 111;
+    private static final int Show_Unlock = 112;
+    private static final int Show_Control_InVisible = 113;
+    private static final int Show_Control_Visible = 114;
+    private static final int Pusher_Error_Stop = 115;
     private String currentTime = "0";
     private Handler mHandler = new Handler() {
         @SuppressLint("NewApi")
@@ -140,43 +154,49 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
                 case 0:
                     tv_current_time.setText("" + VlcUtils.stringForTime(Integer.parseInt(currentTime)));
                     break;
+                case Send_Toast:
+                    ToastUtil.showToastCenter(TestVlcPlayerActivity.this, (String) msg.obj);
+                    break;
                 case Pusher_Start:
+
                     mPusher.setText("停止");
                     mPusher.setTextColor(getResources().getColor(R.color.color_007AFF));
                     Drawable topstart = getResources().getDrawable(R.drawable.icon_mic_pre);
                     mPusher.setCompoundDrawablesWithIntrinsicBounds(null, topstart, null, null);
-                    String replace = mResponse.replace("", "");
-                    int i = replace.indexOf("<body>");
-                    int i1 = replace.lastIndexOf("</body>");
-                    mPusherUrl = mResponse.substring(i + 6, i1);
+//                    String replace = mResponse.replace("", "");
+//                    int i = replace.indexOf("<body>");
+//                    int i1 = replace.lastIndexOf("</body>");
+//                    mPusherUrl = mResponse.substring(i + 6, i1);
                     Log.e("TAG", "rtmpCamera3.isStreaming()==response==mPusherUrl========" + mPusherUrl);
                     if (!"".equals(mPusherUrl)) {
-                        if (rtmpCamera3.prepareAudio()) {
+                        if (rtmpOnlyAudio.prepareAudio()) {
                             Log.e("TAG", "rtmpCamera3.isStreaming()==pusherStart==开始推流=" + mPusherUrl);
                             mPusher.setTag("startStream");
-                            rtmpCamera3.startStream(mPusherUrl);
+                            rtmpOnlyAudio.startStream(mPusherUrl);
                         } else {
-//                                Toast.makeText(this, "Error preparing stream, This device cant do it",
-//                                        Toast.LENGTH_SHORT).show();
+                            startSendToast("Error preparing stream, This device cant do it");
                         }
                     }
                     break;
+
                 case Pusher_Stop:
                     mPusher.setTag("stopStream");
-                    rtmpCamera3.stopStream();
+                    rtmpOnlyAudio.stopStream();
                     mPusher.setText("开始");
                     mPusher.setTextColor(getResources().getColor(R.color.white));
                     Drawable topend = getResources().getDrawable(R.drawable.icon_mic_nor);
                     mPusher.setCompoundDrawablesWithIntrinsicBounds(null, topend, null, null);
                     break;
                 case Record_Start:
+                    mFlag_MicOnLine = true;
                     setTextColor(getResources().getColor(R.color.colorAccent), "录像", false);
                     Drawable record_start = getResources().getDrawable(R.drawable.icon_record_pre);
                     recordStart.setCompoundDrawablesWithIntrinsicBounds(null, record_start, null, null);
                     break;
-                case Record_End:
+                case Record_Stop:
+                    mFlag_MicOnLine = false;
                     setTextColor(getResources().getColor(R.color.white), "录像", true);
-                    Toast.makeText(TestVlcPlayerActivity.this, "录像成功", Toast.LENGTH_SHORT).show();
+                    ToastUtil.showToastCenter(TestVlcPlayerActivity.this, "录像成功");
                     Drawable record_end = getResources().getDrawable(R.drawable.icon_record_nore);
                     recordStart.setCompoundDrawablesWithIntrinsicBounds(null, record_end, null, null);
                     break;
@@ -186,15 +206,63 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
                     Drawable error = getResources().getDrawable(R.drawable.icon_mic_nor);
                     mPusher.setCompoundDrawablesWithIntrinsicBounds(null, error, null, null);
                     break;
-                case FirstError:
-                    LogUtils.e("path=====Start:=====" + "我是当前播放的url======FirstError======" + isPlayering);
-                    startLive(path);
+                case Send_UrlType:
+                    change_live.setText(mTypeText + "");
+                    Drawable urlTypeSD = getResources().getDrawable(R.drawable.icon_url_type_sd);
+                    Drawable urlTypeHD = getResources().getDrawable(R.drawable.icon_url_type_hd);
+                    if ("高清".equals(mTypeText)) {
+                        change_live.setCompoundDrawablesWithIntrinsicBounds(null, urlTypeHD, null, null);
+                    } else if ("标清".equals(mTypeText)) {
+                        change_live.setCompoundDrawablesWithIntrinsicBounds(null, urlTypeSD, null, null);
+                    }
                     break;
+                case Show_UrL_Type:   //切换清晰度
+                    showSwitchDialog();
+                    break;
+                case Type_Loading_Visible:   //加载框 可见
+                    loading.setVisibility(View.VISIBLE);
+                    break;
+                case Type_Loading_InVisible: //隐藏 加载框
+                    loading.setVisibility(View.INVISIBLE);
+                    break;
+                case Show_Lock: //设置锁屏显示
+                    lock_screen.setImageDrawable(getResources().getDrawable(R.drawable.video_lock_close_ic));
+                    lock_screen.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    layout_top.setVisibility(View.INVISIBLE);
+                    mChangeFull.setVisibility(View.INVISIBLE);
+                    linear_contral.setVisibility(View.INVISIBLE);
+                    tv_current_time.setVisibility(View.INVISIBLE);
+                    break;
+                case Show_Unlock: //设置锁屏隐藏
+                    lock_screen.setImageDrawable(getResources().getDrawable(R.drawable.video_lock_open_ic));
+                    lock_screen.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    layout_top.setVisibility(View.VISIBLE);
+                    mChangeFull.setVisibility(View.VISIBLE);
+                    linear_contral.setVisibility(View.VISIBLE);
+                    tv_current_time.setVisibility(View.VISIBLE);
+                    break;
+                case Show_Control_InVisible: //控制布局，锁屏显示
+                    layout_top.setVisibility(View.INVISIBLE);
+                    mChangeFull.setVisibility(View.INVISIBLE);
+                    linear_contral.setVisibility(View.INVISIBLE);
+                    tv_current_time.setVisibility(View.INVISIBLE);
+                    break;
+                case Show_Control_Visible: //控制布局，锁屏隐藏
+                    layout_top.setVisibility(View.VISIBLE);
+                    mChangeFull.setVisibility(View.VISIBLE);
+                    linear_contral.setVisibility(View.VISIBLE);
+                    tv_current_time.setVisibility(View.VISIBLE);
+                    break;
+
 
             }
         }
     };
+    //    private ImageView mBackStatue;
+    private TextView mTvStatue;  //暂无直播的显示
+    private RtmpOnlyAudio rtmpOnlyAudio;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -202,29 +270,28 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //永远不息屏
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.activity_vlc_player);
+        setContentView(R.layout.activity_vlc_test_player);
         initView();
         initData();
         responseListener();
+
 
     }
 
     private void initData() {
         String name = "高清";
         String name2 = "标清";
-//        SwitchVideoModel switchVideoModel = new SwitchVideoModel(name, url01);
-//        SwitchVideoModel switchVideoModel2 = new SwitchVideoModel(name2, url02);
-                SwitchVideoModel switchVideoModel = new SwitchVideoModel(name, "rtmp://58.200.131.2:1935/livetv/jxhd");
-        SwitchVideoModel switchVideoModel2 = new SwitchVideoModel(name2, "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8");
+        SwitchVideoModel switchVideoModel = new SwitchVideoModel(name, url01);
+        SwitchVideoModel switchVideoModel2 = new SwitchVideoModel(name2, url02);
         mUrlList = new ArrayList<>();
         mUrlList.add(switchVideoModel);
         mUrlList.add(switchVideoModel2);
-        mSourcePosition = 0;  //标清
+        mSourcePosition = 0;  //高清
         mTitle.setText("" + mTitleData);
-        currentUserName = (String) SharePreferenceUtil.get(this, SharePreferenceUtil.Current_Username, "张三");
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void responseListener() {
         mChangeFull.setOnClickListener(this);
         back.setOnClickListener(this);
@@ -237,71 +304,86 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
         startView.setOnClickListener(this);
         mPusher.setOnClickListener(this);
 
+        //麦克风关闭异常，回调监听再次调用断开mic
+
+//        rtmpCamera3.getMicrophoneManager().setStopAgainMicListener(new MicrophoneManager.stopAgainMicListener() {
+//            @Override
+//            public void stopAgainMic() {
+//                Log.e("TAG", "rtmpCamera3.====mic关闭异常了====再次请求关闭====rtmpCamera3.isStreaming()===" + rtmpCamera3.isStreaming());
+////                rtmpCamera3.stopStream();
+////                mHandler.sendEmptyMessage(Pusher_Stop);
+//
+////                if (rtmpCamera3.isStreaming()) {
+////                    rtmpCamera3.stopStream();
+////                }
+//            }
+//        });
+
+
         // 需要使用动态注册才能接收到广播,息屏的时候保存之前的录像
         registerPowerReceiver();
         registerConnectionReceiver();
 
         vlc_video_view = vlcVideoView.findViewById(R.id.vlc_video_view);
-        vlc_video_view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //控制功能按钮的显示和隐藏   点击屏幕
-                if (lock_screen.getVisibility() == View.VISIBLE) {
-                    lock_screen.setVisibility(View.INVISIBLE);
-                    if (lock_screen.getTag().equals("Lock")) {
-                        layout_top.setVisibility(View.INVISIBLE);
-                        mChangeFull.setVisibility(View.INVISIBLE);
-                        linear_contral.setVisibility(View.INVISIBLE);
-
-                    } else {
-                        layout_top.setVisibility(View.INVISIBLE);
-                        mChangeFull.setVisibility(View.INVISIBLE);
-                        linear_contral.setVisibility(View.INVISIBLE);
-                    }
+        vlc_video_view.setOnClickListener((View v) -> {
+            //控制功能按钮的显示和隐藏   点击屏幕
+            if (lock_screen.getVisibility() == View.VISIBLE) {
+                lock_screen.setVisibility(View.INVISIBLE);
+                if (lock_screen.getTag().equals("Lock")) {
+                    mHandler.sendEmptyMessage(Show_Control_InVisible);
                 } else {
-                    lock_screen.setVisibility(View.VISIBLE);
-                    if (lock_screen.getTag().equals("Lock")) {
-                        layout_top.setVisibility(View.INVISIBLE);
-                        mChangeFull.setVisibility(View.INVISIBLE);
-                        linear_contral.setVisibility(View.INVISIBLE);
-                    } else {
-                        layout_top.setVisibility(View.VISIBLE);
-                        mChangeFull.setVisibility(View.VISIBLE);
-                        linear_contral.setVisibility(View.VISIBLE);
-                    }
+                    mHandler.sendEmptyMessage(Show_Control_InVisible);
+                }
+            } else {
+                lock_screen.setVisibility(View.VISIBLE);
+                if (lock_screen.getTag().equals("Lock")) {
+                    mHandler.sendEmptyMessage(Show_Control_InVisible);
+
+                } else {
+                    mHandler.sendEmptyMessage(Show_Control_Visible);
+
                 }
             }
         });
-//        vlc_video_view.setLibVLCPath(url01);
         vlcVideoView.setMediaListenerEvent(new MediaListenerEvent() {
             @Override
             public void eventBuffing(int event, float buffing) {
                 if (buffing < 100) {
                     loading.start();
-                    loading.setVisibility(View.VISIBLE);
+                    mHandler.sendEmptyMessage(Type_Loading_Visible);
                 } else if (buffing == 100) {
                     isPlayering = true;
                     loading.release();
-                    loading.setVisibility(View.INVISIBLE);
+                    mHandler.sendEmptyMessage(Type_Loading_InVisible);
                 }
 
 
                 LogUtils.e("path=====Start:=====" + "我是当前播放的url======eventBuffing======" + buffing);
-//                if (buffing <3) {
-//                    isPlayering = true;
-//                    loading.release();
-//                    loading.setVisibility(View.INVISIBLE);
-//                }
+
             }
 
             @Override
             public void eventStop(boolean isPlayError) {
                 LogUtils.e("path=====Start:=====" + "我是当前播放的url======eventStop======" + isPlayError);
-//                if (isPlayError) {
-//                    isPlayering = false;
-//                    loading.setVisibility(View.INVISIBLE);
-//                    error_text.setVisibility(View.VISIBLE);
-//                }
+                if (isPlayError) {
+
+                    if (mFlag_Record) { //如果在录像，断开录像
+                        vlcRecordOver();
+                        LogUtils.e("path=====Start:=====" + "我是当前播放的url===eventStop===视频流断开连接====断开录像==");
+
+                    }
+//                    if (isPlayering && mFlag_Record) {
+//                        vlcRecordOver();
+//                    }
+
+                    if (mFlag_MicOnLine) {//如果在连麦，断开连麦
+                        pusherStop("Common");
+                        LogUtils.e("path=====Start:=====" + "我是当前播放的url===eventStop===视频流断开连接====断开连麦==");
+
+                    }
+//                    mRelativeStatue.setVisibility(View.VISIBLE);
+                    error_text.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -310,14 +392,15 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
 
                 if (isPlayering) {
 //                    startLive(path);
-                    if (isStringRecord) {
+                    if (mFlag_Record) {
                         vlcRecordOver();
                     }
                     mHandler.sendEmptyMessage(FirstError);
                 } else {
                     isPlayering = false;
                     startView.setVisibility(View.VISIBLE);
-                    loading.setVisibility(View.INVISIBLE);
+                    mHandler.sendEmptyMessage(Type_Loading_InVisible);
+//                    loading.setVisibility(View.INVISIBLE);
                 }
 
 
@@ -331,12 +414,24 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
             }
 
             @Override
-            public void eventSystemEnd(String isStringed) {
+            public void eventSystemEnd(String isStringed) {  //视频流断开连接
                 LogUtils.e("path=====Start:=====" + "我是当前播放的url======eventSystemEnd======" + isStringed);
                 if ("EndReached".equals(isStringed)) {
-                    if (isPlayering && isStringRecord) {
+                    if (mFlag_Record) { //如果在录像，断开录像
                         vlcRecordOver();
+                        LogUtils.e("path=====Start:=====" + "我是当前播放的url======视频流断开连接====断开录像==");
+
                     }
+//                    if (isPlayering && mFlag_Record) {
+//                        vlcRecordOver();
+//                    }
+
+                    if (mFlag_MicOnLine) {//如果在连麦，断开连麦
+                        pusherStop("Common");
+                        LogUtils.e("path=====Start:=====" + "我是当前播放的url======视频流断开连接====断开连麦==");
+
+                    }
+
                 }
 
             }
@@ -344,12 +439,15 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
             @Override
             public void eventCurrentTime(String time) {
                 currentTime = time;
-                mHandler.sendEmptyMessage(0);
+                mHandler.sendEmptyMessageDelayed(0, 1000);
+//                mHandler.sendEmptyMessage(0);
+
             }
 
             @Override
             public void eventPlayInit(boolean openClose) {
                 startView.setVisibility(View.INVISIBLE);
+                error_text.setVisibility(View.INVISIBLE);
                 LogUtils.e("path=====Start:=====" + "我是当前播放的url======eventPlayInit======" + openClose);
                 LogUtils.e("path=====Start:=====" + "我是当前播放的url======eventPlayInit===url===" + path);
 
@@ -367,7 +465,12 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
         StatusBarUtil.darkMode(this, false);  //设置了状态栏文字的颜色
         recordFile.mkdirs();
         player = findViewById(R.id.player);
+//        mTvStatue = findViewById(R.id.tv_all_statue);
         mPusher = findViewById(R.id.pusher);
+//        mRelativeStatue = findViewById(R.id.relative_statue);
+//        mRelativeStatue.setVisibility(View.INVISIBLE);
+//        mBackStatue = mRelativeStatue.findViewById(R.id.back_statue);
+
         mTitle = findViewById(R.id.tv_top_title);
         tv_current_time = findViewById(R.id.tv_current_time);
         vlcVideoView = findViewById(R.id.vlc_video_view);
@@ -379,6 +482,7 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
         layout_top = findViewById(R.id.layout_top);
         linear_contral = findViewById(R.id.linear_contral);
         error_text = findViewById(R.id.error_text);
+        error_text.setVisibility(View.INVISIBLE);
         snapShot = findViewById(R.id.snapShot);
         startView = findViewById(R.id.start);
         loading = findViewById(R.id.loading);
@@ -392,75 +496,79 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
         mMicPort = getIntent().getStringExtra("micport");
         LogUtils.e("url==01===" + url01);
         LogUtils.e("url==02===" + url02);
-        path = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8";
-//        path = url01;
-        loading.setVisibility(View.VISIBLE);
-        rtmpCamera3 = new RtmpCamera3(this);
-
+        path = url01;
+        mHandler.sendEmptyMessage(Type_Loading_Visible);
+//        loading.setVisibility(View.VISIBLE);
+//        rtmpCamera3 = new RtmpCamera3(this, this);
+        rtmpOnlyAudio = new RtmpOnlyAudio(this);
     }
-
 
     @SuppressLint("NewApi")
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.start:
+            case R.id.start://开始播放
                 startLive(path);
                 break;
-            case R.id.back:
-                if (isStringRecord) {
+            case R.id.back://返回
+                if (mFlag_Record) {
                     vlcRecordOver();
                 }
                 vlcVideoView.setAddSlave(null);
-                vlcVideoView.onStop();
-                if (rtmpCamera3.isStreaming()) {
-                    rtmpCamera3.stopStream();
+                vlcVideoView.onDestroy();
+                if (rtmpOnlyAudio.isStreaming()) {
+                    rtmpOnlyAudio.stopStream();
                 }
-                pusherStop();
+                pusherStop("Back");
                 finish();
                 break;
-            case R.id.pusher:
-                if (!rtmpCamera3.isStreaming()) {
-                    if (rtmpCamera3.prepareAudio()) {
-                        if (CommonUtil.isFastClick()){
-                            pusherStart();
+            case R.id.pusher:  //推流
+                LogUtils.e("pusherStart====111===" + rtmpOnlyAudio.isStreaming());    //true   断开的时候
+                LogUtils.e("pusherStart====222===" + rtmpOnlyAudio.prepareAudio());   //true
+                if (!rtmpOnlyAudio.isStreaming()) {
+                    if (rtmpOnlyAudio.prepareAudio()) {
+                        if (CommonUtil.isFastClick()) {
+                            if ("一体机".equals(mTitleData.substring(0, 3))) {
+                                if (isPlayering) {
+                                    pusherStart();
+                                } else {
+                                    startSendToast("只有在直播开启的时候,才能使用语音功能!");
+                                }
+                            } else {
+                                startSendToast("当前直播没有语音功能!");
+                            }
                         }
                     } else {
-                        Toast.makeText(this, "Error preparing stream, This device cant do it",
-                                Toast.LENGTH_SHORT).show();
+                        startSendToast("Error preparing stream, This device cant do it");
                     }
                 } else {
-                    if (CommonUtil.isFastClick()){
-                        pusherStop();
+                    if (CommonUtil.isFastClick()) {
+                        pusherStop("Common");
                     }
                 }
                 break;
             case R.id.photos:  //打开相册
                 if (isPlayering) {
+                    if (mFlag_Record) { //如果录像则关闭录像
+                        vlcRecordOver();
+                    }
                     Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivity(intent);
                 } else {
-                    Toast.makeText(TestVlcPlayerActivity.this, "只有在播放的时候才能打开相册", Toast.LENGTH_SHORT).show();
+                    startSendToast("只有在播放的时候才能打开相册");
                 }
                 break;
-            case R.id.lock_screen:  //点击小锁
+            case R.id.lock_screen:  //锁屏
                 LogUtils.e("TAG" + "===lock_screen==锁屏控制====");
                 if (lock_screen.getTag().equals("unLock")) {
                     lock_screen.setTag("Lock");
-                    lock_screen.setImageDrawable(getResources().getDrawable(R.drawable.video_lock_close_ic)); //不会变形
-                    lock_screen.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                    layout_top.setVisibility(View.INVISIBLE);
-                    mChangeFull.setVisibility(View.INVISIBLE);
-                    linear_contral.setVisibility(View.INVISIBLE);
+                    mHandler.sendEmptyMessage(Show_Lock);
                 } else {
                     lock_screen.setTag("unLock");
-                    lock_screen.setImageDrawable(getResources().getDrawable(R.drawable.video_lock_open_ic));
-                    lock_screen.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                    layout_top.setVisibility(View.VISIBLE);
-                    mChangeFull.setVisibility(View.VISIBLE);
-                    linear_contral.setVisibility(View.VISIBLE);
+                    mHandler.sendEmptyMessage(Show_Unlock);
+
                 }
                 break;
-            case R.id.change:
+            case R.id.change: //切换全屏
                 //ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,//指定横屏
                 //ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,//指定竖屏
                 //ActivityInfo.SCREEN_ORIENTATION_USER,//根据用户朝向
@@ -478,38 +586,37 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
                 }
                 break;
 
-            case R.id.change_live:
+            case R.id.change_live: //切换清晰度
                 if (!"02".equals(urlType)) {
-                    showSwitchDialog();
+                    mHandler.sendEmptyMessage(Show_UrL_Type);
                 } else {
-                    Toast.makeText(TestVlcPlayerActivity.this, "url只有高清模式噢", Toast.LENGTH_SHORT).show();
+                    startSendToast("url类型只有高清模式噢!");
                 }
                 break;
-            case R.id.recordStart:
+            case R.id.recordStart: //录像
                 if (isPlayering) {
                     if (isStarting && vlcVideoView.isPrepare()) {
-                        isStringRecord = true;
+                        mFlag_Record = true;
                         mHandler.sendEmptyMessage(Record_Start);
-                        vlcVideoView.getMediaPlayer().record(directory);
+//                        vlcVideoView.getMediaPlayer().record(directory);
                         LogUtils.e("path=====录像--开始:=====" + directory); //   /storage/emulated/0/1604026573438.mp4
-                        //recordEvent.startRecord(vlcVideoView.getMediaPlayer(), directory, "yyl.mp4");
+                        recordEvent.startRecord(vlcVideoView.getMediaPlayer(), directory, "cme.mp4");
                     } else {
                         vlcRecordOver();
                     }
                 } else {
-                    Toast.makeText(TestVlcPlayerActivity.this, "只有在播放的时候才能录像", Toast.LENGTH_SHORT).show();
+                    startSendToast("只有在播放的时候才能录像!");
                 }
                 break;
-            case R.id.snapShot:
+            case R.id.snapShot://截图
                 if (isPlayering) {
                     if (vlcVideoView.isPrepare()) {
                         Media.VideoTrack videoTrack = vlcVideoView.getVideoTrack();
                         if (videoTrack != null) {
                             //vlcVideoView.getMediaPlayer().updateVideoSurfaces();
-                            Toast.makeText(this, "截图成功", Toast.LENGTH_SHORT).show();
+                            startSendToast("截图成功");
                             //原图
                             LogUtils.e("path=====截图地址:=====" + takeSnapshotFile.getAbsolutePath()); //   /storage/emulated/0/1604026573438.mp4
-
                             File localFile = new File(takeSnapshotFile.getAbsolutePath());
                             if (!localFile.exists()) {
                                 localFile.mkdir();
@@ -526,50 +633,105 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
                     //Bitmap bitmap = vlcVideoView.getBitmap();
                     //saveBitmap("", bitmap);
                 } else {
-                    Toast.makeText(TestVlcPlayerActivity.this, "只有在播放的时候才能截图", Toast.LENGTH_SHORT).show();
+                    startSendToast("只有在播放的时候才能截图!");
                 }
                 break;
         }
     }
 
-    @SuppressLint("NewApi")
-    private void pusherStop() {
-        OkHttpUtils.get()
-//                .url("http://192.168.64.13:7789/stop")
-                .url("http://" + mIp + ":" + mMicPort + "/stop")
-                .addParams("username", currentUserName + "_安卓")
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                    }
+    private void startSendToast(String toastStr) {
+        Message tempMsg = mHandler.obtainMessage();
+        tempMsg.what = Send_Toast;
+        tempMsg.obj = toastStr;
+        mHandler.sendMessage(tempMsg);
+    }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        mHandler.sendEmptyMessage(Pusher_Stop);
-                    }
-                });
+
+    private void pusherStop(String Type) {
+        try {
+            mPusherLoading = new WaitDialog.Builder(this)
+                    // 消息文本可以不用填写
+                    .setMessage(getString(R.string.common_stop_loading))
+                    .show();
+            LogUtils.e("rtmpCamera3====pusher====pusherStop===" + "http://" + mIp + ":" + mMicPort + "/stop");
+            OkHttpUtils.get()
+//                .url("http://192.168.64.13:7789/stop")
+                    .url("http://" + mIp + ":" + mMicPort + "/stop")
+                    .addParams("username", currentUserName + "_安卓")
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            mPusherLoading.dismiss();
+                            LogUtils.e("rtmpCamera3====pusher====pusherStop===" + "onError");
+
+                            if (!"Back".equals(Type)) {
+                                startSendToast("语音断开失败: 500");
+                            }
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            mPusherLoading.dismiss();
+                            LogUtils.e("rtmpCamera3====pusher====pusherStop===" + "onResponse");
+                            LogUtils.e("rtmpCamera3===pusher====pusherStop===" + "response===" + response);
+                            mHandler.sendEmptyMessage(Pusher_Stop);
+                        }
+                    });
+        } catch (Exception e) {
+            mPusherLoading.dismiss();
+        }
     }
 
     //1.推流开始：http://ip:7789/start?username=xxx
-//2.推流退出：http://ip:7789/stop?username=xxx
+    //2.推流退出：http://ip:7789/stop?username=xxx
     @SuppressLint("NewApi")
     private void pusherStart() {
-        OkHttpUtils.get()
-                .url("http://" + mIp + ":" + mMicPort + "/start")
-                .addParams("username", currentUserName + "_安卓")
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                    }
+        try {
+            LogUtils.e("rtmpCamera3====pusher====pusherStart===" + "http://" + mIp + ":" + mMicPort + "/start");
+            /**
+             * 开始推流
+             * 语音连接失败: 300  html数据解析失败
+             * 语音连接失败: 500  未连接上服务器
+             * 结束推流
+             * 语音断开失败: 500 未连接上服务器
+             */
+            currentUserName = (String) SharePreferenceUtil.get(this, SharePreferenceUtil.Current_Username, "张三");
+            mPusherLoading = new WaitDialog.Builder(this)
+                    // 消息文本可以不用填写
+                    .setMessage(getString(R.string.common_loading))
+                    .show();
+            OkHttpUtils.get()
+                    .url("http://" + mIp + ":" + mMicPort + "/start")
+                    .addParams("username", currentUserName + "_安卓")
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            mPusherLoading.dismiss();
+                            startSendToast("语音连接失败: 500");
+                        }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        mResponse = response;
-                        mHandler.sendEmptyMessage(Pusher_Start);
-                    }
-                });
+                        @Override
+                        public void onResponse(String response, int id) {
+                            LogUtils.e("rtmpCamera3====pusherStart====response===" + response);
+//                            <html><head><title></title></head><body>rtmp://192.168.128.134:8350/live/94726</body></html>
+                            String replace = response.replace("", "");
+                            int i = replace.indexOf("<body>");
+                            int i1 = replace.lastIndexOf("</body>");
+                            mPusherUrl = response.substring(i + 6, i1);
+                            mPusherLoading.dismiss();
+                            if (-1 != mPusherUrl.indexOf("null")) { //说明是完整的url
+                                startSendToast("语音连接失败: 300");
+                            } else {
+                                mHandler.sendEmptyMessage(Pusher_Start);
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            mPusherLoading.dismiss();
+            startSendToast("获取推流地址失败!");
+        }
     }
 
     /**
@@ -582,11 +744,10 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
         vlcVideoView.setPath(path);
         vlcVideoView.startPlay();
         error_text.setVisibility(View.INVISIBLE);
-        loading.setVisibility(View.VISIBLE);
+        mHandler.sendEmptyMessage(Type_Loading_Visible);
         loading.start();
 
     }
-
 
     @Override
     public void onResume() {
@@ -595,6 +756,7 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
         LogUtils.e("path=====录像--onResume=path:=====" + path);
         isOnPauseExit = false;
         startLive(path);
+        vlcVideoView.startPlay();
     }
 
     @SuppressLint("NewApi")
@@ -602,19 +764,15 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
     public void onPause() {
         super.onPause();
         path = url01;
-        vlcVideoView.pause();
-        loading.setVisibility(View.INVISIBLE);
+        //直接调用stop 不然回ANR
+        vlcVideoView.onStop();
+        mHandler.sendEmptyMessage(Type_Loading_InVisible);
         loading.release();
         isOnPauseExit = true;
-        //进入后台 停之推送!音频
-        if (null != mPusher) {
-            if ("startStream".equals(mPusher.getTag()))
-                mHandler.sendEmptyMessage(Pusher_Stop);
-            mPusher.setTag("stopStream");
-            rtmpCamera3.stopStream();
-        }
+
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -628,7 +786,13 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
         //手动清空字幕
         vlcVideoView.setAddSlave(null);
         vlcVideoView.onDestroy();
-//
+
+        // 停之推送!音频
+        if (null != mPusher) {
+            if ("startStream".equals(mPusher.getTag())) {
+                mHandler.sendEmptyMessage(Pusher_Stop);
+            }
+        }
     }
 
     @Override
@@ -638,16 +802,16 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
         LogUtils.e("path=====录像--onStop:=====");
         vlcVideoView.setAddSlave(null);
         vlcVideoView.onStop();
-        loading.setVisibility(View.INVISIBLE);
+        mHandler.sendEmptyMessage(Type_Loading_InVisible);
         loading.release();
     }
 
-
     private void vlcRecordOver() {
-        isStringRecord = false;
-        mHandler.sendEmptyMessage(Record_End);
+        mFlag_Record = false;
+        mHandler.sendEmptyMessage(Record_Stop);
         vlcVideoView.getMediaPlayer().record(null);
-        FileUtil.scanFile(TestVlcPlayerActivity.this, directory);
+//        FileUtil.scanFile(TestVlcPlayerActivity.this, directory);
+        FileUtil.RefreshAlbum(directory, true, this);
     }
 
     public void setTextColor(int color, String message, boolean isStarting) {
@@ -655,7 +819,6 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
         recordStart.setTextColor(color);
         this.isStarting = isStarting;
     }
-
 
     /**
      * 扫描文件
@@ -671,7 +834,6 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
         }
     });
 
-
     /**
      * 弹出切换清晰度
      */
@@ -679,24 +841,33 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
         SwitchVideoTypeDialog switchVideoTypeDialog = new SwitchVideoTypeDialog(this);
         switchVideoTypeDialog.initList(mUrlList, new SwitchVideoTypeDialog.OnListItemClickListener() {
             @Override
-            public void onItemClick(int position) {
+            public void onItemClick(int position) {  //position==0,name==高清
                 final String name = mUrlList.get(position).getName();
-                if (mSourcePosition != position) {
+                LogUtils.e("'switchVideoModel===position==" + position);
+                LogUtils.e("'switchVideoModel===name==" + name);
+                if (mSourcePosition != position) {  //默认是高清
                     mTypeText = name;
                     mSourcePosition = position;
-                    change_live.setText(mTypeText + "");
-                    if (isPlayering && isStringRecord) {
-                        isStringRecord = false;
-                        setTextColor(getResources().getColor(R.color.white), "录像", true);
-                        Toast.makeText(TestVlcPlayerActivity.this, "录像成功", Toast.LENGTH_SHORT).show();
+                    mHandler.sendEmptyMessage(Send_UrlType);
+                    mHandler.sendEmptyMessage(Pusher_Stop);
+                    //要断开麦克风连接
+                    if ("startStream".equals(mPusher.getTag())) {
+                        pusherStop("Common");
+                    }
+                    if (isPlayering && mFlag_Record) {
+                        mFlag_Record = false;
+                        mHandler.sendEmptyMessage(Record_Stop);
+//                        setTextColor(getResources().getColor(R.color.colorAccent), "录像", false);
+//                        Drawable record_start = getResources().getDrawable(R.drawable.icon_record_pre);
+//                        recordStart.setCompoundDrawablesWithIntrinsicBounds(null, record_start, null, null);
+                        startSendToast("录像成功!");
                         vlcVideoView.getMediaPlayer().record(null);
                         FileUtil.scanFile(TestVlcPlayerActivity.this, directory);
                     }
                     startLive(mUrlList.get(position).getUrl());
-                    Toast.makeText(TestVlcPlayerActivity.this, "" + name, Toast.LENGTH_SHORT).show();
-
+                    startSendToast("" + name);
                 } else {
-                    Toast.makeText(TestVlcPlayerActivity.this, "已经是 " + name, Toast.LENGTH_LONG).show();
+                    startSendToast("已经是 " + name);
                 }
             }
         });
@@ -704,76 +875,13 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void onConnectionSuccessRtmp() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Log.e("TAG", "rtmpCamera3.isStreaming()=====onConnectionSuccessRtmp");
-                Toast.makeText(TestVlcPlayerActivity.this, "连接成功", Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
-    }
-
-    @Override
-    public void onConnectionFailedRtmp(final String reason) {
-        runOnUiThread(new Runnable() {
-            @SuppressLint("NewApi")
-            @Override
-            public void run() {
-                Log.e("TAG", "rtmpCamera3.isStreaming()=====" + reason);
-                Log.e("TAG", "rtmpCamera3.isStreaming()=====onConnectionFailedRtmp");
-                Toast.makeText(TestVlcPlayerActivity.this, "Connection failed. " + reason,
-                        Toast.LENGTH_SHORT).show();
-                rtmpCamera3.stopStream();
-            }
-        });
-    }
-
-    @Override
-    public void onDisconnectRtmp() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Log.e("TAG", "rtmpCamera3.isStreaming()=====onDisconnectRtmp");
-                if (!isOnPauseExit) {
-                    Toast.makeText(TestVlcPlayerActivity.this, "断开麦克风链接", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onAuthErrorRtmp() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Log.e("TAG", "rtmpCamera3.isStreaming()=====onAuthErrorRtmp");
-
-                Toast.makeText(TestVlcPlayerActivity.this, "Auth error", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    @Override
-    public void onAuthSuccessRtmp() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Log.e("TAG", "rtmpCamera3.isStreaming()=====onAuthSuccessRtmp");
-                Toast.makeText(TestVlcPlayerActivity.this, "Auth success", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {//横屏
-            Drawable record_end = getResources().getDrawable(R.drawable.nur_ic_fangda);
+            Drawable record_end = getResources().getDrawable(R.drawable.nur_ic_fangxiao);
             mChangeFull.setCompoundDrawablesWithIntrinsicBounds(record_end, null, null, null);
         } else {
-            Drawable record_end = getResources().getDrawable(R.drawable.nur_ic_fangxiao);
+            Drawable record_end = getResources().getDrawable(R.drawable.nur_ic_fangda);
             mChangeFull.setCompoundDrawablesWithIntrinsicBounds(record_end, null, null, null);//竖屏
         }
     }
@@ -788,7 +896,7 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
         mConnectionReceiver.setOnWifiListener(new ConnectionChangeReceiver.onWifiListener() {
             @Override
             public void wifiOff() {
-                if (isPlayering && isStringRecord) {
+                if (isPlayering && mFlag_Record) {
                     vlcRecordOver();
                 }
             }
@@ -810,7 +918,7 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
         receiver.setOnScreenListener(new PowerScreenReceiver.onScreenListener() {
             @Override
             public void screenOff() {
-                if (isPlayering && isStringRecord) {
+                if (isPlayering && mFlag_Record) {
                     LogUtils.e("path=====录像--screenOff:=====");
                     vlcRecordOver();
                 }
@@ -818,5 +926,113 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
         });
         registerReceiver(receiver, intentFilter);
     }
+
+    @Override
+    public void onConnectionSuccessRtmp() {
+        Log.e("TAG", "RtmpOnlyAudio=====onConnectionSuccessRtmp");
+        startSendToast("连接成功 ");
+    }
+
+    @Override
+    public void onConnectionFailedRtmp(String reason) {
+        runOnUiThread(new Runnable() {
+            @SuppressLint("NewApi")
+            @Override
+            public void run() {
+                Log.e("TAG", "RtmpOnlyAudio=====" + reason);
+                Log.e("TAG", "RtmpOnlyAudio=====onConnectionFailedRtmp");
+                startSendToast("Connection failed. " + reason);
+                rtmpOnlyAudio.stopStream();
+            }
+        });
+    }
+
+    @Override
+    public void onNewBitrateRtmp(long bitrate) {
+
+    }
+
+    @Override
+    public void onDisconnectRtmp() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.e("TAG", "RtmpOnlyAudio=====onDisconnectRtmp");
+                if (!isOnPauseExit) {
+                    startSendToast("断开麦克风链接");
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onAuthErrorRtmp() {
+
+    }
+
+    @Override
+    public void onAuthSuccessRtmp() {
+
+    }
+
+//    @Override
+//    public void onConnectionSuccessRtmp() {
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.e("TAG", "rtmpCamera3.isStreaming()=====onConnectionSuccessRtmp");
+//                startSendToast("连接成功 ");
+//            }
+//        });
+//    }
+//
+//    @Override
+//    public void onConnectionFailedRtmp(final String reason) {
+//        runOnUiThread(new Runnable() {
+//            @SuppressLint("NewApi")
+//            @Override
+//            public void run() {
+//                Log.e("TAG", "rtmpCamera3.isStreaming()=====" + reason);
+//                Log.e("TAG", "rtmpCamera3.isStreaming()=====onConnectionFailedRtmp");
+//                startSendToast("Connection failed. " + reason);
+//                rtmpCamera3.stopStream();
+//            }
+//        });
+//    }
+//
+//    @Override
+//    public void onDisconnectRtmp() {
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.e("TAG", "rtmpCamera3.isStreaming()=====onDisconnectRtmp");
+//                if (!isOnPauseExit) {
+//                    startSendToast("断开麦克风链接");
+//                }
+//            }
+//        });
+//    }
+//
+//    @Override
+//    public void onAuthErrorRtmp() {
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.e("TAG", "rtmpCamera3.isStreaming()=====onAuthErrorRtmp");
+//                startSendToast("Auth error");
+//            }
+//        });
+//    }
+//
+//    @Override
+//    public void onAuthSuccessRtmp() {
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.e("TAG", "rtmpCamera3.isStreaming()=====onAuthSuccessRtmp");
+//                startSendToast("Auth success");
+//            }
+//        });
+//    }
 
 }

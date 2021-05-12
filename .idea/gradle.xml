@@ -14,12 +14,8 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/base" />
             <option value="$PROJECT_DIR$/commonlib" />
-            <option value="$PROJECT_DIR$/encoder" />
             <option value="$PROJECT_DIR$/lib_fileviewer" />
             <option value="$PROJECT_DIR$/libvlc" />
-            <option value="$PROJECT_DIR$/rtmp" />
-            <option value="$PROJECT_DIR$/rtplibrary" />
-            <option value="$PROJECT_DIR$/rtsp" />
             <option value="$PROJECT_DIR$/widget" />
           </set>
         </option>

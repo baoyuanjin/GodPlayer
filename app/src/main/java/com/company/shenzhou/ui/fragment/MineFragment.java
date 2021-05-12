@@ -228,7 +228,7 @@ public class MineFragment extends BaseFragment {
         versionPop.getTv_version().setText("版本：" + versionName);
         versionPop.getTv_copyright().setText("版权所有(C)：" + showCopyrightYear);
         versionPop.getTv_company().setText("江西神州医疗设备有限公司");
-        versionPop.getTv_update_date().setText("更新日期：2021年4月");
+        versionPop.getTv_update_date().setText("更新日期：2021年5月");
         versionPop.getTv_ok().setText("确定");
         versionPop.getTv_ok().setOnClickListener(new View.OnClickListener() {
             @Override
