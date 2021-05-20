@@ -106,6 +106,7 @@ dependencies {
 //    implementation 'com.shuyu:gsyVideoPlayer-java:7.0.1'
 //    //是否需要ExoPlayer模式
 //    implementation 'com.shuyu:GSYVideoPlayer-exo2:7.0.1'
+
 //    //更多ijk的编码支持
 //    implementation 'com.shuyu:gsyVideoPlayer-ex_so:7.0.1'
 
@@ -124,7 +125,7 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
 
     // 日志调试：https://github.com/getActivity/Logcat    app里面会有个小按钮
-    debugImplementation 'com.hjq:logcat:8.2'
+//    debugImplementation 'com.hjq:logcat:8.2'
 
 
     //RTMP  RTSP  推流

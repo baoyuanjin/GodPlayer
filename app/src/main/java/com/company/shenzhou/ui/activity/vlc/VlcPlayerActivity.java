@@ -661,7 +661,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                     // 消息文本可以不用填写
                     .setMessage(getString(R.string.common_stop_loading))
                     .show();
-            LogUtils.e("rtmpCamera3====pusher====pusherStop===" + "http://" + mIp + ":" + mMicPort + "/stop");
+            LogUtils.e("测试麦克风====pusher====关闭-语音连麦===" + "http://" + mIp + ":" + mMicPort + "/stop");
             OkHttpUtils.get()
 //                .url("http://192.168.64.13:7789/stop")
                     .url("http://" + mIp + ":" + mMicPort + "/stop")
@@ -671,7 +671,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             mPusherLoading.dismiss();
-                            LogUtils.e("rtmpCamera3====pusher====pusherStop===" + "onError");
+                            LogUtils.e("测试麦克风====pusher====关闭-语音连麦=====" + "onError=====e======"+e);
 
                             if (!"Back".equals(Type)) {
                                 startSendToast("语音断开失败: 500");
@@ -681,12 +681,13 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                         @Override
                         public void onResponse(String response, int id) {
                             mPusherLoading.dismiss();
-                            LogUtils.e("rtmpCamera3====pusher====pusherStop===" + "onResponse");
-                            LogUtils.e("rtmpCamera3===pusher====pusherStop===" + "response===" + response);
+                            LogUtils.e("测试麦克风====pusher====关闭-语音连麦=====" + "onResponse===" + response);
                             mHandler.sendEmptyMessage(Pusher_Stop);
                         }
                     });
         } catch (Exception e) {
+            LogUtils.e("测试麦克风====pusher====关闭-语音连麦=====" + "Exception===" +e );
+
             mPusherLoading.dismiss();
         }
     }
@@ -696,7 +697,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
     @SuppressLint("NewApi")
     private void pusherStart() {
         try {
-            LogUtils.e("rtmpCamera3====pusher====pusherStart===" + "http://" + mIp + ":" + mMicPort + "/start");
+            LogUtils.e("测试麦克风====pusher====开始语音连麦===" + "http://" + mIp + ":" + mMicPort + "/start");
             /**
              * 开始推流
              * 语音连接失败: 300  html数据解析失败
@@ -704,6 +705,8 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
              * 结束推流
              * 语音断开失败: 500 未连接上服务器
              */
+            Log.e("TAG", "试麦克风====pusher====开始语音连麦===" + "http://" + mIp + ":" + mMicPort + "/start");
+
             currentUserName = (String) SharePreferenceUtil.get(this, SharePreferenceUtil.Current_Username, "张三");
             mPusherLoading = new WaitDialog.Builder(this)
                     // 消息文本可以不用填写
@@ -717,12 +720,14 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             mPusherLoading.dismiss();
+                            LogUtils.e("试麦克风====pusher====开始语音连麦===" + "onError=====e======"+e);
+
                             startSendToast("语音连接失败: 500");
                         }
 
                         @Override
                         public void onResponse(String response, int id) {
-                            LogUtils.e("rtmpCamera3====pusherStart====response===" + response);
+                            LogUtils.e("试麦克风====pusher====开始语音连麦===onResponse====" + response);
 //                            <html><head><title></title></head><body>rtmp://192.168.128.134:8350/live/94726</body></html>
                             String replace = response.replace("", "");
                             int i = replace.indexOf("<body>");
@@ -737,6 +742,8 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                         }
                     });
         } catch (Exception e) {
+            LogUtils.e("试麦克风====pusher====开始语音连麦===Exception====" + e);
+
             mPusherLoading.dismiss();
             startSendToast("获取推流地址失败!");
         }

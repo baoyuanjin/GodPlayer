@@ -174,6 +174,9 @@ public class ZXingActivity extends BaseActivity implements QRCodeView.Delegate, 
             videoDBBean.setMakeMessage(mBean.getMakemsg());
             videoDBBean.setPort(mBean.getPort());
             String type1 = mBean.getType();
+            Toast.makeText(this, "mBean.getMicport()!====="+mBean.getMicport(), Toast.LENGTH_SHORT).show();
+            Log.e("TAG", "mBean.getMicport()!========" + mBean.getMicport());
+
             if ("0".equals(type1)) {
                 videoDBBean.setType("HD3");
             } else if ("1".equals(type1)) {
@@ -239,7 +242,6 @@ public class ZXingActivity extends BaseActivity implements QRCodeView.Delegate, 
             final String picturePath = BGAPhotoPickerActivity.getSelectedPhotos(data).get(0);
             // 本来就用到 QRCodeView 时可直接调 QRCodeView 的方法，走通用的回调
             mZXingView.decodeQRCode(picturePath);
-
             /*
             没有用到 QRCodeView 时可以调用 QRCodeDecoder 的 syncDecodeQRCode 方法
 

@@ -14,7 +14,7 @@
         android:layout_height="153dp"
         android:src="@mipmap/icon_logo" />
 
-
+<!--    android:textColor="@color/color_1296db"-->
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/sp_player"
         android:layout_below="@+id/iv_splash"
@@ -24,8 +24,7 @@
         android:layout_centerHorizontal="true"
         android:paddingTop="20dp"
         android:text="@string/app_name"
-        android:textColor="@color/color_1296db"
-        android:textSize="33sp"
+        android:textSize="30sp"
         android:textStyle="bold" />
 <!--    粤ICP备12038225-->
     <TextView
