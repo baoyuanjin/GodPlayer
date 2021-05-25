@@ -190,7 +190,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("url01", currentUrl01);
                         intent.putExtra("url02", currentUrl02);
                         intent.putExtra("urlType", "00");
-                        intent.putExtra("mTitle", "HD3" + "   (" + "ip地址为:" + ip + ")");
+                        intent.putExtra("mTitle", "HD3" + "   (" + "ip:" + ip + ")");
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==HD3==micport===" + bean.getMicport());
@@ -202,7 +202,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("url01", currentUrl01);
                         intent.putExtra("url02", currentUrl02);
                         intent.putExtra("urlType", "01");
-                        intent.putExtra("mTitle", "一体机" + "   (" + "ip地址为:" + ip + ")");
+                        intent.putExtra("mTitle", "一体机" + "   (" + "ip:" + ip + ")");
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==一体机==micport===" + bean.getMicport());
@@ -216,7 +216,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("url01", replace1);
                         intent.putExtra("url02", replace2);
                         intent.putExtra("urlType", "02");
-                        intent.putExtra("mTitle", "自定义URL" + "   (" + "地址为:" + ip + ")");
+                        intent.putExtra("mTitle", "自定义URL" + "   (" + ":" + ip + ")");
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==自定义url==micport===" + bean.getMicport());

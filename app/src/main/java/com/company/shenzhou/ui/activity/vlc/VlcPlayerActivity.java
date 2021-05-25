@@ -70,7 +70,7 @@ import okhttp3.Call;
  * <p>  VLC 直播界面
  * Describe
  */
-public class VlcPlayerActivity extends AppCompatActivity implements View.OnClickListener ,ConnectCheckerRtmp{
+public class VlcPlayerActivity extends AppCompatActivity implements View.OnClickListener, ConnectCheckerRtmp {
     // public static final String path = "http://121.18.168.149/cache.ott.ystenlive.itv.cmvideo.cn:80/000000001000/1000000001000010606/1.m3u8?stbId=005301FF001589101611549359B92C46&channel-id=ystenlive&Contentid=1000000001000010606&mos=jbjhhzstsl&livemode=1&version=1.0&owaccmark=1000000001000010606&owchid=ystenlive&owsid=5474771579530255373&AuthInfo=2TOfGIahP4HrGWrHbpJXVOhAZZf%2B%2BRvFCOimr7PCGr%2Bu3lLj0NrV6tPDBIsVEpn3QZdNn969VxaznG4qedKIxPvWqo6nkyvxK0SnJLSEP%2FF4Wxm5gCchMH9VO%2BhWyofF";
     //public static final String path = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov";
     //public static final String path = "http://ivi.bupt.edu.cn/hls/cctv1hd.0 ";
@@ -140,6 +140,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
     private static final int Send_UrlType = 107;
     private static final int Type_Loading_Visible = 108;
     private static final int Type_Loading_InVisible = 109;
+    private static final int Try_Again_onlin = 116;
     private static final int Show_UrL_Type = 110;
     private static final int Show_Lock = 111;
     private static final int Show_Unlock = 112;
@@ -226,6 +227,15 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                     break;
                 case Type_Loading_InVisible: //隐藏 加载框
                     loading.setVisibility(View.INVISIBLE);
+                    break;
+                case Try_Again_onlin: //  断波重连
+                    LogUtils.e("path=====Start:=====" + "我是当前播放的url====Try_Again_onlin==视频流断开连接====断开连麦=="+"开始链接");
+                    error_text.setVisibility(View.INVISIBLE);
+                    startView.setVisibility(View.INVISIBLE);
+                    loading.setVisibility(View.VISIBLE);
+                    startLive(path);
+                    LogUtils.e("path=====Start:=====" + "我是当前播放的url====Try_Again_onlin==视频流断开连接====断开连麦=="+"链接之后");
+
                     break;
                 case Show_Lock: //设置锁屏显示
                     lock_screen.setImageDrawable(getResources().getDrawable(R.drawable.video_lock_close_ic));
@@ -442,6 +452,9 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                     }
 
                 }
+                LogUtils.e("path=====Start:=====" + "我是当前播放的url====Try_Again_onlin==视频流断开连接====断开连麦=="+"开始发送消息,从新链接");
+
+                mHandler.sendEmptyMessageDelayed(Try_Again_onlin,1000);
 
             }
 
@@ -671,7 +684,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             mPusherLoading.dismiss();
-                            LogUtils.e("测试麦克风====pusher====关闭-语音连麦=====" + "onError=====e======"+e);
+                            LogUtils.e("测试麦克风====pusher====关闭-语音连麦=====" + "onError=====e======" + e);
 
                             if (!"Back".equals(Type)) {
                                 startSendToast("语音断开失败: 500");
@@ -686,7 +699,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                         }
                     });
         } catch (Exception e) {
-            LogUtils.e("测试麦克风====pusher====关闭-语音连麦=====" + "Exception===" +e );
+            LogUtils.e("测试麦克风====pusher====关闭-语音连麦=====" + "Exception===" + e);
 
             mPusherLoading.dismiss();
         }
@@ -720,7 +733,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             mPusherLoading.dismiss();
-                            LogUtils.e("试麦克风====pusher====开始语音连麦===" + "onError=====e======"+e);
+                            LogUtils.e("试麦克风====pusher====开始语音连麦===" + "onError=====e======" + e);
 
                             startSendToast("语音连接失败: 500");
                         }
@@ -944,8 +957,8 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onConnectionSuccessRtmp() {
-                Log.e("TAG", "RtmpOnlyAudio=====onConnectionSuccessRtmp");
-                startSendToast("连接成功 ");
+        Log.e("TAG", "RtmpOnlyAudio=====onConnectionSuccessRtmp");
+        startSendToast("连接成功 ");
     }
 
     @Override

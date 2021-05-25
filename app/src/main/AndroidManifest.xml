@@ -29,7 +29,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!--    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />-->
     <!--    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />-->
-
+    <uses-permission android:name="android.permission.READ_LOGS"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:name=".base.App"
@@ -51,6 +52,40 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <!--Bugly-->
+
+
+
+        <activity
+            android:name="com.tencent.bugly.beta.ui.BetaActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|locale"
+            android:theme="@android:style/Theme.Translucent" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+<!--        <provider-->
+<!--            android:name="com.tencent.bugly.beta.utils.BuglyFileProvider"-->
+<!--            android:authorities="${applicationId}.fileProvider"-->
+<!--            android:exported="false"-->
+<!--            android:grantUriPermissions="true"-->
+<!--            tools:replace="name,authorities,exported,grantUriPermissions">-->
+<!--            <meta-data-->
+<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
+<!--                android:resource="@xml/provider_paths"-->
+<!--                tools:replace="name,resource"/>-->
+<!--        </provider>-->
+
+
+
+
         <activity
             android:name=".ui.activity.login.GuideActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
@@ -68,12 +103,7 @@
 
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent" />
-        <!--        <activity-->
-        <!--            android:name=".ui.activity.login.GSYPlayerActivity"-->
-        <!--            android:screenOrientation="portrait"-->
 
-        <!--            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"-->
-        <!--            android:theme="@style/Theme.AppCompat.Translucent" />-->
         <activity
             android:name=".ui.activity.PowerExplainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"

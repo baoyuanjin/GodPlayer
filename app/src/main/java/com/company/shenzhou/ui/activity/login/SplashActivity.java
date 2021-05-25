@@ -1,11 +1,14 @@
 package com.company.shenzhou.ui.activity.login;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.company.shenzhou.R;
 import com.company.shenzhou.base.BaseActivity;
@@ -50,6 +53,7 @@ public class SplashActivity extends BaseActivity {
         StatusBarUtil.darkMode(this, true);  //设置了状态栏文字的颜色
         setTitleBarVisibility(View.GONE);
         ivSplash = findViewById(R.id.iv_splash);
+//        ImageView tv_011_text = findViewById(R.id.tv_011_text);
         //是否第一次进入app
         isFirstIn = (Boolean) SharePreferenceUtil.get(this, Constants.SP_IS_FIRST_IN, true);
         //是否登入

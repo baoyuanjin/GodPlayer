@@ -9,6 +9,8 @@ import androidx.multidex.MultiDex;
 import com.company.shenzhou.player.db.DaoMaster;
 import com.company.shenzhou.player.db.DaoSession;
 import com.company.shenzhou.utils.FileUtils;
+import com.tencent.bugly.Bugly;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.sdk.QbSdk;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.cookie.CookieJarImpl;
@@ -64,6 +66,10 @@ public class App extends Application {
 //            Log.e("QbSdk", "IOException:" );
 //            e.printStackTrace();
 //        }
+//        CrashReport.initCrashReport(getApplicationContext(), "6685d0b2ac", false);
+        Bugly.init(getApplicationContext(), "6685d0b2ac", false);
+//        CrashReport.initCrashReport(getApplicationContext(), "6685d0b2ac", false);
+//        CrashReport.initCrashReport(getApplicationContext(), "注册时申请的APPID", false); //61d09fb4-6609-45af-8262-a6fa7f003ec7   App Key
         //数据库
         initGreenDao();
         //Okhttp请求头

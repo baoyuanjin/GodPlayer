@@ -74,7 +74,8 @@
 
     <string name="common_confirm">确定</string>
     <string name="common_cancel">取消</string>
-
+    <string name="common_user_confirm">同意</string>
+    <string name="common_user_cancel">不同意并退出</string>
     <string name="menu_item1">动态模式</string>
     <string name="menu_item2">消息模式</string>
     <string name="common_loading">连麦中&#8230;</string>
