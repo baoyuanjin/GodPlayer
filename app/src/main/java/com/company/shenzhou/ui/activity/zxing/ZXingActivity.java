@@ -174,7 +174,7 @@ public class ZXingActivity extends BaseActivity implements QRCodeView.Delegate, 
             videoDBBean.setMakeMessage(mBean.getMakemsg());
             videoDBBean.setPort(mBean.getPort());
             String type1 = mBean.getType();
-            Toast.makeText(this, "mBean.getMicport()!====="+mBean.getMicport(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "mBean.getMicport()!====="+mBean.getMicport(), Toast.LENGTH_SHORT).show();
             Log.e("TAG", "mBean.getMicport()!========" + mBean.getMicport());
 
             if ("0".equals(type1)) {
