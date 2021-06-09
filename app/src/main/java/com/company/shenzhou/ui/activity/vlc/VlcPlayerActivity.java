@@ -60,6 +60,7 @@ import org.videolan.libvlc.Media;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import okhttp3.Call;
@@ -75,10 +76,11 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
     //public static final String path = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov";
     //public static final String path = "http://ivi.bupt.edu.cn/hls/cctv1hd.0 ";
     // public static final String path = "rtmp://58.200.131.2:1935/livetv/jxhd";
+    //public static final String path = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8";
+
     public String path = "rtmp://58.200.131.2:1935/livetv/jxhd";
     private final String tag = "VlcPlayer";
     //public String path = "rtmp://ossrs.net/efe/eilfb";
-    //public static final String path = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8";
     //private String path = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
     private VlcVideoView vlcVideoView;
     private TextView recordStart;
@@ -86,7 +88,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
     private TextView mChangeFull;
     private LinearLayout layout_top, linear_contral;
     private BaseDialog mPusherLoading;
-    //    private RelativeLayout mRelativeStatue;
+    //private RelativeLayout mRelativeStatue;
     private ImageView lock_screen;
     private TextView error_text;
     private ENPlayView startView;
@@ -230,10 +232,10 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                     break;
                 case Try_Again_onlin: //  断波重连
                     LogUtils.e("path=====Start:=====" + "我是当前播放的url====Try_Again_onlin==视频流断开连接====断开连麦=="+"开始链接");
-                    error_text.setVisibility(View.INVISIBLE);
-                    startView.setVisibility(View.INVISIBLE);
-                    loading.setVisibility(View.VISIBLE);
-                    startLive(path);
+                    error_text.setVisibility(View.VISIBLE);
+                    startView.setVisibility(View.VISIBLE);
+                    loading.setVisibility(View.INVISIBLE);
+//                    startLive(path);
                     LogUtils.e("path=====Start:=====" + "我是当前播放的url====Try_Again_onlin==视频流断开连接====断开连麦=="+"链接之后");
 
                     break;
@@ -377,7 +379,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                 }
 
 
-                LogUtils.e("path=====Start:=====" + "我是当前播放的url======eventBuffing======" + buffing);
+//                LogUtils.e("path=====Start:=====" + "我是当前播放的url======eventBuffing======" + buffing);
 
             }
 
@@ -400,7 +402,9 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                         LogUtils.e("path=====Start:=====" + "我是当前播放的url===eventStop===视频流断开连接====断开连麦==");
 
                     }
-//                    mRelativeStatue.setVisibility(View.VISIBLE);
+                     mHandler.sendEmptyMessage(Type_Loading_InVisible);
+                    startView.setVisibility(View.VISIBLE);
+
                     error_text.setVisibility(View.VISIBLE);
                 }
             }
@@ -418,6 +422,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                 } else {
                     isPlayering = false;
                     startView.setVisibility(View.VISIBLE);
+                    error_text.setVisibility(View.VISIBLE);
                     mHandler.sendEmptyMessage(Type_Loading_InVisible);
 //                    loading.setVisibility(View.INVISIBLE);
                 }

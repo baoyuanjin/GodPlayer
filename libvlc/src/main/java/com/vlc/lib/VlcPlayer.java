@@ -360,17 +360,18 @@ public class VlcPlayer implements MediaPlayerControl, Handler.Callback, IVLCVout
     private void onEventNative(final MediaPlayer.Event event) {
         switch (event.type) {
             case MediaPlayer.Event.Stopped:
-                LogUtils.i(tag + "event=======", "Stopped  isLoop=" + isLoop);
+                LogUtils.i(tag + "event=======", "eventStop====Stopped  isLoop=" + isLoop);
                 reStartPlay();
                 break;
             case MediaPlayer.Event.EndReached:   //断开链接
-                LogUtils.i(tag + "event=======", "EndReached");
+                LogUtils.i(tag + "event=======", "EndReached---断开链接");
+
                 mediaListenerEvent.eventSystemEnd("EndReached");
                 break;
             case MediaPlayer.Event.EncounteredError:
                 isPlayError = true;
                 canReadInfo = false;
-                LogUtils.i(tag + "event=======", "EncounteredError");
+                LogUtils.i(tag + "event=======", "EncounteredError----eventError");
                 errorEvent();
                 break;
             case MediaPlayer.Event.Opening:
@@ -434,7 +435,7 @@ public class VlcPlayer implements MediaPlayerControl, Handler.Callback, IVLCVout
                 LogUtils.i(tag + "event=======", "PausableChanged=" + event.getPausable());
                 break;
             case MediaPlayer.Event.Buffering:
-                LogUtils.i(tag + "event=======", "MediaPlayer.Event.Buffering" + event.getBuffering());
+//                LogUtils.i(tag + "event=======", "MediaPlayer.Event.Buffering" + event.getBuffering());
                 if (mediaListenerEvent != null && isInitStart)
                     mediaListenerEvent.eventBuffing(MediaListenerEvent.EVENT_BUFFING, event.getBuffering());
                 if (currentState == STATE_PAUSE || !isAttachedSurface) {//关屏有音 bug

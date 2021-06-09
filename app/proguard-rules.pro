@@ -27,6 +27,13 @@
 public static java.lang.String TABLENAME;
 }
 -keep class **$Properties
+
+#greenDao的混淆
+#-keep class xxx.dao.**{*;}
+#-keep class org.greenrobot.greendao.**{*;}
+#-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+# public static java.lang.String TABLENAME; }
+#-keep class **$Properties{*;}
 #Bugly
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}

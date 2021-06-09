@@ -8,6 +8,7 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -112,6 +113,7 @@ public class GuideActivity extends BaseActivity {
                     intent.setClass(GuideActivity.this, LoginAnimatorActivity.class);
                     startActivity(intent);
                     SharePreferenceUtil.put(GuideActivity.this, Constants.SP_IS_FIRST_IN, false);
+                    SharePreferenceUtil.put(GuideActivity.this, Constants.Sp_UserAgreement_Tag, true);
                     finish();
                 } else {
                     SharePreferenceUtil.put(GuideActivity.this, Constants.SP_IS_FIRST_IN, false);   //false 不是第一次登入了
@@ -175,14 +177,14 @@ public class GuideActivity extends BaseActivity {
 //                Bundle bundle = new Bundle();
 //                bundle.putString("typeUrl", "1");
 //                openActivity(SomeRequestActivity.class, bundle);
-                Toast.makeText(GuideActivity.this, "跳转---用户协议界面", Toast.LENGTH_SHORT).show();
+                Toast.makeText(GuideActivity.this, "用户协议", Toast.LENGTH_SHORT).show();
 
             }
         };
         ClickableSpan clickableSpan2 = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(GuideActivity.this, "跳转---隐私权界面", Toast.LENGTH_SHORT).show();
+                Toast.makeText(GuideActivity.this, "隐私权", Toast.LENGTH_SHORT).show();
 
 //                Bundle bundle = new Bundle();
 //                bundle.putString("typeUrl", "2");
@@ -197,13 +199,13 @@ public class GuideActivity extends BaseActivity {
 //        text4.setMovementMethod(LinkMovementMethod.getInstance());
 //        text4.setText(textSpanned4);
         int screenWidth = ScreenSizeUtil.getScreenWidth(this);
-
+        double v = screenWidth * 0.7;
         // 自定义对话框
         BaseDialog.Builder<BaseDialog.Builder> builderBuilder = new BaseDialog.Builder<>(this);
         builderBuilder.setContentView(R.layout.dialog_useragreement)
                 .setAnimStyle(BaseDialog.ANIM_IOS)
                 .setCanceledOnTouchOutside(false)
-                .setWidth(screenWidth / 2)
+                .setWidth((int)v )
                 .setText(R.id.tv_content, textSpanned1)
                 .setOnClickListener(R.id.btn_dialog_custom_ok, new BaseDialog.OnClickListener() {
                     @Override
@@ -239,5 +241,6 @@ public class GuideActivity extends BaseActivity {
 
 
     }
+
 
 }

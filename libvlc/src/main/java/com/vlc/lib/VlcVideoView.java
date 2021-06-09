@@ -2,30 +2,23 @@ package com.vlc.lib;
 
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
-import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.TextureView;
+
+import com.vlc.lib.listener.MediaListenerEvent;
+import com.vlc.lib.listener.MediaPlayerControl;
+import com.vlc.lib.listener.VideoSizeChange;
+import com.vlc.lib.listener.util.LogUtils;
 
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 import org.videolan.libvlc.interfaces.IMedia;
 import org.videolan.libvlc.util.VLCUtil;
-
-import com.vlc.lib.listener.MediaListenerEvent;
-import com.vlc.lib.listener.MediaPlayerControl;
-import com.vlc.lib.listener.VideoSizeChange;
-import com.vlc.lib.listener.util.LogUtils;
-import com.vlc.lib.listener.util.VLCInstance;
-import com.vlc.lib.listener.util.VLCOptions;
 
 import java.util.ArrayList;
 
@@ -70,14 +63,14 @@ public class VlcVideoView extends TextureView implements MediaPlayerControl, Vid
         }
         ArrayList<String> options = new ArrayList<String>();
         //正式参数配置
-        options.add("--network-caching=250");//网络缓存
-        options.add("--rtsp-caching=250");//
-        options.add("--tcp-caching=250");//
-        options.add("--realrtsp-caching=250");//文件缓存
-        options.add(":file-caching=250");//文件缓存
-        options.add(":live-cacheing=250");//直播缓存
+        options.add("--network-caching=300");//网络缓存
+        options.add("--rtsp-caching=300");//
+        options.add("--tcp-caching=300");//
+        options.add("--realrtsp-caching=300");//文件缓存
+        options.add(":file-caching=300");//文件缓存
+        options.add(":live-cacheing=300");//直播缓存
         options.add("--file-caching");//文件缓存
-        options.add("--sout-mux-caching=250");//输出缓存
+        options.add("--sout-mux-caching=300");//输出缓存
         options.add("--no-drop-late-frames");//关闭丢弃晚的帧 (默认打开)
         options.add("--no-skip-frames");//关闭跳过帧 (默认打开)
         options.add(":rtsp-frame-buffer-size=1000"); //RTSP帧缓冲大小，默认大小为100000
@@ -177,6 +170,7 @@ public class VlcVideoView extends TextureView implements MediaPlayerControl, Vid
     public void setMediaListenerEvent(MediaListenerEvent mediaListenerEvent) {
         videoMediaLogic.setMediaListenerEvent(mediaListenerEvent);
     }
+
     private static int getDeblocking(int deblocking) {
         int ret = deblocking;
         if (deblocking < 0) {
@@ -204,6 +198,7 @@ public class VlcVideoView extends TextureView implements MediaPlayerControl, Vid
         }
         return ret;
     }
+
     @Override
     public boolean canControl() {//直播流不要用这个判断
         return videoMediaLogic.canControl();

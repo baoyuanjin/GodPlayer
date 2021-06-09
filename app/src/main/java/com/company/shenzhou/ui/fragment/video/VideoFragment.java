@@ -177,7 +177,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                  */
                 String username = bean.getAccount();
                 String password = bean.getPassword();
-                String ip = bean.getIp();
+                String ip = bean.  getIp();
                 String port = bean.getPort();
                 String currentUrl01 = "";
                 String currentUrl02 = "";
@@ -194,6 +194,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==HD3==micport===" + bean.getMicport());
+                        LogUtils.e("pusher==HD3==micport===" + currentUrl01);
                         startActivity(intent);
                         break;
                     case SharePreferenceUtil.Type_Yitiji: //一体机

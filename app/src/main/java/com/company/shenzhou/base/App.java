@@ -67,11 +67,12 @@ public class App extends Application {
 //            e.printStackTrace();
 //        }
 //        CrashReport.initCrashReport(getApplicationContext(), "6685d0b2ac", false);
-        Bugly.init(getApplicationContext(), "6685d0b2ac", false);
 //        CrashReport.initCrashReport(getApplicationContext(), "6685d0b2ac", false);
 //        CrashReport.initCrashReport(getApplicationContext(), "注册时申请的APPID", false); //61d09fb4-6609-45af-8262-a6fa7f003ec7   App Key
         //数据库
         initGreenDao();
+        Bugly.init(getApplicationContext(), "6685d0b2ac", false);
+
         //Okhttp请求头
         //请求工具的拦截器  ,可以设置证书,设置可访问所有的https网站,参考https://www.jianshu.com/p/64cc92c52650
         HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);

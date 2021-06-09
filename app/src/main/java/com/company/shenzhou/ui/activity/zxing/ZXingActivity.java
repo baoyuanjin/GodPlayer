@@ -24,6 +24,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.yun.common.utils.StatusBarUtil;
 import com.yun.common.utils.StatusBarUtils;
+import com.yun.common.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -125,24 +126,34 @@ public class ZXingActivity extends BaseActivity implements QRCodeView.Delegate, 
     @Override
     public void onScanQRCodeSuccess(String result) {
         Log.i(TAG, "result:" + result);
+        Log.i(TAG, "result:" + result);
         setTitle("扫描结果为：" + result);
-        Log.e("扫描结果为：", "result===" + result);
+        Log.e("扫描成功====结果为：", "result===" + result);
+        Log.e("扫描成功====结果为：", "result===" + result);
         //取消震动
 //        vibrate();
-        text111.setText("" + result);
-        if (!"".equals(result) && isFirstIn) {
-            isFirstIn = false;
-            if (isGoodJson(result)) {  //是json数据 HD3  或者一体机的格式
-                Log.e("扫描结果为：", "result===" + result);
+        if (null == result) {
+            ToastUtil.showToastCenter(ZXingActivity.this, "扫描失败!");
 
-                getJsonData(result);
-            } else {//暂时认定为自定义url链接
-                getCustomUrl(result);
+        } else {
+            try {
+                text111.setText("" + result);
+                if (!"".equals(result) && isFirstIn) {
+                    isFirstIn = false;
+                    if (isGoodJson(result)) {  //是json数据 HD3  或者一体机的格式
+                        Log.e("扫描结果为：", "result===" + result);
+
+                        getJsonData(result);
+                    } else {//暂时认定为自定义url链接
+                        getCustomUrl(result);
+                    }
+                }
+                mZXingView.startSpot(); // 开始识别
+                finish();
+            }catch (Exception e){
             }
         }
-        mZXingView.startSpot(); // 开始识别
-//        ToastUtil.showToastCenter(ZXingActivity.this, "扫码成功!");
-        finish();
+
     }
 
     private void getCustomUrl(String result) {
@@ -230,6 +241,7 @@ public class ZXingActivity extends BaseActivity implements QRCodeView.Delegate, 
 
     @Override
     public void onScanQRCodeOpenCameraError() {
+
         showToast("打开相机出错");
     }
 

@@ -10,7 +10,7 @@ import com.vlc.lib.BuildConfig;
  */
 
 public class LogUtils {
-    public static final boolean debug = false;
+    public static final boolean debug = true;
 //    public static final boolean debug = BuildConfig.DEBUG;
 
     public static void i(String tag, String msg) {
