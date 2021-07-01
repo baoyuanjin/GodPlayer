@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.Surface;
 
@@ -19,7 +18,6 @@ import com.vlc.lib.listener.MediaListenerEvent;
 import com.vlc.lib.listener.MediaPlayerControl;
 import com.vlc.lib.listener.VideoSizeChange;
 import com.vlc.lib.listener.util.LogUtils;
-import com.vlc.lib.listener.util.VLCOptions;
 
 /**
  * 这个类实现了大部分视频播放器功能
@@ -33,6 +31,7 @@ import com.vlc.lib.listener.util.VLCOptions;
 public class VlcPlayer implements MediaPlayerControl, Handler.Callback, IVLCVout.OnNewVideoLayoutListener {
     private final String tag = "VlcPlayer";
     private final Handler threadHandler;//工作线程
+    private static final int INIT_OFF_ONLINE = 0x0007;
     private static final int INIT_START = 0x0008;
     private static final int INIT_STOP = 0x0009;
     private static final int INIT_DESTORY = 0x0010;
@@ -93,6 +92,8 @@ public class VlcPlayer implements MediaPlayerControl, Handler.Callback, IVLCVout
     @Override
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
+            case INIT_OFF_ONLINE:
+                break;
             case INIT_START:
                 if (isInitStart)
                     openVideo();
@@ -249,6 +250,7 @@ public class VlcPlayer implements MediaPlayerControl, Handler.Callback, IVLCVout
 
 
     private void openVideo() {
+        indexTime = 0;  //每次开始播放的时候把播放时间轴置为0
         canSeek = false;
         isPlayError = false;
         initVideoState();
@@ -396,6 +398,10 @@ public class VlcPlayer implements MediaPlayerControl, Handler.Callback, IVLCVout
                 if (mediaListenerEvent != null && isInitStart)
                     mediaListenerEvent.eventPlay(false);
                 break;
+            case MediaPlayer.Event.LengthChanged:
+                LogUtils.i(tag + "event=======", "LengthChanged");
+
+                break;
             case MediaPlayer.Event.TimeChanged://TimeChanged   15501
                 // LogUtils.i(tag, "TimeChanged" + event.getTimeChanged());
 //                if (isABLoop && isAttached && canSeek && abTimeEnd > 0) {
@@ -403,15 +409,52 @@ public class VlcPlayer implements MediaPlayerControl, Handler.Callback, IVLCVout
 //                               seekTo(abTimeStart);
 //                    }
 //                }
-                LogUtils.i(tag + "event====time===", "TimeChanged" + event.getTimeChanged());
-                LogUtils.i(tag + "event====position===", "TimeChanged" + event.getPositionChanged());
-                LogUtils.i(tag + "event====Record===", "TimeChanged" + event.getRecording());
+
+//                LogUtils.i(tag + "event====time===", "TimeChanged" + event.getTimeChanged());
+//                LogUtils.i(tag + "event====position===", "TimeChanged" + event.getPositionChanged());
+//                LogUtils.i(tag + "event====Record===", "TimeChanged" + event.getRecording());
 //                imeChanged26900
                 String t = event.getTimeChanged() + "";
+                long lengthChanged = event.getLengthChanged();
+                float buffering = event.getBuffering();
+                int esChangedID = event.getEsChangedID();
+                int esChangedType = event.getEsChangedType();
+                boolean pausable = event.getPausable();
+                float positionChanged = event.getPositionChanged();
+                boolean recording = event.getRecording();
+                String recordPath = event.getRecordPath();
+                boolean seekable = event.getSeekable();
+                int voutCount = event.getVoutCount();
+
+                LogUtils.i(tag + "event==A==lengthChanged===", lengthChanged + "");
+                LogUtils.i(tag + "event==A==buffering===", buffering + "");
+                LogUtils.i(tag + "event==A==esChangedID===", esChangedID + "");
+                LogUtils.i(tag + "event==A==esChangedType===", esChangedType + "");
+                LogUtils.i(tag + "event==A==pausable===", pausable + "");
+                LogUtils.i(tag + "event==A==positionChanged===", positionChanged + "");
+                LogUtils.i(tag + "event==A==recording===", recording + "");
+                LogUtils.i(tag + "event==A==recordPath===", recordPath + "");
+                LogUtils.i(tag + "event==A==seekable===", seekable + "");
+                LogUtils.i(tag + "event==A==voutCount===", voutCount + "");
+                LogUtils.i(tag + "event==A=============================================================================", "");
+                LogUtils.i(tag + "event==A=============================================================================", "");
+                LogUtils.i(tag + "event==A=============================================================================", "");
+
                 String imeChanged = t.replace("imeChanged", "");
                 this.timee = imeChanged;
                 time = event.getTimeChanged();
-                mediaListenerEvent.eventCurrentTime(imeChanged);
+                LogUtils.i(tag + "event====time===", time + "");
+
+                if (indexTime == time) {
+                    LogUtils.i(tag + "event====time===", "Time相等");
+
+                } else {
+                    mediaListenerEvent.eventCurrentTime(imeChanged);
+
+                    LogUtils.i(tag + "event====time===", "Time====不相等");
+
+                }
+                indexTime = time;
                 break;
             case MediaPlayer.Event.PositionChanged://PositionChanged   0.061593015
                 // LogUtils.i(tag, "PositionChanged" + event.getPositionChanged());
@@ -452,6 +495,8 @@ public class VlcPlayer implements MediaPlayerControl, Handler.Callback, IVLCVout
                 break;
         }
     }
+
+    private long indexTime = 0;
 
 
     @Override

@@ -185,7 +185,7 @@ public class LoginAnimatorActivity extends BaseActivity implements KeyboardWatch
         int screenWidth = ScreenSizeUtil.getScreenWidth(this);
         int i3 = new Double(screenWidth * 0.3).intValue();
         int i2 = new Double(screenWidth * 0.25).intValue();
-
+//        mBodyLayout    账号密码输入框布局
 //        LinearLayout.LayoutParams tv_topParams1 = new LinearLayout.LayoutParams(i, i);
         LogUtils.e("TAG==isAdmin===" + screenWidth);
         LogUtils.e("TAG==isAdmin===" + screenWidth * 0.25);
@@ -195,7 +195,7 @@ public class LoginAnimatorActivity extends BaseActivity implements KeyboardWatch
 
 //        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);//工具类哦
-//        LinearLayout.LayoutParams LoginParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);//工具类哦
+        LinearLayout.LayoutParams LinearLoginParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);//工具类哦
 //        mCommitView
         if (screenWidth >= 1600) {
             layoutParams.leftMargin = 50;  //
@@ -211,6 +211,10 @@ public class LoginAnimatorActivity extends BaseActivity implements KeyboardWatch
             layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);//addRule参数对应RelativeLayout XML布局的属性
             layoutParams.leftMargin = 20;
             layoutParams.rightMargin = 20; //80
+            layoutParams.topMargin = -80;
+            LinearLoginParams.leftMargin=20;
+            LinearLoginParams.rightMargin = 20;
+            LinearLoginParams.topMargin=-8;
             tv_top.setWidth(screenWidth * 25);
             tv_under.setHeight(screenWidth * 25);
         } else if (screenWidth < 720) {
@@ -223,7 +227,8 @@ public class LoginAnimatorActivity extends BaseActivity implements KeyboardWatch
         tv_top.setHeight(i3);
         tv_under.setHeight(i2);
         tv_under.setWidth(i2);
-        linear_login_root.setLayoutParams(layoutParams);
+        linear_login_root.setLayoutParams(layoutParams);  //整体适配
+        mBodyLayout.setLayoutParams(LinearLoginParams);   //输入框的代码适配
         tv_top.setLayoutParams(layoutParams1);
         tv_under.setLayoutParams(layoutParams2);
     }

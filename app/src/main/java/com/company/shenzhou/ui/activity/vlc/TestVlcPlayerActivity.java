@@ -57,6 +57,10 @@ import net.ossrs.rtmp.ConnectCheckerRtmp;
 import org.videolan.libvlc.Media;
 
 import java.io.File;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -792,6 +796,30 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
             if ("startStream".equals(mPusher.getTag())) {
                 mHandler.sendEmptyMessage(Pusher_Stop);
             }
+        }
+    }
+
+    public void UDPSocKetSend() {
+
+        try {
+            //1.创建socket服务
+            DatagramSocket ds = new DatagramSocket();
+
+            //2.封装数据
+            String str = "Did you recite words today";
+            byte[] bytes = str.getBytes();
+            //地址
+            InetAddress address =InetAddress.getByName("192.168.31.137");
+            //参数：数据、长度、地址、端口
+            DatagramPacket dp = new DatagramPacket(bytes,bytes.length,address,6666);
+
+            //3.发送数据包
+            ds.send(dp);
+
+            //4.关闭socket服务
+            ds.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

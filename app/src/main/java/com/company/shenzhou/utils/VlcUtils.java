@@ -16,7 +16,7 @@ public class VlcUtils {
      * @param timeMs
      * @return
      */
-    public static String stringForTime(int timeMs) {
+    public static String stringForTime(int timeMs) {  //18565
         StringBuilder mFormatBuilder = new StringBuilder();
         Formatter mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
         int totalSeconds = timeMs / 1000;
@@ -29,6 +29,11 @@ public class VlcUtils {
         } else {
             return mFormatter.format("%02d:%02d", minutes, seconds).toString();
         }
+
+
+
+
+
     }
 
 

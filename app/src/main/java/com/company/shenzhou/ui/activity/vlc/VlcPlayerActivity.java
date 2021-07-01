@@ -60,8 +60,9 @@ import org.videolan.libvlc.Media;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import okhttp3.Call;
 
@@ -148,8 +149,10 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
     private static final int Show_Unlock = 112;
     private static final int Show_Control_InVisible = 113;
     private static final int Show_Control_Visible = 114;
-    private static final int Pusher_Error_Stop = 115;
+    private static final int Error_Steam = 115;
     private String currentTime = "0";
+    private String indexTime = "0";
+    private int indexEventIntTime = 0;
     private Handler mHandler = new Handler() {
         @SuppressLint("NewApi")
         @Override
@@ -157,13 +160,31 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0:
-                    tv_current_time.setText("" + VlcUtils.stringForTime(Integer.parseInt(currentTime)));
+                    mLastTime = VlcUtils.stringForTime(Integer.parseInt(currentTime));
+                    indexEventIntTime = Integer.parseInt(currentTime);
+                    tv_current_time.setText("" + mLastTime);
+                    currentIntTime.setText("" + indexEventIntTime);
+//                    LogUtils.e("TAG" + "时间=======回调===indexEventIntTime===" + indexEventIntTime);
+//                    LogUtils.e("TAG" + "时间=======回调===indexIntTime===" + indexIntTime);
+
+                    break;
+                case Error_Steam:
+                    flagTime = Integer.parseInt(currentIntTime.getText().toString().trim());
+                    if (indexEventIntTime == flagTime && indexEventIntTime == indexIntTime) {
+                        timer.cancel();
+                        mHandler.sendEmptyMessage(Try_Again_onlin);
+                    } else {
+                        isFirstCommonTime = 0;
+                    }
+
+                    LogUtils.e("TAG" + "时间=======回调===indexEventIntTime===" + indexEventIntTime);
+                    LogUtils.e("TAG" + "时间=======回调===indexIntTime===" + indexIntTime);
+                    LogUtils.e("TAG" + "时间=======回调===flagTime===" + flagTime);
                     break;
                 case Send_Toast:
                     ToastUtil.showToastCenter(VlcPlayerActivity.this, (String) msg.obj);
                     break;
                 case Pusher_Start:
-
                     mPusher.setText("停止");
                     mPusher.setTextColor(getResources().getColor(R.color.color_007AFF));
                     Drawable topstart = getResources().getDrawable(R.drawable.icon_mic_pre);
@@ -231,12 +252,13 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                     loading.setVisibility(View.INVISIBLE);
                     break;
                 case Try_Again_onlin: //  断波重连
-                    LogUtils.e("path=====Start:=====" + "我是当前播放的url====Try_Again_onlin==视频流断开连接====断开连麦=="+"开始链接");
+                    LogUtils.e("path=====Start:=====" + "我是当前播放的url====Try_Again_onlin==视频流断开连接====断开连麦==" + "开始链接");
                     error_text.setVisibility(View.VISIBLE);
                     startView.setVisibility(View.VISIBLE);
                     loading.setVisibility(View.INVISIBLE);
+                    isFirstCommonTime = 0;
 //                    startLive(path);
-                    LogUtils.e("path=====Start:=====" + "我是当前播放的url====Try_Again_onlin==视频流断开连接====断开连麦=="+"链接之后");
+                    LogUtils.e("path=====Start:=====" + "我是当前播放的url====Try_Again_onlin==视频流断开连接====断开连麦==" + "链接之后");
 
                     break;
                 case Show_Lock: //设置锁屏显示
@@ -277,6 +299,9 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
     private RtmpOnlyAudio rtmpOnlyAudio;
     private RelativeLayout mRelativeAll;
     private FrameLayout mFrameAll;
+    private String mLastTime;
+    private TextView currentIntTime;
+    private int flagTime;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -304,6 +329,8 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
         mUrlList.add(switchVideoModel2);
         mSourcePosition = 0;  //高清
         mTitle.setText("" + mTitleData);
+        boolean hd3 = mTitleData.contains("HD3");
+        Log.e("TAG", "hd3=====hd3hd3hd3hd3hd3hd3===" + hd3);
 
     }
 
@@ -402,9 +429,8 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                         LogUtils.e("path=====Start:=====" + "我是当前播放的url===eventStop===视频流断开连接====断开连麦==");
 
                     }
-                     mHandler.sendEmptyMessage(Type_Loading_InVisible);
+                    mHandler.sendEmptyMessage(Type_Loading_InVisible);
                     startView.setVisibility(View.VISIBLE);
-
                     error_text.setVisibility(View.VISIBLE);
                 }
             }
@@ -434,6 +460,13 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
             public void eventPlay(boolean isPlaying) {
                 LogUtils.e("path=====Start:=====" + "我是当前播放的url======eventPlay======" + isPlaying);
 
+//                if (hd3){
+//                    getIfOffLine();
+//                }
+
+                //TODO HD3转播的时候不能收到错误的回调
+//                Runtime.getRuntime().gc();  //手动回收垃圾
+//                getIfOffLine();
 
             }
 
@@ -453,13 +486,12 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                     if (mFlag_MicOnLine) {//如果在连麦，断开连麦
                         pusherStop("Common");
                         LogUtils.e("path=====Start:=====" + "我是当前播放的url======视频流断开连接====断开连麦==");
-
                     }
 
                 }
-                LogUtils.e("path=====Start:=====" + "我是当前播放的url====Try_Again_onlin==视频流断开连接====断开连麦=="+"开始发送消息,从新链接");
+                LogUtils.e("path=====Start:=====" + "我是当前播放的url====Try_Again_onlin==视频流断开连接====断开连麦==" + "开始发送消息,从新链接");
 
-                mHandler.sendEmptyMessageDelayed(Try_Again_onlin,1000);
+                mHandler.sendEmptyMessageDelayed(Try_Again_onlin, 1000);
 
             }
 
@@ -496,6 +528,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
 
 
         mTitle = findViewById(R.id.tv_top_title);
+        currentIntTime = findViewById(R.id.tv_current_int_time);
         mRelativeAll = findViewById(R.id.activity_vlc_player);
         mFrameAll = findViewById(R.id.ff_all);
         tv_current_time = findViewById(R.id.tv_current_time);
@@ -545,6 +578,10 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                     rtmpOnlyAudio.stopStream();
                 }
                 pusherStop("Back");
+                if (timer != null) {
+                    timer.cancel();
+                }
+                isFirstCommonTime = 0;
                 finish();
                 break;
             case R.id.pusher:  //推流
@@ -779,7 +816,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
         error_text.setVisibility(View.INVISIBLE);
         mHandler.sendEmptyMessage(Type_Loading_Visible);
         loading.start();
-
+        currentIntTime.setText("1");
     }
 
     @Override
@@ -788,6 +825,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
         LogUtils.e("path=====录像--onResume:=====");
         LogUtils.e("path=====录像--onResume=path:=====" + path);
         isOnPauseExit = false;
+        isFirstCommonTime = 0;
         startLive(path);
         vlcVideoView.startPlay();
     }
@@ -802,7 +840,10 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
         mHandler.sendEmptyMessage(Type_Loading_InVisible);
         loading.release();
         isOnPauseExit = true;
-
+        if (timer != null) {
+            timer.cancel();
+        }
+        isFirstCommonTime = 0;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -1005,67 +1046,60 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onAuthSuccessRtmp() {
-
     }
 
-//    @Override
-//    public void onConnectionSuccessRtmp() {
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Log.e("TAG", "rtmpCamera3.isStreaming()=====onConnectionSuccessRtmp");
-//                startSendToast("连接成功 ");
-//            }
-//        });
-//    }
-//
-//    @Override
-//    public void onConnectionFailedRtmp(final String reason) {
-//        runOnUiThread(new Runnable() {
-//            @SuppressLint("NewApi")
-//            @Override
-//            public void run() {
-//                Log.e("TAG", "rtmpCamera3.isStreaming()=====" + reason);
-//                Log.e("TAG", "rtmpCamera3.isStreaming()=====onConnectionFailedRtmp");
-//                startSendToast("Connection failed. " + reason);
-//                rtmpCamera3.stopStream();
-//            }
-//        });
-//    }
-//
-//    @Override
-//    public void onDisconnectRtmp() {
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Log.e("TAG", "rtmpCamera3.isStreaming()=====onDisconnectRtmp");
-//                if (!isOnPauseExit) {
-//                    startSendToast("断开麦克风链接");
-//                }
-//            }
-//        });
-//    }
-//
-//    @Override
-//    public void onAuthErrorRtmp() {
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Log.e("TAG", "rtmpCamera3.isStreaming()=====onAuthErrorRtmp");
-//                startSendToast("Auth error");
-//            }
-//        });
-//    }
-//
-//    @Override
-//    public void onAuthSuccessRtmp() {
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Log.e("TAG", "rtmpCamera3.isStreaming()=====onAuthSuccessRtmp");
-//                startSendToast("Auth success");
-//            }
-//        });
-//    }
+
+    Timer timer;
+    //    String beaginTime = "";
+    int indexIntTime = 0;
+
+    /**
+     * 解决HD3多播，断开推流的时候不走断开回调问题
+     */
+    public void getIfOffLine() {
+        //使用java的Timer类
+        timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                flagTime = Integer.parseInt(currentIntTime.getText().toString().trim());
+                LogUtils.e("TAG" + "时间==不相等===mLastTime====" + mLastTime);
+                LogUtils.e("TAG" + "时间==不相等===indexIntTime====" + indexIntTime);
+                LogUtils.e("TAG" + "时间==不相等===flagTime====" + flagTime);
+                LogUtils.e("TAG" + "时间==不相等===indexEventIntTime===" + indexEventIntTime);
+                if (indexEventIntTime == flagTime && indexEventIntTime == indexIntTime) {
+                    LogUtils.e("TAG" + "时间===相等===");
+                    LogUtils.e("TAG" + "时间===相等===");
+                    if (3 == isFirstCommonTime) {
+//                        timer.cancel();
+//                        mHandler.sendEmptyMessage(Error_Steam);
+                        mHandler.sendEmptyMessageDelayed(Error_Steam,1011);
+                        LogUtils.e("TAG" + "时间==第-2-次相等=====取消===");
+
+                    } else {
+                        int i = ++isFirstCommonTime;
+                        LogUtils.e("TAG" + "时间==第" + i + "次相等===== isFirstCommonTime++==之后==");
+                    }
+
+                }
+                if (indexEventIntTime != flagTime) {
+                    LogUtils.e("TAG" + "时间===不相等===");
+                    LogUtils.e("TAG" + "时间===不相等===");
+
+                } else {
+                    indexIntTime = flagTime;
+                    LogUtils.e("TAG" + "时间===赋值之后的时间==indexIntTime===" + indexIntTime);
+                    LogUtils.e("" + "时间------------------------------------------------");
+                    LogUtils.e("" + "时间------------------------------------------------");
+                }
+
+
+            }
+        };
+        timer.schedule(task, 333, 3000);
+    }
+
+    //第一次进来的时候默认是true    表示第一次时间相同
+    private int isFirstCommonTime = 0;
 
 }

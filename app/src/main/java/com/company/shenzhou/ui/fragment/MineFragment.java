@@ -73,8 +73,8 @@ public class MineFragment extends BaseFragment {
     SettingBar bar_mine_power_explain;//权限说明
     @BindView(R.id.bar_mine_username)
     SettingBar bar_mine_username;
-    @BindView(R.id.togo)
-    SettingBar togo;
+//    @BindView(R.id.togo)
+//    SettingBar togo;
     @BindView(R.id.bar_mine_version)
     SettingBar bar_mine_version;
     @BindView(R.id.bar_mine_use_pace)
@@ -118,6 +118,8 @@ public class MineFragment extends BaseFragment {
 
     @SuppressLint("ResourceAsColor")
     private void initView() {
+        LogUtils.e("分辨率==height=="+ScreenSizeUtil.getScreenHeight(getActivity()));
+        LogUtils.e("分辨率==width="+ScreenSizeUtil.getScreenWidth(getActivity()));
         setTitleName("我的");
         String username = (String) SharePreferenceUtil.get(getActivity(), SharePreferenceUtil.Current_Username, "");
         //0普通  1权限  2超级用户
@@ -150,11 +152,11 @@ public class MineFragment extends BaseFragment {
         bar_mine_version.setOnClickListener((View v) -> {
             showPopVersion();
         });
-        togo.setOnClickListener((View v) -> {
-            Intent intent = new Intent(getActivity(), TestVlcPlayerActivity.class);
-            intent.putExtra("mTitle", "测试界面的标题!");
-            startActivity(intent);
-        });
+//        togo.setOnClickListener((View v) -> {
+//            Intent intent = new Intent(getActivity(), TestVlcPlayerActivity.class);
+//            intent.putExtra("mTitle", "测试界面的标题!");
+//            startActivity(intent);
+//        });
         //退出
         bar_mine_exit.setOnClickListener((View v) -> {
             showExitPop();
