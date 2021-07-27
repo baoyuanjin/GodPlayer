@@ -66,6 +66,7 @@ public class VlcVideoView extends TextureView implements MediaPlayerControl, Vid
         options.add("--network-caching=300");//网络缓存
         options.add("--rtsp-caching=300");//
         options.add("--tcp-caching=300");//
+        options.add("--tcp-caching=300");//
         options.add("--realrtsp-caching=300");//文件缓存
         options.add(":file-caching=300");//文件缓存
         options.add(":live-cacheing=300");//直播缓存
@@ -80,6 +81,7 @@ public class VlcVideoView extends TextureView implements MediaPlayerControl, Vid
         options.add("" + getDeblocking(-1));//这里太大了消耗性能   太小了会花屏
         options.add("--deinterlace-mode={discard,blend,mean,bob,linear,x}");// 视频译码器 解除交错模式
         options.add("--network-synchronisation");// 网络同步化 (默认关闭)
+//        options.add(":sout-record-dst-prefix=yylpre.mp4");
 
 
 //        options.add("--sub-source=marq{marquee=\"%Y-%m-%d,%H:%M:%S \",position=10,color=0xFFFFFF,size=40}");  //添加系统时间

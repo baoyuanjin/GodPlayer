@@ -149,7 +149,7 @@ dependencies {
     implementation 'com.github.arcadefire:nice-spinner:1.4.4'
 
     //项目方法数越界的问题
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.android.support:multidex:1.0.3' 
 
     // 日志调试：https://github.com/getActivity/Logcat    app里面会有个小按钮
 //     debugImplementation 'com.hjq:logcat:8.2'

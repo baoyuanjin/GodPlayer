@@ -329,6 +329,8 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
         mUrlList.add(switchVideoModel2);
         mSourcePosition = 0;  //高清
         mTitle.setText("" + mTitleData);
+        Log.e("TAG", "mTitleData=====mTitleDatamTitleDatamTitleData===" + mTitleData);
+
         boolean hd3 = mTitleData.contains("HD3");
         Log.e("TAG", "hd3=====hd3hd3hd3hd3hd3hd3===" + hd3);
 
@@ -1054,6 +1056,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
     int indexIntTime = 0;
 
     /**
+     * 还在测试哦
      * 解决HD3多播，断开推流的时候不走断开回调问题
      */
     public void getIfOffLine() {

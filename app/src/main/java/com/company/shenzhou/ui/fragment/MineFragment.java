@@ -63,7 +63,7 @@ import butterknife.BindView;
  * <p>
  * Describe
  */
-public class MineFragment extends BaseFragment {
+public class  MineFragment extends BaseFragment {
     public static String FILE_DIR = "/sdcard/Downloads/test/";
     @BindView(R.id.bar_mine_change_password)
     SettingBar mChangePassword;
