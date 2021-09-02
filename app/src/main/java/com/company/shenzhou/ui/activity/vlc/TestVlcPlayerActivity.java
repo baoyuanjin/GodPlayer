@@ -73,14 +73,9 @@ import okhttp3.Call;
  * Describe
  */
 public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnClickListener, ConnectCheckerRtmp {
-    // public static final String path = "http://121.18.168.149/cache.ott.ystenlive.itv.cmvideo.cn:80/000000001000/1000000001000010606/1.m3u8?stbId=005301FF001589101611549359B92C46&channel-id=ystenlive&Contentid=1000000001000010606&mos=jbjhhzstsl&livemode=1&version=1.0&owaccmark=1000000001000010606&owchid=ystenlive&owsid=5474771579530255373&AuthInfo=2TOfGIahP4HrGWrHbpJXVOhAZZf%2B%2BRvFCOimr7PCGr%2Bu3lLj0NrV6tPDBIsVEpn3QZdNn969VxaznG4qedKIxPvWqo6nkyvxK0SnJLSEP%2FF4Wxm5gCchMH9VO%2BhWyofF";
-    //public static final String path = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov";
-    //public static final String path = "http://ivi.bupt.edu.cn/hls/cctv1hd.0 ";
-    // public static final String path = "rtmp://58.200.131.2:1935/livetv/jxhd";
-    public String path = "rtmp://58.200.131.2:1935/livetv/jxhd";
+    //苹果提供的测试源（点播）
+    public String path = "http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear2/prog_index.m3u8";
     private final String tag = "VlcPlayer";
-    //public String path = "rtmp://ossrs.net/efe/eilfb";
-    //public static final String path = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8";
     //private String path = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
     private VlcVideoView vlcVideoView;
     private TextView recordStart;
@@ -88,7 +83,7 @@ public class TestVlcPlayerActivity extends AppCompatActivity implements View.OnC
     private TextView mChangeFull;
     private LinearLayout layout_top, linear_contral;
     private BaseDialog mPusherLoading;
-    //    private RelativeLayout mRelativeStatue;
+  //private RelativeLayout mRelativeStatue;
     private ImageView lock_screen;
     private TextView error_text;
     private ENPlayView startView;

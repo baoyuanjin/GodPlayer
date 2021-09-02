@@ -80,6 +80,8 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
     //public static final String path = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8";
 
     public String path = "rtmp://58.200.131.2:1935/livetv/jxhd";
+    //苹果提供的测试源（点播）
+//    public String path = "http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear2/prog_index.m3u8";
     private final String tag = "VlcPlayer";
     //public String path = "rtmp://ossrs.net/efe/eilfb";
     //private String path = "http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";

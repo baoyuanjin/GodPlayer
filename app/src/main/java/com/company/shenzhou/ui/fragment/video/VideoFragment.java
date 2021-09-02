@@ -168,7 +168,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 LogUtils.e("跳转播放界面" + "username=:" + bean.getAccount() + ",  password=:" + bean.getPassword() + ",  ip:" + bean.getIp() + ",  备注:" + bean.getMakeMessage() + ",  端口:"
                         + bean.getPort() + ",  类型:" + bean.getType());
                 /**
-                 * HD3      rtsp://username:password@ip/MediaInput/h264/stream_1 ------   --HD3，高清
+                 * HD3      rtsp://username:password@ip/MediaInput/h264/stream_1 ------   --HD3，高清:端口是80不用添加端口，不是80，就需要手动添加
                  * HD3      rtsp://username:password@ip/MediaInput/h264/stream_2 ------   --HD3，标清
                  * 一体机   rtsp://username:password@ip port/session0.mpg ------           --一体机， 高清
                  * 一体机   rtsp://username:password@ip：port/session1.mpg ------          --一体机， 标清
@@ -184,9 +184,14 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 Intent intent = new Intent(getActivity(), VlcPlayerActivity.class);
                 Log.e("path=====Start:=====", "bean.getType()====" + bean.getType());
                 switch (bean.getType()) {
-                    case SharePreferenceUtil.Type_HD3: //HD3
-                        currentUrl01 = "rtsp://" + username + ":" + password + "@" + ip + "/MediaInput/h264/stream_1";
-                        currentUrl02 = "rtsp://" + username + ":" + password + "@" + ip + "/MediaInput/h264/stream_2";
+                    case SharePreferenceUtil.Type_HD3: //HD3  高清:端口是80不用添加端口，不是80，就需要手动添加
+                        if ("80".equalsIgnoreCase(port + "")) {
+                            currentUrl01 = "rtsp://" + username + ":" + password + "@" + ip + "/MediaInput/h264/stream_1";
+                            currentUrl02 = "rtsp://" + username + ":" + password + "@" + ip + "/MediaInput/h264/stream_2";
+                        } else {
+                            currentUrl01 = "rtsp://" + username + ":" + password + "@" + ip + ":" + port + "/MediaInput/h264/stream_1";
+                            currentUrl02 = "rtsp://" + username + ":" + password + "@" + ip + ":" + port + "/MediaInput/h264/stream_2";
+                        }
                         intent.putExtra("url01", currentUrl01);
                         intent.putExtra("url02", currentUrl02);
                         intent.putExtra("urlType", "00");
