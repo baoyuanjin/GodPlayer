@@ -18,7 +18,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/padding_50"
         android:background="@color/white"
-
         android:orientation="vertical">
 
         <ImageButton

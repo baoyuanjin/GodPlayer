@@ -147,6 +147,8 @@
     <color name="color_777777">#777777</color>
     <color name="color_bfbfbf">#BFBFBF</color>
     <color name="color_999999">#999999</color>
+    <color name="color_BDBDBE">#BDBDBE</color>
+
     <color name="color_b9b9b9">#b9b9b9</color>
     <color name="color_888888">#888888</color>
     <color name="color_555555">#555555</color>
@@ -377,7 +379,6 @@
     <color name="white90">#EEFFFFFF</color>
 
     <color name="black">#FF000000</color>
-    <color name="color_BDBDBE">#BDBDBE</color>
     <color name="black90">#EE000000</color>
     <color name="black80">#CC000000</color>
     <color name="black70">#BB000000</color>

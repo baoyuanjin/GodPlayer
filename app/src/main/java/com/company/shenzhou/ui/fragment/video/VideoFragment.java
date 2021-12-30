@@ -170,7 +170,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 /**
                  * HD3      rtsp://username:password@ip/MediaInput/h264/stream_1 ------   --HD3，高清:端口是80不用添加端口，不是80，就需要手动添加
                  * HD3      rtsp://username:password@ip/MediaInput/h264/stream_2 ------   --HD3，标清
-                 * 一体机   rtsp://username:password@ip port/session0.mpg ------           --一体机， 高清
+                 * 一体机   rtsp://username:password@ip：port/session0.mpg ------           --一体机， 高清
                  * 一体机   rtsp://username:password@ip：port/session1.mpg ------          --一体机， 标清
                  * url      http://www.cme8848.com/live/cme.m3u8                          eg:链接地址=用户输入的url链接
                  * url      http://www.cme8848.com/live/flv                               eg:链接地址=用户输入的url链接

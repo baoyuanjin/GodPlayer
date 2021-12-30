@@ -151,6 +151,7 @@ public class ActivityCollector {
     /**
      * 清空购买相关界面，返回首页
      */
+
     public static void removeActivityOrderAbout() {
         if (activityListOrderAbout == null) {
             return;

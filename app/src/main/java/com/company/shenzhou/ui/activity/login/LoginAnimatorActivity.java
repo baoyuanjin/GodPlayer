@@ -350,6 +350,7 @@ public class LoginAnimatorActivity extends BaseActivity implements KeyboardWatch
         List<UserDBRememberBean> list = UserDBRememberBeanUtils.queryAll(UserDBRememberBean.class);
         LogUtils.e("==========数据库======list===" + list.size());
         ArrayList<String> nameList = CommonUtil.getNameList(list);
+
         username_right.setImageResource(R.drawable.login_icon_down);
         username_right.setOnClickListener(new View.OnClickListener() {
             @Override

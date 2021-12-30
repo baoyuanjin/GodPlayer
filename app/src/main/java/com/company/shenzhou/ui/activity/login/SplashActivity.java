@@ -15,6 +15,7 @@ import com.company.shenzhou.base.BaseActivity;
 import com.company.shenzhou.bean.Constants;
 import com.company.shenzhou.ui.activity.MainActivity;
 import com.google.gson.Gson;
+import com.yun.common.utils.LogUtils;
 import com.yun.common.utils.SharePreferenceUtil;
 import com.yun.common.utils.StatusBarUtil;
 import com.yun.common.utils.StatusBarUtils;
@@ -94,6 +95,7 @@ public class SplashActivity extends BaseActivity {
 //            startActivity(intent);
 //            finish();
 
+        LogUtils.e("login===="+isLogined);
         if (isFirstIn) {
             SharePreferenceUtil.put(SplashActivity.this, Constants.SP_IS_FIRST_IN, true);
             Intent intent = new Intent();
@@ -102,6 +104,7 @@ public class SplashActivity extends BaseActivity {
             finish();
         } else {  //不是第一次进App,判断是否登陆过
             Intent intent = new Intent();
+
             if (!isLogined) {  //登入成功 ,false==未登录
                 intent.setClass(SplashActivity.this, LoginAnimatorActivity.class);
             } else {   //已经登陆
