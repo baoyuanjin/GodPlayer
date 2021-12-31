@@ -51,6 +51,8 @@
                     android:layout_marginLeft="@dimen/padding_20"
                     android:gravity="center_vertical"
                     android:text="我是标题"
+                    android:singleLine="true"
+                    android:lines="1"
                     android:textColor="@color/white"
                     android:textSize="@dimen/padding_20" />
 

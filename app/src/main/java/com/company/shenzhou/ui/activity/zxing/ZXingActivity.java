@@ -142,7 +142,6 @@ public class ZXingActivity extends BaseActivity implements QRCodeView.Delegate, 
                     isFirstIn = false;
                     if (isGoodJson(result)) {  //是json数据 HD3  或者一体机的格式
                         Log.e("扫描结果为：", "result===" + result);
-
                         getJsonData(result);
                     } else {//暂时认定为自定义url链接
                         getCustomUrl(result);
@@ -160,7 +159,7 @@ public class ZXingActivity extends BaseActivity implements QRCodeView.Delegate, 
         VideoDBBean01 videoDBBean = new VideoDBBean01();
         videoDBBean.setAccount("root");
         videoDBBean.setPassword("root");
-        videoDBBean.setTitle("自定义URL标题");
+        videoDBBean.setTitle("神州转播");
         videoDBBean.setIp(result.trim());
         videoDBBean.setMakeMessage("自定义URL备注信息");
         videoDBBean.setPort("自定义URL端口号");

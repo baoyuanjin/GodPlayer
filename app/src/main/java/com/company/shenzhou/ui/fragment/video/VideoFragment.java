@@ -177,7 +177,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                  */
                 String username = bean.getAccount();
                 String password = bean.getPassword();
-                String ip = bean.  getIp();
+                String ip = bean.getIp();
                 String port = bean.getPort();
                 String currentUrl01 = "";
                 String currentUrl02 = "";
@@ -195,7 +195,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("url01", currentUrl01);
                         intent.putExtra("url02", currentUrl02);
                         intent.putExtra("urlType", "00");
-                        intent.putExtra("mTitle", "HD3" + "(" + "ip:" + ip + ")");
+                        intent.putExtra("mTitle", bean.getTitle() + " (" + "ip:" + ip + ")");
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==HD3==micport===" + bean.getMicport());
@@ -208,7 +208,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("url01", currentUrl01);
                         intent.putExtra("url02", currentUrl02);
                         intent.putExtra("urlType", "01");
-                        intent.putExtra("mTitle", "一体机" + "(" + "ip:" + ip + ")");
+                        intent.putExtra("mTitle", bean.getTitle() + " (" + "ip:" + ip + ")");
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==一体机==micport===" + bean.getMicport());
@@ -222,7 +222,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                         intent.putExtra("url01", replace1);
                         intent.putExtra("url02", replace2);
                         intent.putExtra("urlType", "02");
-                        intent.putExtra("mTitle", "自定义URL" + "(" + ip + ")");
+                        intent.putExtra("mTitle", bean.getTitle() + " (" + ip + ")");
                         intent.putExtra("ip", bean.getIp());
                         intent.putExtra("micport", bean.getMicport());
                         LogUtils.e("pusher==自定义url==currentUrl01===" + currentUrl01);
@@ -754,8 +754,8 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
         mBean.setMakeMessage(makeMessage);
         mBean.setPort(port);
         mBean.setType(type);
-        String currentMicPort = null ==micPort ? "7789":micPort;
-        mBean.setMicport(currentMicPort+"");
+        String currentMicPort = null == micPort ? "7789" : micPort;
+        mBean.setMicport(currentMicPort + "");
         mBean.setTag(currentUsername);
         return mBean;
     }
