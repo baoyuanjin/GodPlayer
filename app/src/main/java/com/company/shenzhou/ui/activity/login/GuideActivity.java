@@ -3,6 +3,7 @@ package com.company.shenzhou.ui.activity.login;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +27,7 @@ import com.company.shenzhou.ui.activity.MainActivity;
 import com.company.shenzhou.utils.ScreenSizeUtil;
 import com.company.shenzhou.utils.db.UserDBRememberBeanUtils;
 import com.hjq.base.BaseDialog;
+import com.just.agentweb.AgentWeb;
 import com.yun.common.utils.LogUtils;
 import com.yun.common.utils.SharePreferenceUtil;
 import com.yun.common.utils.StatusBarUtils;
@@ -50,6 +53,7 @@ public class GuideActivity extends BaseActivity {
     private RelativeLayout relative_guide;
     private Boolean userAgreementTag;
     private TextView mTvContent;
+    private ViewGroup rootView;
 
     @Override
     public int getContentViewId() {
@@ -64,7 +68,7 @@ public class GuideActivity extends BaseActivity {
 
 
     public void initView() {
-        ViewGroup rootView = getWindow().getDecorView().findViewById(R.id.root_layout);
+        rootView = getWindow().getDecorView().findViewById(R.id.root_layout);
         //设置向下移动状态栏的高度
         rootView.setPadding(0, StatusBarUtils.getStatusBarHeight(this), 0, 0);
         setTitleBarVisibility(View.GONE);
@@ -76,11 +80,12 @@ public class GuideActivity extends BaseActivity {
         relative_guide = (RelativeLayout) findViewById(R.id.relative_guide);
         userAgreementTag = (Boolean) SharePreferenceUtil.get(GuideActivity.this, Constants.Sp_UserAgreement_Tag, false);
         isLogined = (Boolean) SharePreferenceUtil.get(this, Constants.Is_Logined, false);
-        setCurrentUserMsg();
 
         if (!userAgreementTag) {
             showUserAgreementDialog();
         }
+
+
         //先把本地的图片 id 装进 list 容器中
         List<Integer> imagesList = new ArrayList<>();
         for (int i = 0; i < RES.length; i++) {
@@ -163,7 +168,10 @@ public class GuideActivity extends BaseActivity {
      * 用户协议dialog 不然上不了应用市场
      */
     private void showUserAgreementDialog() {
-        SpannableString textSpanned1 = new SpannableString("在你使用CME Player之前，请你认真阅读并了解《CME Player用户协议》和《CME Player隐私权政策》,点击同意即表示你已阅读并且了解。");
+
+
+
+        SpannableString textSpanned1 = new SpannableString("在你使用CME Player之前，请你认真阅读并了解《CME Player用户服务协议》和《CME Player用户隐私政策》,点击同意即表示你已阅读并且了解。");
         //设置颜色
         textSpanned1.setSpan(new ForegroundColorSpan(Color.BLUE),
                 26, 42, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -174,21 +182,20 @@ public class GuideActivity extends BaseActivity {
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-//                Bundle bundle = new Bundle();
-//                bundle.putString("typeUrl", "1");
-//                openActivity(SomeRequestActivity.class, bundle);
-                Toast.makeText(GuideActivity.this, "用户协议", Toast.LENGTH_SHORT).show();
+                Bundle bundle = new Bundle();
+                bundle.putString("typeUrl", "1");
+                openActivity(WebViewActivity.class, bundle);
+
 
             }
         };
         ClickableSpan clickableSpan2 = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(GuideActivity.this, "隐私权", Toast.LENGTH_SHORT).show();
+                Bundle bundle = new Bundle();
+                bundle.putString("typeUrl", "2");
+                openActivity(WebViewActivity.class, bundle);
 
-//                Bundle bundle = new Bundle();
-//                bundle.putString("typeUrl", "2");
-//                openActivity(SomeRequestActivity.class, bundle);
             }
         };
         textSpanned1.setSpan(clickableSpan,
@@ -212,6 +219,8 @@ public class GuideActivity extends BaseActivity {
                     public void onClick(BaseDialog dialog, View view) {
                         SharePreferenceUtil.put(GuideActivity.this, Constants.Sp_UserAgreement_Tag, true);
                         dialog.dismiss();
+                        setCurrentUserMsg();
+
                     }
                 })
                 .setOnClickListener(R.id.btn_dialog_custom_cancle, new BaseDialog.OnClickListener() {

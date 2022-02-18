@@ -55,9 +55,10 @@ public class ZXingActivity extends BaseActivity implements QRCodeView.Delegate, 
     ImageView zx_back;
     @BindView(R.id.choose_picture)
     TextView choose_picture;
+    private Boolean isFirstIn = true;
+
     private String currentUsername;
 
-    private Boolean isFirstIn = true;
 
     @Override
     public int getContentViewId() {

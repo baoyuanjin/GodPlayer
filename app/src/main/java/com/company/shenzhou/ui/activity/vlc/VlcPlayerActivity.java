@@ -831,7 +831,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
         isOnPauseExit = false;
         isFirstCommonTime = 0;
         startLive(path);
-        vlcVideoView.startPlay();
+//        vlcVideoView.startPlay();
     }
 
     @SuppressLint("NewApi")
