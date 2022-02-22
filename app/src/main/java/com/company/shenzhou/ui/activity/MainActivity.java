@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.company.shenzhou.R;
 import com.company.shenzhou.base.ActivityCollector;
+import com.company.shenzhou.base.App;
 import com.company.shenzhou.base.BaseActivity;
 import com.company.shenzhou.ui.fragment.MineFragment;
 import com.company.shenzhou.ui.fragment.user.UserFragment;
@@ -30,6 +31,7 @@ import com.yun.common.contant.Constants;
 import com.yun.common.utils.LogUtils;
 import com.yun.common.utils.SharePreferenceUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -92,6 +94,7 @@ public class MainActivity extends BaseActivity implements KeyboardWatcher.SoftKe
         LogUtils.e("可用空间===" + romAvailableSize);      //136 GB   =59.51 GB
 
 //  6.5     53
+
         if (romAvailableSize.endsWith("GB")) {
             mFreeCache = romAvailableSize.replace("GB", "").trim();
             double floor = Math.floor(Double.parseDouble(mFreeCache));
@@ -103,7 +106,12 @@ public class MainActivity extends BaseActivity implements KeyboardWatcher.SoftKe
             mFreeCache = romAvailableSize.replace("MB", "").trim();
             showWarningDialog("设备可用空间不足" + mFreeCache + "MB,录制视频极有可能导致保存视频失败!");
         }
+
+
+
     }
+
+
 
     private void showWarningDialog(String message) {
         mExitDialog = new MessageDialog.Builder(this);

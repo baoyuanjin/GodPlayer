@@ -31,6 +31,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.company.shenzhou.R;
+import com.company.shenzhou.base.App;
 import com.company.shenzhou.base.BaseActivity;
 import com.company.shenzhou.base.help.KeyboardWatcher;
 import com.company.shenzhou.bean.dbbean.UserDBRememberBean;
@@ -43,6 +44,8 @@ import com.company.shenzhou.utils.db.UserDBRememberBeanUtils;
 import com.company.shenzhou.utils.db.UserDBRememberBeanUtils;
 import com.company.shenzhou.view.CircleImageView;
 import com.company.shenzhou.view.ListHistoryPopup;
+import com.company.shenzhou.view.dialog.MessageDialog;
+import com.hjq.base.BaseDialog;
 import com.hjq.base.BasePopupWindow;
 import com.hjq.base.action.AnimAction;
 import com.yun.common.utils.LogUtils;
@@ -174,9 +177,49 @@ public class LoginAnimatorActivity extends BaseActivity implements KeyboardWatch
         });
         //初始化是否记住密码
         initRememberLogin();
+
+        /**
+         * 为了上华为应用市场必须明确bugly的使用隐私和目的
+         */
+        Boolean CanUse = (Boolean) SharePreferenceUtil.get(LoginAnimatorActivity.this, SharePreferenceUtil.Bugly_CanUse, false);
+        showWarningBuglayDialog(CanUse);
+
     }
 
+    private void showWarningBuglayDialog(Boolean canUse) {
+        if (!canUse) {
+            MessageDialog.Builder mExitDialog = new MessageDialog.Builder(this);
+            // 标题可以不用填写
+            mExitDialog.setTitle("提示!")
+                    // 内容必须要填写
+                    .setMessage("CME Player使用了腾讯bugly第三方SDK,获取手机状态（包括手机号码、IMEI、IMSI权限等权限）、目的是收集该App闪退的时候上传崩溃信息给腾讯bugly后台分析出什么手机出现的错误原因!")
+                    // 确定按钮文本
+                    .setConfirm(getString(R.string.common_confirm))
+                    // 设置 null 表示不显示取消按钮
+                    .setCancel(getString(R.string.common_cancel))
+                    // 设置点击按钮后不关闭对话框
+                    //.setAutoDismiss(false)
+                    .setCanceledOnTouchOutside(false)
+                    .setListener(new MessageDialog.OnListener() {
 
+                        @Override
+                        public void onConfirm(BaseDialog dialog) {
+                            SharePreferenceUtil.put(LoginAnimatorActivity.this, SharePreferenceUtil.Bugly_CanUse, true);
+                            App.getInstance().intBugly();
+                        }
+
+                        @Override
+                        public void onCancel(BaseDialog dialog) {
+                            SharePreferenceUtil.put(LoginAnimatorActivity.this, SharePreferenceUtil.Bugly_CanUse, false);
+
+                        }
+                    })
+                    .show();
+        } else {
+
+        }
+
+    }
     private void setMyLayoutParams() {
         LinearLayout linear_login_root = findViewById(R.id.linear_login_root);
         TextView tv_top = findViewById(R.id.tv_top);

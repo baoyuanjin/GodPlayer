@@ -133,7 +133,32 @@
                     app:bar_lineSize="@dimen/padding_0.5"
                     app:bar_rightIcon="@mipmap/icon_mine_right"
                     app:bar_rightText="" />
-
+                <com.company.shenzhou.view.SettingBar
+                    android:id="@+id/bar_mine_use"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/padding_60"
+                    android:background="@drawable/selector_item_ffffff"
+                    app:bar_leftColor="@color/black333333"
+                    app:bar_leftIcon="@drawable/ic_baseline_library_books_24"
+                    app:bar_leftText="用户协议"
+                    app:bar_lineColor="@color/color_DDDDDD"
+                    app:bar_lineMargin="@dimen/padding_15"
+                    app:bar_lineSize="@dimen/padding_0.5"
+                    app:bar_rightIcon="@mipmap/icon_mine_right"
+                    app:bar_rightText="" />
+                <com.company.shenzhou.view.SettingBar
+                    android:id="@+id/bar_mine_secret"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/padding_60"
+                    android:background="@drawable/selector_item_ffffff"
+                    app:bar_leftColor="@color/black333333"
+                    app:bar_leftIcon="@drawable/ic_baseline_collections_24"
+                    app:bar_leftText="隐私条款"
+                    app:bar_lineColor="@color/color_DDDDDD"
+                    app:bar_lineMargin="@dimen/padding_15"
+                    app:bar_lineSize="@dimen/padding_0.5"
+                    app:bar_rightIcon="@mipmap/icon_mine_right"
+                    app:bar_rightText="" />
 
                 <com.company.shenzhou.view.SettingBar
                     android:id="@+id/sb_setting_agreement"

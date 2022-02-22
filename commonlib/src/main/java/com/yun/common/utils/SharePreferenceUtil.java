@@ -23,6 +23,7 @@ public class SharePreferenceUtil {
     public static final String FILE_NAME = "share_data";
     public static final String UID = "uid";
 
+    public static final String Bugly_CanUse = "Bugly_CanUse";
 
     //这个是fragment.tab的保存信息
     public static final String DYNAMIC_SWITCH_TAB = "dynamic.switching.tab";

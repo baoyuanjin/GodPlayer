@@ -9,6 +9,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.util.Log;
@@ -25,6 +26,7 @@ import com.company.shenzhou.base.ActivityCollector;
 import com.company.shenzhou.bean.dbbean.UserDBRememberBean;
 import com.company.shenzhou.ui.activity.MainActivity;
 import com.company.shenzhou.ui.activity.PowerExplainActivity;
+import com.company.shenzhou.ui.activity.login.WebViewActivity;
 import com.company.shenzhou.ui.activity.vlc.TestVlcPlayerActivity;
 import com.company.shenzhou.ui.activity.login.LoginAnimatorActivity;
 import com.company.shenzhou.base.BaseFragment;
@@ -53,6 +55,7 @@ import com.yun.common.utils.popupwindow.PopupWindowVersionTwoButton;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -63,7 +66,7 @@ import butterknife.BindView;
  * <p>
  * Describe
  */
-public class  MineFragment extends BaseFragment {
+public class MineFragment extends BaseFragment {
     public static String FILE_DIR = "/sdcard/Downloads/test/";
     @BindView(R.id.bar_mine_change_password)
     SettingBar mChangePassword;
@@ -73,7 +76,7 @@ public class  MineFragment extends BaseFragment {
     SettingBar bar_mine_power_explain;//权限说明
     @BindView(R.id.bar_mine_username)
     SettingBar bar_mine_username;
-//    @BindView(R.id.togo)
+    //    @BindView(R.id.togo)
 //    SettingBar togo;
     @BindView(R.id.bar_mine_version)
     SettingBar bar_mine_version;
@@ -83,6 +86,10 @@ public class  MineFragment extends BaseFragment {
     SettingBar bar_mine_how_use;
     @BindView(R.id.bar_mine_exit)
     SettingBar bar_mine_exit;
+    @BindView(R.id.bar_mine_use)
+    SettingBar bar_mine_use;
+    @BindView(R.id.bar_mine_secret)
+    SettingBar bar_mine_secret;
     @BindView(R.id.linear_all_mine)
     LinearLayout mLinearAll;
     private PopupWindowInputChangeTowPassword changePop;
@@ -118,8 +125,8 @@ public class  MineFragment extends BaseFragment {
 
     @SuppressLint("ResourceAsColor")
     private void initView() {
-        LogUtils.e("分辨率==height=="+ScreenSizeUtil.getScreenHeight(getActivity()));
-        LogUtils.e("分辨率==width="+ScreenSizeUtil.getScreenWidth(getActivity()));
+        LogUtils.e("分辨率==height==" + ScreenSizeUtil.getScreenHeight(getActivity()));
+        LogUtils.e("分辨率==width=" + ScreenSizeUtil.getScreenWidth(getActivity()));
         setTitleName("我的");
         String username = (String) SharePreferenceUtil.get(getActivity(), SharePreferenceUtil.Current_Username, "");
         //0普通  1权限  2超级用户
@@ -161,6 +168,7 @@ public class  MineFragment extends BaseFragment {
         bar_mine_exit.setOnClickListener((View v) -> {
             showExitPop();
         });
+
         //权限说明
         bar_mine_power_explain.setOnClickListener((View v) -> {
             startActivity(new Intent(getActivity(), PowerExplainActivity.class));
@@ -169,6 +177,18 @@ public class  MineFragment extends BaseFragment {
         bar_mine_how_use.setOnClickListener((View v) -> {
             String fileName = getFilePath("TestPDF.pdf");
             startMuPDFActivityWithExampleFile(fileName);
+        });
+        //隐私条款
+        bar_mine_secret.setOnClickListener((View v) -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("typeUrl", "2");
+            openActivity(WebViewActivity.class, bundle);
+        });
+        //用户协议
+        bar_mine_use.setOnClickListener((View v) -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("typeUrl", "1");
+            openActivity(WebViewActivity.class, bundle);
         });
     }
 
@@ -300,7 +320,8 @@ public class  MineFragment extends BaseFragment {
         LogUtils.e("TAG==current系统用户===" + mCurrentUsername);
         int mCurrenType = (int) SharePreferenceUtil.get(getActivity(), SharePreferenceUtil.Current_UserType, 0);
 //        UserDBRememberBean  UserDBRememberBeanUtils.queryListByMessageToGetPassword(username);
-        UserDBRememberBean mBean = UserDBRememberBeanUtils.queryListByMessageToGetPassword(mCurrentUsername);;
+        UserDBRememberBean mBean = UserDBRememberBeanUtils.queryListByMessageToGetPassword(mCurrentUsername);
+        ;
         LogUtils.e("TAG==Username===" + mBean.getUsername() + "====password==" + mBean.getPassword() +
                 "====Type==" + mBean.getUserType() + "====mBean.getId()==" + mBean.getId());
         changePop.getMakeSure().setOnClickListener(new View.OnClickListener() {

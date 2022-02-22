@@ -6,12 +6,17 @@ import android.util.Log;
 
 import androidx.multidex.MultiDex;
 
+import com.company.shenzhou.R;
 import com.company.shenzhou.player.db.DaoMaster;
 import com.company.shenzhou.player.db.DaoSession;
+import com.company.shenzhou.ui.activity.login.LoginAnimatorActivity;
 import com.company.shenzhou.utils.FileUtils;
+import com.company.shenzhou.view.dialog.MessageDialog;
+import com.hjq.base.BaseDialog;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.sdk.QbSdk;
+import com.yun.common.utils.SharePreferenceUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.cookie.CookieJarImpl;
 import com.zhy.http.okhttp.cookie.store.MemoryCookieStore;
@@ -71,8 +76,11 @@ public class App extends Application {
 //        CrashReport.initCrashReport(getApplicationContext(), "注册时申请的APPID", false); //61d09fb4-6609-45af-8262-a6fa7f003ec7   App Key
         //数据库
         initGreenDao();
-        Bugly.init(getApplicationContext(), "6685d0b2ac", false);
-
+        Boolean CanUse = (Boolean) SharePreferenceUtil.get(getApplicationContext(), SharePreferenceUtil.Bugly_CanUse, false);
+        //用户同意了权限才可以初始化
+        if (CanUse) {
+            Bugly.init(getApplicationContext(), "6685d0b2ac", false);
+        }
         //Okhttp请求头
         //请求工具的拦截器  ,可以设置证书,设置可访问所有的https网站,参考https://www.jianshu.com/p/64cc92c52650
         HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
@@ -92,7 +100,10 @@ public class App extends Application {
         OkHttpUtils.initClient(okHttpClientBuilder.build());
 
 
+    }
 
+    public void intBugly() {
+        Bugly.init(getApplicationContext(), "6685d0b2ac", false);
     }
 
     /**
@@ -110,7 +121,6 @@ public class App extends Application {
     public DaoSession getDaoSession() {
         return daoSession;
     }
-
 
 
     private void initX5Web() {
