@@ -16,6 +16,7 @@ import com.hjq.base.BaseDialog;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.sdk.QbSdk;
+import com.yun.common.utils.LogUtils;
 import com.yun.common.utils.SharePreferenceUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.cookie.CookieJarImpl;
@@ -61,7 +62,6 @@ public class App extends Application {
          */
         // 初始化在线才看pdf(ppt，word都行这里只使用pdf)
         MultiDex.install(this);    // 主要是添加下面这句代码,解决Build bug
-        initX5Web();
 //        FILE_DIR = new File(getFilesDir(), "test").getAbsolutePath() + File.separator;
 //        Log.e("QbSdk", "IOException:FILE_DIR======="+FILE_DIR );
 //
@@ -79,6 +79,8 @@ public class App extends Application {
         Boolean CanUse = (Boolean) SharePreferenceUtil.get(getApplicationContext(), SharePreferenceUtil.Bugly_CanUse, false);
         //用户同意了权限才可以初始化
         if (CanUse) {
+            LogUtils.e("初始化腾讯SDK");
+            initX5Web();
             Bugly.init(getApplicationContext(), "6685d0b2ac", false);
         }
         //Okhttp请求头
@@ -103,6 +105,8 @@ public class App extends Application {
     }
 
     public void intBugly() {
+        LogUtils.e("intBugly--初始化腾讯SDK");
+        initX5Web();
         Bugly.init(getApplicationContext(), "6685d0b2ac", false);
     }
 

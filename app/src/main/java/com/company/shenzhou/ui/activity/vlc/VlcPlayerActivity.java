@@ -122,7 +122,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
     private TextView photos;
     private PowerScreenReceiver receiver;
     private ConnectionChangeReceiver mConnectionReceiver;
-    private VlcVideoView vlc_video_view;
+//    private VlcVideoView vlc_video_view;
     private boolean isOnPauseExit = false;
     private boolean mFlag_Record = false;
     private boolean mFlag_MicOnLine = false;
@@ -155,6 +155,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
     private String currentTime = "0";
     private String indexTime = "0";
     private int indexEventIntTime = 0;
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @SuppressLint("NewApi")
         @Override
@@ -304,6 +305,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
     private String mLastTime;
     private TextView currentIntTime;
     private int flagTime;
+    private RelativeLayout mPlayerViewRootRelative;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -376,8 +378,8 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
 //
 
 
-        vlc_video_view = vlcVideoView.findViewById(R.id.vlc_video_view);
-        vlc_video_view.setOnClickListener((View v) -> {
+        mPlayerViewRootRelative = mPlayerView.findViewById(R.id.root_layout_vlc);
+        mPlayerViewRootRelative.setOnClickListener((View v) -> {
             //控制功能按钮的显示和隐藏   点击屏幕
             if (lock_screen.getVisibility() == View.VISIBLE) {
                 lock_screen.setVisibility(View.INVISIBLE);

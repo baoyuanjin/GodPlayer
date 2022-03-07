@@ -60,6 +60,14 @@ public class MyVlcVideoView extends RelativeLayout implements GestureDetector.On
         mMaxVolume = mAudiomanager.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
     }
 
+    public RelativeLayout getRootView() {
+        return mRootLayout;
+    }
+    public OnTouchListener   getOnTouchVideoListener() {
+        return  mOnTouchVideoListener ;
+    }
+
+
     private AudioManager mAudiomanager;
 
     private void initControlView() {

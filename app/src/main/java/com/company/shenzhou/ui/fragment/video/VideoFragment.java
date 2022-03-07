@@ -275,7 +275,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
                 // 不适配 Android 11 可以这样写
                 //.permission(Permission.Group.STORAGE)
                 // 适配 Android 11 需要这样写，这里无需再写 Permission.Group.STORAGE
-                .permission(Permission.MANAGE_EXTERNAL_STORAGE)
+//                .permission(Permission.MANAGE_EXTERNAL_STORAGE)
                 .permission(Permission.CAMERA)
                 .request(new OnPermissionCallback() {
 

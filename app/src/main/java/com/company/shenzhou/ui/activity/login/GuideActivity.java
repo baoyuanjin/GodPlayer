@@ -174,9 +174,9 @@ public class GuideActivity extends BaseActivity {
         SpannableString textSpanned1 = new SpannableString("在你使用CME Player之前，请你认真阅读并了解《CME Player用户服务协议》和《CME Player用户隐私政策》,点击同意即表示你已阅读并且了解。");
         //设置颜色
         textSpanned1.setSpan(new ForegroundColorSpan(Color.BLUE),
-                26, 42, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                26, 44, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         textSpanned1.setSpan(new ForegroundColorSpan(Color.BLUE),
-                43, 60, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                45, 62, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         //设置Hello World前三个字符有点击事件
 //        SpannableStringBuilder textSpanned4 = new SpannableStringBuilder("Hello World");
         ClickableSpan clickableSpan = new ClickableSpan() {

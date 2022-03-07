@@ -1,50 +1,37 @@
 package com.company.shenzhou.ui.fragment;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.StatFs;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.company.shenzhou.R;
 import com.company.shenzhou.base.ActivityCollector;
-import com.company.shenzhou.bean.dbbean.UserDBRememberBean;
-import com.company.shenzhou.ui.activity.MainActivity;
-import com.company.shenzhou.ui.activity.PowerExplainActivity;
-import com.company.shenzhou.ui.activity.login.WebViewActivity;
-import com.company.shenzhou.ui.activity.vlc.TestVlcPlayerActivity;
-import com.company.shenzhou.ui.activity.login.LoginAnimatorActivity;
 import com.company.shenzhou.base.BaseFragment;
 import com.company.shenzhou.bean.Constants;
-import com.company.shenzhou.utils.ClearEditText;
+import com.company.shenzhou.bean.dbbean.UserDBRememberBean;
+import com.company.shenzhou.ui.activity.PowerExplainActivity;
+import com.company.shenzhou.ui.activity.login.LoginAnimatorActivity;
+import com.company.shenzhou.ui.activity.login.WebViewActivity;
 import com.company.shenzhou.utils.FileUtil;
 import com.company.shenzhou.utils.FileUtils;
 import com.company.shenzhou.utils.ScreenSizeUtil;
 import com.company.shenzhou.utils.db.UserDBRememberBeanUtils;
-
-import com.company.shenzhou.view.PasswordEditText;
 import com.company.shenzhou.view.PasswordV2EditText;
 import com.company.shenzhou.view.PopupWindowInputChangeTowPassword;
 import com.company.shenzhou.view.SettingBar;
 import com.hanlyjiang.library.fileviewer.FileViewer;
-import com.hjq.permissions.OnPermissionCallback;
-import com.hjq.permissions.Permission;
-import com.hjq.permissions.XXPermissions;
 import com.yun.common.utils.DensityUtils;
 import com.yun.common.utils.LogUtils;
 import com.yun.common.utils.ScreenUtils;
@@ -55,9 +42,7 @@ import com.yun.common.utils.popupwindow.PopupWindowVersionTwoButton;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import butterknife.BindView;
 

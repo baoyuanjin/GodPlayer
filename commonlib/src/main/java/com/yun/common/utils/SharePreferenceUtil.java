@@ -24,6 +24,9 @@ public class SharePreferenceUtil {
     public static final String UID = "uid";
 
     public static final String Bugly_CanUse = "Bugly_CanUse";
+    public static final String Tencent_CanWeb = "Tencent_Web";
+    public static final String Permission_Shot = "Permission_Shot";
+    public static final String Permission_Record = "Permission_Record";
 
     //这个是fragment.tab的保存信息
     public static final String DYNAMIC_SWITCH_TAB = "dynamic.switching.tab";

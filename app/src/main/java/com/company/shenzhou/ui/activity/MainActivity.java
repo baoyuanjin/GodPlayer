@@ -15,7 +15,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.company.shenzhou.R;
 import com.company.shenzhou.base.ActivityCollector;
-import com.company.shenzhou.base.App;
 import com.company.shenzhou.base.BaseActivity;
 import com.company.shenzhou.ui.fragment.MineFragment;
 import com.company.shenzhou.ui.fragment.user.UserFragment;
@@ -24,15 +23,9 @@ import com.company.shenzhou.utils.FileUtil;
 import com.company.shenzhou.utils.KeyboardWatcher;
 import com.company.shenzhou.view.dialog.MessageDialog;
 import com.hjq.base.BaseDialog;
-import com.hjq.permissions.OnPermissionCallback;
-import com.hjq.permissions.Permission;
-import com.hjq.permissions.XXPermissions;
 import com.yun.common.contant.Constants;
 import com.yun.common.utils.LogUtils;
 import com.yun.common.utils.SharePreferenceUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,7 +67,6 @@ public class MainActivity extends BaseActivity implements KeyboardWatcher.SoftKe
 
         setChoiceItem(valTab);
 //        PlayerFactory.setPlayManager(SystemPlayerManager.class);     //这个是GSYVideoPlayer 设置所有流媒体格式播放内核
-        requestPermission();
 
         KeyboardWatcher.with(this).setListener(this);
         //可用空间不足2GB弹出对话框
@@ -108,9 +100,7 @@ public class MainActivity extends BaseActivity implements KeyboardWatcher.SoftKe
         }
 
 
-
     }
-
 
 
     private void showWarningDialog(String message) {
@@ -139,39 +129,6 @@ public class MainActivity extends BaseActivity implements KeyboardWatcher.SoftKe
                 .show();
     }
 
-    private void requestPermission() {
-        XXPermissions.with(this)
-                // 不适配 Android 11 可以这样写
-                //.permission(Permission.Group.STORAGE)
-                // 适配 Android 11 需要这样写，这里无需再写 Permission.Group.STORAGE
-                .permission(Permission.MANAGE_EXTERNAL_STORAGE)
-                .permission(Permission.RECORD_AUDIO)
-                .permission(Permission.CAMERA)
-//                .permission(Permission.WRITE_EXTERNAL_STORAGE)
-//                .permission(Permission.READ_EXTERNAL_STORAGE)
-                .permission(Permission.READ_PHONE_STATE)
-                .request(new OnPermissionCallback() {
-
-                    @Override
-                    public void onGranted(List<String> permissions, boolean all) {
-                        if (all) {
-//                            showToast("获取存储权限成功");
-                        }
-                    }
-
-                    @Override
-                    public void onDenied(List<String> permissions, boolean never) {
-                        if (never) {
-                            showToast("被永久拒绝授权，请手动授予存储权限");
-                            // 如果是被永久拒绝就跳转到应用权限系统设置页面
-                            XXPermissions.startPermissionActivity(MainActivity.this, permissions);
-                        } else {
-                            showToast("获取存储权限失败");
-                        }
-                    }
-                });
-
-    }
 
     private UserFragment firstFragment;
     private VideoFragment secondFragment;
