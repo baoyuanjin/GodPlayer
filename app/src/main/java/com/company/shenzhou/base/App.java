@@ -81,7 +81,7 @@ public class App extends Application {
         if (CanUse) {
             LogUtils.e("初始化腾讯SDK");
             initX5Web();
-            Bugly.init(getApplicationContext(), "6685d0b2ac", false);
+            Bugly.init(getApplicationContext(), "ab805dbd30", false);
         }
         //Okhttp请求头
         //请求工具的拦截器  ,可以设置证书,设置可访问所有的https网站,参考https://www.jianshu.com/p/64cc92c52650
@@ -107,7 +107,7 @@ public class App extends Application {
     public void intBugly() {
         LogUtils.e("intBugly--初始化腾讯SDK");
         initX5Web();
-        Bugly.init(getApplicationContext(), "6685d0b2ac", false);
+        Bugly.init(getApplicationContext(), "ab805dbd30", false);
     }
 
     /**

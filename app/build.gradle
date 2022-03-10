@@ -11,7 +11,7 @@ android {
         applicationId "com.company.shenzhou"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 4      //bugly 升级需要这个字段迭代
+        versionCode 4      //bugly 升级需要这个字段迭代  应用市场的code是4  在审核
         versionName "1.1.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true    //避免64K打包bug
