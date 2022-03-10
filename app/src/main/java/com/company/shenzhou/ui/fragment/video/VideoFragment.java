@@ -1,5 +1,6 @@
 package com.company.shenzhou.ui.fragment.video;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -92,6 +93,7 @@ public class VideoFragment extends BaseFragment implements VideoAdapter.ClickCal
     private AddAdviceInputDialog.Builder addInPutBuilder;      //添加设备信息对话框
     private AdviceReInputDialog.Builder mReInputPopBuilder;    //修改设备信息对话框
     private boolean DialogHan_IsShow = false;                  //输入对话框是否存在的标志,存在（设备信息对话框）只刷新数据,不存在弹出对话框,默认不存在
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {

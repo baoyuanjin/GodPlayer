@@ -89,7 +89,7 @@
                     app:bar_lineColor="@color/color_DDDDDD"
                     app:bar_lineMargin="@dimen/padding_15"
                     app:bar_lineSize="@dimen/padding_0.5"
-                    app:bar_rightIcon="@mipmap/icon_mine_right"
+                    app:bar_rightIcon="@drawable/arrows_right_ic"
                     app:bar_rightText="" />
 
                 <com.company.shenzhou.view.SettingBar
@@ -103,7 +103,7 @@
                     app:bar_lineColor="@color/color_DDDDDD"
                     app:bar_lineMargin="@dimen/padding_15"
                     app:bar_lineSize="@dimen/padding_0.5"
-                    app:bar_rightIcon="@mipmap/icon_mine_right"
+                    app:bar_rightIcon="@drawable/arrows_right_ic"
                     app:bar_rightText="" />
 
                 <com.company.shenzhou.view.SettingBar
@@ -117,7 +117,7 @@
                     app:bar_lineColor="@color/color_DDDDDD"
                     app:bar_lineMargin="@dimen/padding_15"
                     app:bar_lineSize="@dimen/padding_0.5"
-                    app:bar_rightIcon="@mipmap/icon_mine_right"
+                    app:bar_rightIcon="@drawable/arrows_right_ic"
                     app:bar_rightText="" />
 
                 <com.company.shenzhou.view.SettingBar
@@ -131,7 +131,7 @@
                     app:bar_lineColor="@color/color_DDDDDD"
                     app:bar_lineMargin="@dimen/padding_15"
                     app:bar_lineSize="@dimen/padding_0.5"
-                    app:bar_rightIcon="@mipmap/icon_mine_right"
+                    app:bar_rightIcon="@drawable/arrows_right_ic"
                     app:bar_rightText="" />
                 <com.company.shenzhou.view.SettingBar
                     android:id="@+id/bar_mine_use"
@@ -144,7 +144,7 @@
                     app:bar_lineColor="@color/color_DDDDDD"
                     app:bar_lineMargin="@dimen/padding_15"
                     app:bar_lineSize="@dimen/padding_0.5"
-                    app:bar_rightIcon="@mipmap/icon_mine_right"
+                    app:bar_rightIcon="@drawable/arrows_right_ic"
                     app:bar_rightText="" />
                 <com.company.shenzhou.view.SettingBar
                     android:id="@+id/bar_mine_secret"
@@ -157,7 +157,7 @@
                     app:bar_lineColor="@color/color_DDDDDD"
                     app:bar_lineMargin="@dimen/padding_15"
                     app:bar_lineSize="@dimen/padding_0.5"
-                    app:bar_rightIcon="@mipmap/icon_mine_right"
+                    app:bar_rightIcon="@drawable/arrows_right_ic"
                     app:bar_rightText="" />
 
                 <com.company.shenzhou.view.SettingBar
@@ -189,7 +189,7 @@
                     app:bar_lineColor="@color/color_DDDDDD"
                     app:bar_lineMargin="@dimen/padding_15"
                     app:bar_lineSize="@dimen/padding_0.5"
-                    app:bar_rightIcon="@mipmap/icon_mine_right"
+                    app:bar_rightIcon="@drawable/arrows_right_ic"
                     app:bar_rightText="" />
 
                 <com.company.shenzhou.view.SettingBar
@@ -203,7 +203,7 @@
                     app:bar_lineColor="@color/color_DDDDDD"
                     app:bar_lineMargin="@dimen/padding_15"
                     app:bar_lineSize="@dimen/padding_0.5"
-                    app:bar_rightIcon="@mipmap/icon_mine_right"
+                    app:bar_rightIcon="@drawable/arrows_right_ic"
                     app:bar_rightText="" />
 
                 <!--            <com.company.shenzhou.view.SettingBar-->

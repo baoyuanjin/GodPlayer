@@ -31,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.company.shenzhou.R;
 import com.company.shenzhou.bean.SwitchVideoModel;
+import com.company.shenzhou.ui.activity.zxing.ZXingActivity;
 import com.company.shenzhou.ui.broadcast.ConnectionChangeReceiver;
 import com.company.shenzhou.ui.broadcast.PowerScreenReceiver;
 import com.company.shenzhou.utils.CommonUtil;
@@ -42,6 +43,9 @@ import com.company.shenzhou.view.dialog.WaitDialog;
 import com.company.shenzhou.view.gsyplayer.SwitchVideoTypeDialog;
 import com.company.shenzhou.view.vlc.MyVlcVideoView;
 import com.hjq.base.BaseDialog;
+import com.hjq.permissions.OnPermissionCallback;
+import com.hjq.permissions.Permission;
+import com.hjq.permissions.XXPermissions;
 import com.pedro.rtplibrary.rtmp.RtmpOnlyAudio;
 import com.vlc.lib.RecordEvent;
 import com.vlc.lib.VlcVideoView;
@@ -122,7 +126,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
     private TextView photos;
     private PowerScreenReceiver receiver;
     private ConnectionChangeReceiver mConnectionReceiver;
-//    private VlcVideoView vlc_video_view;
+    //    private VlcVideoView vlc_video_view;
     private boolean isOnPauseExit = false;
     private boolean mFlag_Record = false;
     private boolean mFlag_MicOnLine = false;
@@ -171,19 +175,19 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
 //                    LogUtils.e("TAG" + "时间=======回调===indexIntTime===" + indexIntTime);
 
                     break;
-                case Error_Steam:
-                    flagTime = Integer.parseInt(currentIntTime.getText().toString().trim());
-                    if (indexEventIntTime == flagTime && indexEventIntTime == indexIntTime) {
-                        timer.cancel();
-                        mHandler.sendEmptyMessage(Try_Again_onlin);
-                    } else {
-                        isFirstCommonTime = 0;
-                    }
-
-                    LogUtils.e("TAG" + "时间=======回调===indexEventIntTime===" + indexEventIntTime);
-                    LogUtils.e("TAG" + "时间=======回调===indexIntTime===" + indexIntTime);
-                    LogUtils.e("TAG" + "时间=======回调===flagTime===" + flagTime);
-                    break;
+//                case Error_Steam:
+//                    flagTime = Integer.parseInt(currentIntTime.getText().toString().trim());
+//                    if (indexEventIntTime == flagTime && indexEventIntTime == indexIntTime) {
+//                        timer.cancel();
+//                        mHandler.sendEmptyMessage(Try_Again_onlin);
+//                    } else {
+//                        isFirstCommonTime = 0;
+//                    }
+//
+//                    LogUtils.e("TAG" + "时间=======回调===indexEventIntTime===" + indexEventIntTime);
+//                    LogUtils.e("TAG" + "时间=======回调===indexIntTime===" + indexIntTime);
+//                    LogUtils.e("TAG" + "时间=======回调===flagTime===" + flagTime);
+//                    break;
                 case Send_Toast:
                     ToastUtil.showToastCenter(VlcPlayerActivity.this, (String) msg.obj);
                     break;
@@ -465,7 +469,8 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void eventPlay(boolean isPlaying) {
                 LogUtils.e("path=====Start:=====" + "我是当前播放的url======eventPlay======" + isPlaying);
-
+                startView.setVisibility(View.INVISIBLE);
+                error_text.setVisibility(View.INVISIBLE);
 //                if (hd3){
 //                    getIfOffLine();
 //                }
@@ -497,7 +502,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                 }
                 LogUtils.e("path=====Start:=====" + "我是当前播放的url====Try_Again_onlin==视频流断开连接====断开连麦==" + "开始发送消息,从新链接");
 
-                mHandler.sendEmptyMessageDelayed(Try_Again_onlin, 1000);
+//                mHandler.sendEmptyMessageDelayed(Try_Again_onlin, 1000);
 
             }
 
@@ -591,29 +596,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                 finish();
                 break;
             case R.id.pusher:  //推流
-                LogUtils.e("pusherStart====111===" + rtmpOnlyAudio.isStreaming());    //true   断开的时候
-                LogUtils.e("pusherStart====222===" + rtmpOnlyAudio.prepareAudio());   //true
-                if (!rtmpOnlyAudio.isStreaming()) {
-                    if (rtmpOnlyAudio.prepareAudio()) {
-                        if (CommonUtil.isFastClick()) {
-                            if ("一体机".equals(mTitleData.substring(0, 3))) {
-                                if (isPlayering) {
-                                    pusherStart();
-                                } else {
-                                    startSendToast("只有在直播开启的时候,才能使用语音功能!");
-                                }
-                            } else {
-                                startSendToast("当前直播没有语音功能!");
-                            }
-                        }
-                    } else {
-                        startSendToast("Error preparing stream, This device cant do it");
-                    }
-                } else {
-                    if (CommonUtil.isFastClick()) {
-                        pusherStop("Common");
-                    }
-                }
+                getMicPermission();
                 break;
             case R.id.photos:  //打开相册
                 if (isPlayering) {
@@ -663,50 +646,143 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                 }
                 break;
             case R.id.recordStart: //录像
-                if (isPlayering) {
-                    if (isStarting && vlcVideoView.isPrepare()) {
-                        mFlag_Record = true;
-                        mHandler.sendEmptyMessage(Record_Start);
-//                        vlcVideoView.getMediaPlayer().record(directory);
-                        LogUtils.e("path=====录像--开始:=====" + directory); //   /storage/emulated/0/1604026573438.mp4
-                        recordEvent.startRecord(vlcVideoView.getMediaPlayer(), directory, "cme.mp4");
-                    } else {
-                        vlcRecordOver();
-                    }
-                } else {
-                    startSendToast("只有在播放的时候才能录像!");
-                }
+                getStoragePermission("Recode");
+
+
                 break;
             case R.id.snapShot://截图
-                if (isPlayering) {
-                    if (vlcVideoView.isPrepare()) {
-                        Media.VideoTrack videoTrack = vlcVideoView.getVideoTrack();
-                        if (videoTrack != null) {
-                            //vlcVideoView.getMediaPlayer().updateVideoSurfaces();
-                            startSendToast("截图成功");
-                            //原图
-                            LogUtils.e("path=====截图地址:=====" + takeSnapshotFile.getAbsolutePath()); //   /storage/emulated/0/1604026573438.mp4
-                            File localFile = new File(takeSnapshotFile.getAbsolutePath());
-                            if (!localFile.exists()) {
-                                localFile.mkdir();
-                            }
-                            recordEvent.takeSnapshot(vlcVideoView.getMediaPlayer(), takeSnapshotFile.getAbsolutePath(), 0, 0);
-                            //插入相册 解决了华为截图显示问题
-                            MediaStore.Images.Media.insertImage(getContentResolver(), vlcVideoView.getBitmap(), "", "");
-                            //原图的一半
-                            //recordEvent.takeSnapshot(vlcVideoView.getMediaPlayer(), takeSnapshotFile.getAbsolutePath(), videoTrack.width / 2, 0);
-                        }
-                    }
-                    //这个就是截图 保存Bitmap就行了
-                    //thumbnail.setImageBitmap(vlcVideoView.getBitmap());
-                    //Bitmap bitmap = vlcVideoView.getBitmap();
-                    //saveBitmap("", bitmap);
-                } else {
-                    startSendToast("只有在播放的时候才能截图!");
-                }
+                getStoragePermission("Shot");
                 break;
         }
     }
+
+    //截图或者录像获取权限后才开始
+    private void getStoragePermission(String type) {
+        XXPermissions.with(this)
+                // 不适配 Android 11 可以这样写
+                //.permission(Permission.Group.STORAGE)
+                // 适配 Android 11 需要这样写，这里无需再写 Permission.Group.STORAGE
+                .permission(Permission.MANAGE_EXTERNAL_STORAGE)
+//                .permission(Permission.CAMERA)
+                .request(new OnPermissionCallback() {
+                    @Override
+                    public void onGranted(List<String> permissions, boolean all) {
+                        if (all) {
+                            if ("Recode".equals(type)) {//录像
+                                if (isPlayering) {
+                                    if (isStarting && vlcVideoView.isPrepare()) {
+                                        mFlag_Record = true;
+                                        mHandler.sendEmptyMessage(Record_Start);
+//                        vlcVideoView.getMediaPlayer().record(directory);
+                                        LogUtils.e("path=====录像--开始:=====" + directory); //   /storage/emulated/0/1604026573438.mp4
+                                        recordEvent.startRecord(vlcVideoView.getMediaPlayer(), directory, "cme.mp4");
+                                    } else {
+                                        vlcRecordOver();
+                                    }
+                                } else {
+                                    startSendToast("只有在播放的时候才能录像!");
+                                }
+                            } else {
+                                if (isPlayering) {
+                                    if (vlcVideoView.isPrepare()) {
+                                        Media.VideoTrack videoTrack = vlcVideoView.getVideoTrack();
+                                        if (videoTrack != null) {
+                                            //vlcVideoView.getMediaPlayer().updateVideoSurfaces();
+                                            startSendToast("截图成功");
+                                            //原图
+                                            LogUtils.e("path=====截图地址:=====" + takeSnapshotFile.getAbsolutePath()); //   /storage/emulated/0/1604026573438.mp4
+                                            File localFile = new File(takeSnapshotFile.getAbsolutePath());
+                                            if (!localFile.exists()) {
+                                                localFile.mkdir();
+                                            }
+                                            recordEvent.takeSnapshot(vlcVideoView.getMediaPlayer(), takeSnapshotFile.getAbsolutePath(), 0, 0);
+                                            //插入相册 解决了华为截图显示问题
+                                            MediaStore.Images.Media.insertImage(getContentResolver(), vlcVideoView.getBitmap(), "", "");
+                                            //原图的一半
+                                            //recordEvent.takeSnapshot(vlcVideoView.getMediaPlayer(), takeSnapshotFile.getAbsolutePath(), videoTrack.width / 2, 0);
+                                        }
+                                    }
+                                    //这个就是截图 保存Bitmap就行了
+                                    //thumbnail.setImageBitmap(vlcVideoView.getBitmap());
+                                    //Bitmap bitmap = vlcVideoView.getBitmap();
+                                    //saveBitmap("", bitmap);
+                                } else {
+                                    startSendToast("只有在播放的时候才能截图!");
+                                }
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onDenied(List<String> permissions, boolean never) {
+                        if (never) {
+                            startSendToast("被永久拒绝授权，请手动授予存储权限");
+                            // 如果是被永久拒绝就跳转到应用权限系统设置页面
+                            XXPermissions.startPermissionActivity(getApplicationContext(), permissions);
+                        } else {
+                            startSendToast("获取存储权限失败");
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 获取麦克风权限
+     */
+    private void getMicPermission() {
+        XXPermissions.with(this)
+                // 不适配 Android 11 可以这样写
+                //.permission(Permission.Group.STORAGE)
+                // 适配 Android 11 需要这样写，这里无需再写 Permission.Group.STORAGE
+//                .permission(Permission.MANAGE_EXTERNAL_STORAGE)
+                .permission(Permission.RECORD_AUDIO)
+                .request(new OnPermissionCallback() {
+
+                    @Override
+                    public void onGranted(List<String> permissions, boolean all) {
+                        if (all) {
+                            LogUtils.e("pusherStart====111===" + rtmpOnlyAudio.isStreaming());    //true   断开的时候
+                            LogUtils.e("pusherStart====222===" + rtmpOnlyAudio.prepareAudio());   //true
+                            if (!rtmpOnlyAudio.isStreaming()) {
+                                if (rtmpOnlyAudio.prepareAudio()) {
+                                    if (CommonUtil.isFastClick()) {
+                                        if ("一体机".equals(mTitleData.substring(0, 3))) {
+                                            if (isPlayering) {
+                                                pusherStart();
+                                            } else {
+                                                startSendToast("只有在直播开启的时候,才能使用语音功能!");
+                                            }
+                                        } else {
+                                            startSendToast("当前直播没有语音功能!");
+                                        }
+                                    }
+                                } else {
+                                    startSendToast("Error preparing stream, This device cant do it");
+                                }
+                            } else {
+                                if (CommonUtil.isFastClick()) {
+                                    pusherStop("Common");
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onDenied(List<String> permissions, boolean never) {
+                        if (never) {
+                            startSendToast("被永久拒绝授权，请手动授予存储权限");
+                            // 如果是被永久拒绝就跳转到应用权限系统设置页面
+                            XXPermissions.startPermissionActivity(getApplicationContext(), permissions);
+                        } else {
+                            startSendToast("获取麦克风权限失败");
+                        }
+                    }
+                });
+
+
+    }
+
 
     private void startSendToast(String toastStr) {
         Message tempMsg = mHandler.obtainMessage();
@@ -1080,7 +1156,7 @@ public class VlcPlayerActivity extends AppCompatActivity implements View.OnClick
                     if (3 == isFirstCommonTime) {
 //                        timer.cancel();
 //                        mHandler.sendEmptyMessage(Error_Steam);
-                        mHandler.sendEmptyMessageDelayed(Error_Steam,1011);
+                        mHandler.sendEmptyMessageDelayed(Error_Steam, 1011);
                         LogUtils.e("TAG" + "时间==第-2-次相等=====取消===");
 
                     } else {
