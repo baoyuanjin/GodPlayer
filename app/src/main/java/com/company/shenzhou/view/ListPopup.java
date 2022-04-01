@@ -152,7 +152,7 @@ public final class ListPopup {
                     mTextView.setCompoundDrawablesWithIntrinsicBounds(record_start, null, null, null);
                 }
                 mTextView.setPaddingRelative((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, getResources().getDisplayMetrics()),
-                        (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, position == 0 ? 10 : 0, getResources().getDisplayMetrics()),
+                        (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,10, getResources().getDisplayMetrics()),
                         (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics()),
                         (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics()));
                 mTextView.setScaleX(0.9f);
